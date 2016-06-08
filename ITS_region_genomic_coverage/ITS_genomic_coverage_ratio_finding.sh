@@ -67,11 +67,11 @@ blastn -query ${path_to_ITS_clipping_file}/P.infestnas_ITS.fasta -db ${genome_pr
 
 python ${path_to_ITS_clipping_file}/generate_ITS_GFF.py --blast n.Pi_ITS_vs_${genome_prefix}.out --prefix ${genome_prefix} -o ${genome_prefix}.ITS.GFF
 
-
+wait
 #quality trim the reads
 # head crop 9 as all illumina data seems to have non-ramdon bases at frist 9-12 nt. Weird!
-java -jar ${trimmomatic_path}/trimmomatic-0.32.jar PE -threads ${num_threads} -phred33 ${SRA_prefix}_1.fastq.gz ${SRA_prefix}_2.fastq.gz R1.fq.gz unpaired_R1.fq.gz R2.fq.gz R2_unpaired.fq.gz ILLUMINACLIP:${path_to_ITS_clipping_file}/TruSeq3-PE.fa:2:30:10 LEADING:3 HEADCROP:9 TRAILING:3 SLIDINGWINDOW:4:22 MINLEN:51
-
+java -jar ${trimmomatic_path}/trimmomatic-0.32.jar PE -threads ${num_threads} -phred33 ${SRA_prefix}_1.fastq.gz ${SRA_prefix}_2.fastq.gz R1.fq.gz unpaired_R1.fq.gz R2.fq.gz unpaired_R2.fq.gz ILLUMINACLIP:${path_to_ITS_clipping_file}/TruSeq3-PE.fa:2:30:10 LEADING:3 HEADCROP:9 TRAILING:3 SLIDINGWINDOW:4:22 MINLEN:51
+wait
 rm  unpaired_R*
 
 #map to the genome
@@ -100,6 +100,9 @@ rm $TMP/tmp_unsorted.bam
 # rmdir will only work if the directory is emtpy (and it should be)
 rmdir $TMP
 
+# get only the genes, not bothered about other stuff ...
+cat ${genome_prefix}*gff3 | grep "gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
+
 # use bedtools to get the number of reads that map to specific regions
 
 bedtools multicov -bams ${genome_prefix}.bam -bed ${genome_prefix}.gene.gff > ${genome_prefix}_genomic.genes.cov
@@ -108,8 +111,9 @@ bedtools multicov -bams ${genome_prefix}.bam -bed ${genome_prefix}.ITS.GFF > ${g
 
 
 # just get the values using cut
-
-cat ${genome_prefix}_genomic.genes.cov | cut -f10 > ${genome_prefix}_genomic.genes.cov.values
+# remove RNA genes from the all gene values, as these are what we are measuring in the other
+# dataset. Assuming they are annotated in the GFF. It not... results may be a bit skewed.
+cat ${genome_prefix}_genomic.genes.cov | grep -v "RNA" | cut -f10 > ${genome_prefix}_genomic.genes.cov.values
 
 cat  ${genome_prefix}_genomic.ITS.cov | cut -f10 >  ${genome_prefix}_genomic.ITS.cov.values
 
