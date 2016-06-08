@@ -31,28 +31,9 @@ export TMP=/home/pt40963/scratch/${USER}_${JOB_ID}
 #blastn -query P.infestnas_ITS.fasta -db p.nicotiana_genome.fasta -outfmt 6 -out n.Pi_ITS_vs_p.nictoiana.out
 
 # prepare ITS gff. python:
-#"
-#
-#hits = """
-#pasteblasthits
-#""".split(\n)
-#count = 0
-#already_seen_set = set([])
-#
-#for i in hits:
-#	if i.startswith("#"):
-#		continue
-#	count = count +1
-#	if i not in already_seen_set:
-#		already_seen_set.add(i)
-#		queryId, subjectId, percIdentity, alnLength, mismatchCount, gapOpenCount, queryStart, queryEnd, subjectStart, subjectEnd, eVal, bitScore = i.split("\t")
-#		if int(subjectStart) > int(subjectEnd):
-#			temp_subjectStart = subjectEnd
-#			temp_subjectEnd = subjectStart
-#			print "%s\tP.infestans_T30-4\tITS_blast_hit_%d\t%s\t%s\t.\t+\t.\tITS_blast_hits_region" %(subjectId, count, temp_subjectStart, temp_subjectEnd)
-#		else:       
-#			print "%s\tP.infestans_T30-4\tITS_blast_hit_%d\t%s\t%s\t.\t+\t.\tITS_blast_hits_region" %(subjectId, count, subjectStart, subjectEnd)
-#"
+
+python generate_ITS_GFF.py --blast n.Pi_ITS_vs_p.nictoiana.out --prefix P.nictoiana -o P.nictoiana.ITS.GFF
+
 #reads 
  #wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR219/006/SRR2198696/SRR2198696_1.fastq.gz
  # wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR219/006/SRR2198696/SRR2198696_2.fastq.gz
