@@ -4,7 +4,8 @@
 #$ -l hostname="n13*"
 # Deliver notifications to the following address
 # Send notifications when the job begins (b), ends (e), or is aborted (a)
-#$ -m a e -M peter.thorpe@hutton.ac.uk
+#$ -M peter.thorpe@hutton.ac.uk
+#$ -m a 
 #Abort on any error,
 set -e
 #(and thus quit the script right away)
@@ -19,7 +20,7 @@ export TMP=/home/pt40963/scratch/${USER}_${JOB_ID}
 ##################################################################################################################################################################
 # THESE VARIABLE NEED TO BE FILLED IN BY USER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-genome_prefix=Phytophthora_kernoviae.GCA_000333075.1.31.
+genome_prefix=Phytophthora_kernoviae.GCA_000333075.1.31
 
 genome_fasta=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/fasta/phytophthora_kernoviae/dna/Phytophthora_kernoviae.GCA_000333075.1.31.dna.genome.fa.gz
 
