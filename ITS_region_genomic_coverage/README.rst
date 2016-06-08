@@ -23,11 +23,11 @@ coverage is normal and representative of gene number.
 
 
 ``Requires:``
-Internet access for $ wget
-Trimmomatic (read quality trimming)
-BLAST
-python
-bowtie2
-samtools
-bedtools 
-(for poorly formamted GFF files - try reformmatting with GenomeTools)
+1)Internet access for $ wget
+2)Trimmomatic (read quality trimming)
+3)BLAST
+4)python
+5)bowtie2
+6)samtools
+7)bedtools 
+7b)(for poorly formamted GFF files - try reformmatting with GenomeTools)
