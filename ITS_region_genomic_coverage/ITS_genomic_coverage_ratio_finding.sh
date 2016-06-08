@@ -11,7 +11,6 @@ set -e
 
 echo Running on $HOSTNAME
 echo Current PATH is $PATH
-echo we love $$$
 #source ~/.bash_profile
 
 cd /home/pt40963/scratch/tree_health/
