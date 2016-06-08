@@ -88,7 +88,7 @@ def write_out_ITS_GFF(blast, prefix, out):
 
 ###########################################################################
 if "-v" in sys.argv or "--version" in sys.argv:
-    print "v0.0.1"
+    print ("v0.0.1")
     sys.exit(0)
 
 
