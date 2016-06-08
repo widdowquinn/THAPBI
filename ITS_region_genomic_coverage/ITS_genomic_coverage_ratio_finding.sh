@@ -4,8 +4,8 @@
 #$ -l hostname="n13*"
 # Deliver notifications to the following address
 # Send notifications when the job begins (b), ends (e), or is aborted (a)
-#$ -M peter.thorpe@hutton.ac.uk
-#$ -m a 
+#dollar -M email.address@somewhere .... currently doesnt work
+#dollar -m a 
 #Abort on any error,
 set -e
 #(and thus quit the script right away)
@@ -101,7 +101,7 @@ rm $TMP/tmp_unsorted.bam
 rmdir $TMP
 
 # get only the genes, not bothered about other stuff ...
-cat ${genome_prefix}*gff3 | grep "gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
+cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
 
 # use bedtools to get the number of reads that map to specific regions
 
