@@ -24,7 +24,7 @@ def parse_blast_tab_outfile(blast):
     with open(blast) as file:
         return file.read().split("\n")
     
-def spit_blast_data(i):
+def spit_blast_data(i, blast_count):
     """function to split up the blast hits
     and return \t formatted data. checks start < stop
     , alters these if need be..."""
@@ -36,16 +36,15 @@ def spit_blast_data(i):
     if int(subjectStart) > int(subjectEnd):
         temp_subjectStart = subjectEnd
         temp_subjectEnd = subjectStart
-        out_format="%s\t%s\tITS_blast_hit_%d\t"
-            "%s\t%s\t.\t+\t.\tITS_blast_hits_region" \
-              %(subjectId, prefix, blast_count, \
-                temp_subjectStart,temp_subjectEnd)
+        out_format="%s\t%s\tITS_blast_hit_%d\t%s\t%s\t.\t+\t.\tITS_blast_hits_region\n" %(subjectId,\
+                            prefix, blast_count,\
+                            temp_subjectStart,temp_subjectEnd)
     else:
         #direction find. ready for writing out. 
-        out_format= "%s\t%s\tITS_blast_hit_%d\t"
-            "%s\t%s\t.\t+\t.\tITS_blast_hits_region"\
-              %(subjectId, prefix, blast_count, subjectStart,\
-                subjectEnd)
+        out_format= "%s\t%s\tITS_blast_hit_%d\t%s\t%s\t.\t+\t.\tITS_blast_hits_region\n" %(subjectId,\
+                                prefix, blast_count, subjectStart,\
+                                subjectEnd)
+    #print out_format
     return out_format
 
 
@@ -56,8 +55,7 @@ def write_out_ITS_GFF(blast, prefix, out):
     try:
         blast_hits = parse_blast_tab_outfile(blast)
     except:
-        raise ValueError:
-            print("something wrong with the blast out file")
+        raise ValueError("something wrong with blast out file")
     GFF_out = open(out, "w")
     # counter to index the blast hits in the GFF file
     blast_count = 0
@@ -68,6 +66,8 @@ def write_out_ITS_GFF(blast, prefix, out):
         if i.startswith("#"):
             #allows the outfile to have comment lines.
             continue
+        if not i.strip():
+            continue #if the last line is blank
         blast_count = blast_count +1
         # check this is a unique blast hit. Remove duplicates!
         if i not in already_seen_set:
@@ -77,10 +77,9 @@ def write_out_ITS_GFF(blast, prefix, out):
                 #remove tax id and extra coloumns - not needed.
                 i = i[:12]
             if len(i.split("\t")) >12:
-                raise ValueError:
-                    print ("custom BLAST output? not enough "
-                           "coloumns in blast file. ")
-        out_format = spit_blast_data(i)
+                raise ValueError("""custom BLAST output?
+                        not enough coloumns in blast file.""")
+        out_format = spit_blast_data(i, blast_count)
         #write to file
         GFF_out.write(out_format)
     #close the write file
