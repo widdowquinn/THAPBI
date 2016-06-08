@@ -32,7 +32,7 @@ export TMP=/home/pt40963/scratch/${USER}_${JOB_ID}
 
 # prepare ITS gff. python:
 
-python generate_ITS_GFF.py --blast n.Pi_ITS_vs_p.nictoiana.out --prefix P.nictoiana -o P.nictoiana.ITS.GFF
+python ~/misc_python/THAPBI/ITS_region_genomic_coverage/generate_ITS_GFF.py --blast n.Pi_ITS_vs_p.nictoiana.out --prefix P.nictoiana -o P.nictoiana.ITS.GFF
 
 #reads 
  #wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR219/006/SRR2198696/SRR2198696_1.fastq.gz

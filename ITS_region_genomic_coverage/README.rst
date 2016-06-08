@@ -4,7 +4,10 @@ author: Peter Thorpe September 2016. The James Hutton Insitute, Dundee, UK.
 
 basic usage:
 
-``./P.nicotiana_ITS_ratio_finding.sh`` 
+``./ITS_genomic_coverage_ratio_finding.sh`` 
+
+All regions in this file between ####
+need to be filled in by the user.
 
 why?: We are interested in the raio of coverage of all identified
 ITS regions in a genome versus "normal" genes - whatever they are.
