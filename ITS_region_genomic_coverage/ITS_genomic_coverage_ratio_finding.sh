@@ -7,7 +7,7 @@
 #dollar -M email.address@somewhere .... currently doesnt work
 #dollar -m a 
 #Abort on any error,
-set -e
+set -euo pipefail
 #(and thus quit the script right away)
 
 echo Running on $HOSTNAME
@@ -79,6 +79,7 @@ echo Trimming reads: java -jar ${trimmomatic_path}/trimmomatic-0.32.jar PE -thre
 
 
 wait
+#remove the unpaired reads....
 rm  unpaired_R*
 
 #map to the genome
