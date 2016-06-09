@@ -15,7 +15,7 @@ echo Current PATH is $PATH
 #source ~/.bash_profile
 
 cd /home/pt40963/scratch/tree_health/
-export TMP=/home/pt40963/scratch/${USER}_${JOB_ID}
+export TMP=~/scratch/${USER}_${JOB_ID}
 
 ##################################################################################################################################################################
 # THESE VARIABLE NEED TO BE FILLED IN BY USER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
