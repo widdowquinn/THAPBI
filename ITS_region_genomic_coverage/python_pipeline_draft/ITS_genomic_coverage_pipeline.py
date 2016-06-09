@@ -60,33 +60,6 @@ def parse_cmdline(args):
                         action="store", type=int,
                         default=multiprocessing.cpu_count(),
                         help="Number of threads to use (default: all)")
-    parser.add_argument("--fastqc", dest="fastqc",
-                        action="store", default="fastqc",
-                        help="Path to FastQC executable")
-    parser.add_argument("--trim_quality", dest="trim_quality",
-                        action="store", default="trim_quality",
-                        help="Path to seq_crumbs trim_quality script")
-    parser.add_argument("--join_paired_ends", dest="join_paired_ends",
-                        action="store", default="join_paired_ends.py",
-                        help="Path to ea-utils join_paired_ends.py script")
-    parser.add_argument("--convert_format", dest="convert_format",
-                        action="store", default="convert_format",
-                        help="Path to seq_crumbs convert_format script")
-    parser.add_argument("--blastclust", dest="blastclust",
-                        action="store", default="blastclust",
-                        help="Path to blastclust")
-    parser.add_argument("--muscle", dest="muscle",
-                        action="store", default="muscle",
-                        help="Path to MUSCLE")
-    parser.add_argument("--pick_otus", dest="pick_otus",
-                        action="store", default="pick_otus.py",
-                        help="Path to QIIME pick_otus.py script")
-    parser.add_argument("--pick_closed_reference_otus",
-                        dest="pick_closed_reference_otus",
-                        action="store",
-                        default="pick_closed_reference_otus.py",
-                        help="Path to QIIME pick_closed_reference_otus.py " +
-                        "script")
     return parser.parse_args()
 
 
