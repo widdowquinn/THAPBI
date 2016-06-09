@@ -69,7 +69,7 @@ python ${path_to_ITS_clipping_file}/generate_ITS_GFF.py --blast n.Pi_ITS_vs_${ge
 
 wait
 #quality trim the reads
-# head crop 9 as all illumina data seems to have non-ramdon bases at frist 9-12 nt. Weird!
+# head crop 9 as all illumina data seems to have non-random bases at frist 9-12 nt. Weird!
 java -jar ${trimmomatic_path}/trimmomatic-0.32.jar PE -threads ${num_threads} -phred33 ${SRA_prefix}_1.fastq.gz ${SRA_prefix}_2.fastq.gz R1.fq.gz unpaired_R1.fq.gz R2.fq.gz unpaired_R2.fq.gz ILLUMINACLIP:${path_to_ITS_clipping_file}/TruSeq3-PE.fa:2:30:10 LEADING:3 HEADCROP:9 TRAILING:3 SLIDINGWINDOW:4:22 MINLEN:51
 wait
 rm  unpaired_R*
@@ -116,6 +116,9 @@ bedtools multicov -bams ${genome_prefix}.bam -bed ${genome_prefix}.ITS.GFF > ${g
 cat ${genome_prefix}_genomic.genes.cov | grep -v "RNA" | cut -f10 > ${genome_prefix}_genomic.genes.cov.values
 
 cat  ${genome_prefix}_genomic.ITS.cov | cut -f10 >  ${genome_prefix}_genomic.ITS.cov.values
+
+# get stats summary of coverages
+python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats.out
 
 
 
