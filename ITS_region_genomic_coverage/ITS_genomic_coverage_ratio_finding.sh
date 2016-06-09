@@ -30,7 +30,7 @@ read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_
 
 read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_2.fastq.gz
 
-trimmomatic_path=/home/pt40963/Downloads/Trimmomatic-0.32
+trimmomatic_path=~/Downloads/Trimmomatic-0.32
 
 SRA_prefix=SRR2785298
 
