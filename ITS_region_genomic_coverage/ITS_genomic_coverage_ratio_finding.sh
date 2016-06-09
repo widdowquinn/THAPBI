@@ -14,7 +14,7 @@ echo Running on $HOSTNAME
 echo Current PATH is $PATH
 #source ~/.bash_profile
 
-cd /home/pt40963/scratch/tree_health/
+cd ~/scratch/tree_health/
 export TMP=~/scratch/${USER}_${JOB_ID}
 
 ##################################################################################################################################################################
