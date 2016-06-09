@@ -151,6 +151,7 @@ echo cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_pref
 # use bedtools to get the number of reads that map to specific regions
 
 echo "bedtools count"
+# for nomralisation use ? bedtools genomecov [OPTIONS] [-i|-ibam] -g (iff. -i)
 cmd_count="bedtools multicov -bams ${genome_prefix}.bam -bed ${genome_prefix}.gene.gff > ${genome_prefix}_genomic.genes.cov"
 echo ${cmd_count}
 eval ${cmd_count}
