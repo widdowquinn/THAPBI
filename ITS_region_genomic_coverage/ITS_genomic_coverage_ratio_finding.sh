@@ -86,16 +86,16 @@ rm  unpaired_R*
 mkdir $TMP
 
 # index genome
-bowtie2-build -f ${genome_prefix}*.fa bowtie_index_files
-echo bowtie2-build -f ${genome_prefix}*.fa bowtie_index_files
+bowtie2-build --quiet -f ${genome_prefix}*.fa bowtie_index_files
+echo bowtie2-build --quiet -f ${genome_prefix}*.fa bowtie_index_files
 
 # randomly assign mutliple mapping reads ...  http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#bowtie2-options-p
 #OLD command: bowtie2 --very-sensitive --non-deterministic --seed 1 --no-mixed --no-unal -p 8 -x Pi -1 R1.fq.gz -2 R2.fq.gz -S P.nicotiana.sam
 
 #pipe SAM output on stdout into samtools to make it into BAM
 #TODO: Put the temp unsorted BAM file on the local hard drive scratch space under /mnt/scratch
-bowtie2 --quiet --very-sensitive --non-deterministic --seed 1 --no-mixed --no-unal -p ${num_threads} -x bowtie_index_files -1 R1.fq.gz -2 R2.fq.gz | samtools view -S -b -o $TMP/tmp_unsorted.bam -
-echo MAPPING READS: bowtie2 --quiet --very-sensitive --non-deterministic --seed 1 --no-mixed --no-unal -p ${num_threads} -x bowtie_index_files -1 R1.fq.gz -2 R2.fq.gz | samtools view -S -b -o $TMP/tmp_unsorted.bam -
+bowtie2 --very-sensitive --non-deterministic --seed 1 --no-mixed --no-unal -p ${num_threads} -x bowtie_index_files -1 R1.fq.gz -2 R2.fq.gz | samtools view -S -b -o $TMP/tmp_unsorted.bam -
+echo MAPPING READS: bowtie2 --very-sensitive --non-deterministic --seed 1 --no-mixed --no-unal -p ${num_threads} -x bowtie_index_files -1 R1.fq.gz -2 R2.fq.gz | samtools view -S -b -o $TMP/tmp_unsorted.bam -
 
 
 # convert to sorted bam.
