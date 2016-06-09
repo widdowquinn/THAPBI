@@ -25,7 +25,7 @@ class trimmomatic(object):
             self._no_run = True
         self._exe_path = exe_path
 
-    def run(self, infnames, outdir):
+    def run(self, infname_r1, infname_r2, outdir):
         """Run trimmomatic on the passed files"""
         self.__build_cmd(infnames, outdir)
         if not os.path.exists(self._outdirname):
