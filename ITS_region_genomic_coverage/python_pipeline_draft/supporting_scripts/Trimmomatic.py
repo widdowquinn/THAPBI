@@ -27,7 +27,7 @@ class trimmomatic(object):
 
     def run(self, infname_r1, infname_r2, outdir):
         """Run trimmomatic on the passed files"""
-        self.__build_cmd(infnames, outdir)
+        self.__build_cmd(infname_r1, infname_r2, outdir)
         if not os.path.exists(self._outdirname):
             self._logger.info("Creating output directory: %s" %
                               self._outdirname)
