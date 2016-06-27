@@ -23,6 +23,78 @@ def parse_blast_tab_outfile(blast):
     """
     with open(blast) as file:
         return file.read().split("\n")
+
+##def get_representative_blast_hit(blast_hits):
+##    """function to reduce blast hits to longest"""
+##    scaffold_start_out_set = set([])
+##    best_blast_hits = []
+##    last_scaffold = "temp"
+##    last_start = "temp"
+##    last_stop = "temp"
+##    for result in sorted(blast_hits):
+##        #print result.split("\t")
+##        queryId, scaffold, percIdentity, alnLength,mismatchCount,\
+##             gapOpenCount, queryStart, queryEnd, start, \
+##             stop, eVal, bitScore = result.split("\t")
+##        #print queryId, scaffold, percIdentity, alnLength,mismatchCount,\
+##             #gapOpenCount, queryStart, queryEnd, start, \
+##             #stop, eVal, bitScore
+##        #print "scaffold", scaffold
+##        if last_scaffold =="temp":
+##            last_stop = stop
+##            last_scaffold = scaffold
+##            last_start = start
+##            last_stop = stop
+##            continue
+##            
+##        if not scaffold == last_scaffold:
+##            out_result = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" %(queryId,\
+##                        scaffold, percIdentity, alnLength, mismatchCount,\
+##                        gapOpenCount, queryStart, queryEnd, last_start, \
+##                        last_stop, eVal, bitScore)
+##            #print out_result
+##            scaf_start = "%s\t%s" % (scaffold, last_start)
+##            if scaf_start not in scaffold_start_out_set:
+##                scaffold_start_out_set.add(scaf_start)
+##                best_blast_hits.append(out_result)
+##            continue
+##        if not start == last_start:
+##            continue
+##        if int(stop) > int(last_stop):
+##            last_stop = stop
+##        last_scaffold = scaffold
+##        last_start = start
+##        last_stop = stop
+##    return best_blast_hits
+        
+
+def get_unique_hits(temp_blast_hits):
+    """function to remove duplicate hits"""
+    identified_data_set = set([])
+    blast_hits = []
+    for result in temp_blast_hits:
+        blast_line = result.split("\t")
+        if len(blast_line) < 8:
+            continue
+        scaffold = blast_line[1]
+        start = blast_line[8]
+        stop = blast_line[9]
+        hit = "%s\t%s\t%s" %(scaffold, start, stop)
+        hit_rev = "%s\t%s\t%s" %(scaffold, stop, start)
+        #print hit
+        # chexck to see if this start stop scaff location
+        # has already been found.
+        if hit not in identified_data_set:
+            identified_data_set.add(hit)
+            identified_data_set.add(hit_rev)
+            blast_hits.append(result)
+    #print "temp blast hits", blast_hits
+    #best_blast_hits = get_representative_blast_hit(blast_hits)
+        
+
+    #print "best_blast_hits :", best_blast_hits
+    return blast_hits
+    
     
 def spit_blast_data(i, blast_count):
     """function to split up the blast hits
@@ -53,7 +125,9 @@ def write_out_ITS_GFF(blast, prefix, out):
     like manner. """
     # call function to get list of blast hits.
     try:
-        blast_hits = parse_blast_tab_outfile(blast)
+        temp_blast_hits = parse_blast_tab_outfile(blast)
+        #filter duplicate hits
+        blast_hits = get_unique_hits(temp_blast_hits)
     except:
         raise ValueError("something wrong with blast out file")
     GFF_out = open(out, "w")
