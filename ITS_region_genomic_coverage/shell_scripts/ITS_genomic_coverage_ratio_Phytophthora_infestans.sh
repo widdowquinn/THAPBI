@@ -20,21 +20,21 @@ export TMP=~/scratch/${USER}_${JOB_ID}
 ##################################################################################################################################################################
 # THESE VARIABLE NEED TO BE FILLED IN BY USER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-species=Phytophthora_cambivora
+species=Phytophthora_infestans
 
-genome_prefix=GCA_000443045.1_PhytoCambi_1.0
+genome_prefix=Phytophthora_infestans.ASM14294v1.31
 
-genome_fasta=ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_000443045.1_PhytoCambi_1.0/GCA_000443045.1_PhytoCambi_1.0_genomic.fna.gz
+genome_fasta=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/fasta/phytophthora_infestans/dna/Phytophthora_infestans.ASM14294v1.31.dna.genome.fa.gz
 
-genome_GFF=ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_000443045.1_PhytoCambi_1.0/GCA_000443045.1_PhytoCambi_1.0_genomic.gff.gz
+genome_GFF=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/gff3/phytophthora_infestans/Phytophthora_infestans.ASM14294v1.31.gff3.gz
 
-read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR870/SRR870485/SRR870485_1.fastq.gz
+read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR248/ERR248792/ERR248792_1.fastq.gz
 
-read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR870/SRR870485/SRR870485_2.fastq.gz
+read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR248/ERR248792/ERR248792_2.fastq.gz
 
 trimmomatic_path=~/Downloads/Trimmomatic-0.32
 
-SRA_prefix=SRR870485
+SRA_prefix=ERR248792
 
 path_to_ITS_clipping_file=~/misc_python/THAPBI/ITS_region_genomic_coverage
 
@@ -71,7 +71,6 @@ gunzip *.gz
 
 wget ${read_1_link}
 wget ${read_2_link}
-
 # EXAMPLE: Phytophthora_kernoviae.GCA_000333075.1.31.dna.genome.fa.gz => Phytophthora_kernoviae.GCA_000333075.1.31.
 #gunzip ${genome_prefix}*
 
@@ -83,7 +82,7 @@ cmd="makeblastdb -in ${genome_prefix}*.fa -dbtype nucl"
 echo ${cmd}
 eval ${cmd}
 
-cmd2="blastn -query ${path_to_ITS_clipping_file}/Phy_ITSregions_all_20160601.fasta -db ${genome_prefix}*.fa -outfmt 6 -out n.Pi_ITS_vs_${genome_prefix}.out" 
+cmd2="blastn -query ${path_to_ITS_clipping_file}/Phy_ITSregions_all_20160601_nr80.fasta -db ${genome_prefix}*.fa -outfmt 6 -out n.Pi_ITS_vs_${genome_prefix}.out" 
 echo ${cmd2}
 eval ${cmd2}
 
@@ -95,11 +94,14 @@ cmd_python_ITS="python ${path_to_ITS_clipping_file}/generate_ITS_GFF.py --blast 
 echo ${cmd_python_ITS}
 eval ${cmd_python_ITS}
 
+cat ${genome_prefix}.ITS.GFF | sort -k1 > temp.out
+mv temp.out ${genome_prefix}.ITS.GFF
+
+
 wait
 #quality trim the reads
-# head crop 9 as all illumina data seems to have non-random bases at frist 9-12 nt. Weird!
-echo "Trimming: head crop 9 as all illumina data seems to have non-random bases at frist 9-12 nt. Weird!"
-cmd_trimming="java -jar ${trimmomatic_path}/trimmomatic-0.32.jar PE -threads ${num_threads} -phred33 ${SRA_prefix}_1.fastq.gz ${SRA_prefix}_2.fastq.gz R1.fq.gz unpaired_R1.fq.gz R2.fq.gz unpaired_R2.fq.gz ILLUMINACLIP:${path_to_ITS_clipping_file}/TruSeq3-PE.fa:2:30:10 LEADING:3 HEADCROP:9 TRAILING:3 SLIDINGWINDOW:4:22 MINLEN:51" 
+echo "Trimming:"
+cmd_trimming="java -jar ${trimmomatic_path}/trimmomatic-0.32.jar PE -threads ${num_threads} -phred33 ${SRA_prefix}_1.fastq.gz ${SRA_prefix}_2.fastq.gz R1.fq.gz unpaired_R1.fq.gz R2.fq.gz unpaired_R2.fq.gz ILLUMINACLIP:${path_to_ITS_clipping_file}/TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:45" 
 echo ${cmd_trimming}
 eval ${cmd_trimming}
 echo "Trimming done"

@@ -20,21 +20,21 @@ export TMP=~/scratch/${USER}_${JOB_ID}
 ##################################################################################################################################################################
 # THESE VARIABLE NEED TO BE FILLED IN BY USER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-species=Phytophthora_ramorum
+species=Phytophthora_cinnamomi
 
-genome_prefix=Phytophthora_ramorum.ASM14973v1.31
+genome_prefix=GCA_001314365.1_MP94-48v2_genomic
 
-genome_fasta=ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_000149735.1_ASM14973v1/GCA_000149735.1_ASM14973v1_genomic.fna.gz
+genome_fasta=ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_001314365.1_MP94-48v2/GCA_001314365.1_MP94-48v2_genomic.fna.gz
 
-genome_GFF=ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_000149735.1_ASM14973v1/GCA_000149735.1_ASM14973v1_genomic.gff.gz
+genome_GFF=ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_001314365.1_MP94-48v2/GCA_001314365.1_MP94-48v2_genomic.gff.gz
 
-#read_1_link=NO DATA AVAILBLE
+read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR097/SRR097634/SRR097634_1.fastq.gz
 
-#read_2_link=NO DATA AVAILBLE
+read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR097/SRR097634/SRR097634_2.fastq.gz
 
 trimmomatic_path=~/Downloads/Trimmomatic-0.32
 
-SRA_prefix=SRR610900
+SRA_prefix=SRR097634
 
 path_to_ITS_clipping_file=~/misc_python/THAPBI/ITS_region_genomic_coverage
 
@@ -83,7 +83,7 @@ cmd="makeblastdb -in ${genome_prefix}*.fa -dbtype nucl"
 echo ${cmd}
 eval ${cmd}
 
-cmd2="blastn -query ${path_to_ITS_clipping_file}/Phy_ITSregions_all_20160601.fasta -db ${genome_prefix}*.fna -outfmt 6 -out n.Pi_ITS_vs_${genome_prefix}.out" 
+cmd2="blastn -query ${path_to_ITS_clipping_file}/Phy_ITSregions_all_20160601_nr80.fasta -db ${genome_prefix}*.fna -outfmt 6 -out n.Pi_ITS_vs_${genome_prefix}.out" 
 echo ${cmd2}
 eval ${cmd2}
 
@@ -95,11 +95,14 @@ cmd_python_ITS="python ${path_to_ITS_clipping_file}/generate_ITS_GFF.py --blast 
 echo ${cmd_python_ITS}
 eval ${cmd_python_ITS}
 
+cat ${genome_prefix}.ITS.GFF | sort -k1 > temp.out
+mv temp.out ${genome_prefix}.ITS.GFF
+
+
 wait
 #quality trim the reads
-# head crop 9 as all illumina data seems to have non-random bases at frist 9-12 nt. Weird!
-echo "Trimming: head crop 9 as all illumina data seems to have non-random bases at frist 9-12 nt. Weird!"
-cmd_trimming="java -jar ${trimmomatic_path}/trimmomatic-0.32.jar PE -threads ${num_threads} -phred33 ${SRA_prefix}_1.fastq.gz ${SRA_prefix}_2.fastq.gz R1.fq.gz unpaired_R1.fq.gz R2.fq.gz unpaired_R2.fq.gz ILLUMINACLIP:${path_to_ITS_clipping_file}/TruSeq3-PE.fa:2:30:10 LEADING:3 HEADCROP:9 TRAILING:3 SLIDINGWINDOW:4:22 MINLEN:51" 
+echo "Trimming:"
+cmd_trimming="java -jar ${trimmomatic_path}/trimmomatic-0.32.jar PE -threads ${num_threads} -phred33 ${SRA_prefix}_1.fastq.gz ${SRA_prefix}_2.fastq.gz R1.fq.gz unpaired_R1.fq.gz R2.fq.gz unpaired_R2.fq.gz ILLUMINACLIP:${path_to_ITS_clipping_file}/TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:45" 
 echo ${cmd_trimming}
 eval ${cmd_trimming}
 echo "Trimming done"

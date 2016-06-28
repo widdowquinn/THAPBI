@@ -24,6 +24,115 @@ def parse_blast_tab_outfile(blast):
     with open(blast) as file:
         return file.read().split("\n")
 
+def split_blast_line(blast_line):
+    """function to split blast line into its elements"""
+    queryId, scaffold, percIdentity, alnLength,mismatchCount,\
+             gapOpenCount, queryStart, queryEnd, start, \
+             stop, eVal, bitScore = blast_line.split("\t")
+    if int(start) > int(stop):
+        #we have a negative strand hit. flip it round. 
+        temp_start = stop
+        temp_stop = start
+        stop = temp_start
+        start = temp_stop
+    return queryId, scaffold, percIdentity, alnLength,mismatchCount,\
+             gapOpenCount, queryStart, queryEnd, start, \
+             stop, eVal, bitScore
+     
+
+def get_representative_blast_hit(blast_hits):
+    """function to reduce blast hits to longest"""
+    #dictionaries
+    its_scaffold_dic = dict()
+    scaffold_start_stop = dict()
+    start_gene_scaf_stop = dict()
+
+    for result in blast_hits:
+        # fill the main dict for now.
+        queryId, scaffold, percIdentity, alnLength,mismatchCount,\
+             gapOpenCount, queryStart, queryEnd, start, \
+             stop, eVal, bitScore = split_blast_line(result)
+        full_result = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" %(queryId,\
+                        last_scaffold, percIdentity, alnLength, mismatchCount,\
+                        gapOpenCount, queryStart, queryEnd, start, \
+                        stop, eVal, bitScore)    
+        its_scaffold_full_dic[queryId] = full_result
+        
+
+    for result in blast_hits:
+        #print result.split("\t")
+        queryId, scaffold, percIdentity, alnLength,mismatchCount,\
+             gapOpenCount, queryStart, queryEnd, start, \
+             stop, eVal, bitScore = split_blast_line(result)
+
+        #populate dictionaries.
+        # have we seen this start coord before?
+        if start_gene_scaf_stop[start]:
+            ITS, scaf, stored_stp = start_gene_scaf_stop[start]
+            # does this start belong to the same scaffold as the current query.
+            if scaf == scaffold:
+                if int(stored_stp) < int(stop):
+                    #we have a "later" stop site. use this. 
+                    start_gene_scaf_stop[start] = "%s\t%s\t%s" %(queryId, scaffold, stop)
+                    
+                    full_result = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" %(queryId,\
+                        scaffold, percIdentity, alnLength, mismatchCount,\
+                        gapOpenCount, queryStart, queryEnd, start, \
+                        stop, eVal, bitScore)
+                    #update the main dictionary with the updated stop. 
+                    its_scaffold_full_dic[queryId] = full_result
+
+        else:
+            start_gene_scaf_stop[start] = "%s\t%s\t%s" %(queryId, scaffold, stop)
+
+            
+        full_result = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" %(queryId,\
+                        last_scaffold, percIdentity, alnLength, mismatchCount,\
+                        gapOpenCount, queryStart, queryEnd, start, \
+                        stop, eVal, bitScore)    
+        its_scaffold_full_dic[queryId] = full_result
+        scaffold_start_stop = dict()
+        start_gene_scaf_stop = dict()
+        
+
+        if last_scaffold =="temp":
+            #first iteration of file. populate the variables. 
+            last_stop = stop
+            last_scaffold = scaffold
+            last_start = start
+            last_stop = stop
+            best_start = int(start)
+            best_stop = int(stop)
+            continue
+            
+        if not scaffold == last_scaffold:
+            # this is the end of the hits on this scaffold. write out.
+            print "current scaffold:", scaffold, "last scaffold: ", last_scaffold
+            out_result = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" %(queryId,\
+                        last_scaffold, percIdentity, alnLength, mismatchCount,\
+                        gapOpenCount, queryStart, queryEnd, last_start, \
+                        last_stop, eVal, bitScore)
+
+            #print out_result
+            scaf_start = "%s\t%s" % (scaffold, last_start)
+            if scaf_start not in scaffold_start_out_set:
+                scaffold_start_out_set.add(scaf_start)
+                best_blast_hits.append(out_result)
+            last_stop = stop
+            last_scaffold = scaffold
+            last_start = start
+            last_stop = stop
+            continue
+        if not start == last_start:
+            continue
+        if int(stop) > int(last_stop):
+            last_stop = stop
+        last_scaffold = scaffold
+        last_start = start
+        last_stop = stop
+        old_result = result
+    return best_blast_hits
+        
 
 def get_unique_hits(temp_blast_hits):
     """function to remove duplicate hits"""
@@ -47,6 +156,8 @@ def get_unique_hits(temp_blast_hits):
             blast_hits.append(result)
     #print "temp blast hits", blast_hits
     best_blast_hits = get_representative_blast_hit(blast_hits)
+        
+
     #print "best_blast_hits :", best_blast_hits
     return blast_hits
     
@@ -80,7 +191,9 @@ def write_out_ITS_GFF(blast, prefix, out):
     like manner. """
     # call function to get list of blast hits.
     try:
-        blast_hits = parse_blast_tab_outfile(blast)
+        temp_blast_hits = parse_blast_tab_outfile(blast)
+        #filter duplicate hits
+        blast_hits = get_unique_hits(temp_blast_hits)
     except:
         raise ValueError("something wrong with blast out file")
     GFF_out = open(out, "w")

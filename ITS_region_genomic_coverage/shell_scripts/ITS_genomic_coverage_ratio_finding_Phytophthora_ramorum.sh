@@ -20,21 +20,25 @@ export TMP=~/scratch/${USER}_${JOB_ID}
 ##################################################################################################################################################################
 # THESE VARIABLE NEED TO BE FILLED IN BY USER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-species=Phytophthora_cinnamomi
+species=Phytophthora_ramorum
 
-genome_prefix=GCA_001314365.1_MP94-48v2_genomic
+genome_prefix=Phytophthora_ramorum.ASM14973v1.31
 
-genome_fasta=ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_001314365.1_MP94-48v2/GCA_001314365.1_MP94-48v2_genomic.fna.gz
+genome_fasta=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/fasta/phytophthora_ramorum/dna/Phytophthora_ramorum.ASM14973v1.31.dna.genome.fa.gz
 
-genome_GFF=ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_001314365.1_MP94-48v2/GCA_001314365.1_MP94-48v2_genomic.gff.gz
+genome_GFF=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/gff3/phytophthora_ramorum/Phytophthora_ramorum.ASM14973v1.31.gff3.gz
 
-read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR097/SRR097634/SRR097634_1.fastq.gz
+read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR610/SRR610900/SRR610900_1.fastq.gz
 
-read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR097/SRR097634/SRR097634_2.fastq.gz
+read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR610/SRR610900/SRR610900_2.fastq.gz
+
+#read_1_b_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR610/SRR610900/SRR610900_1.fastq.gz
+
+#read_2_b_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR610/SRR610900/SRR610900_2.fastq.gz
 
 trimmomatic_path=~/Downloads/Trimmomatic-0.32
 
-SRA_prefix=SRR097634
+SRA_prefix=SRR610900
 
 path_to_ITS_clipping_file=~/misc_python/THAPBI/ITS_region_genomic_coverage
 
@@ -72,8 +76,18 @@ gunzip *.gz
 wget ${read_1_link}
 wget ${read_2_link}
 
+#mv *_1.fastq.gz > temp_1.fastq.gz
+#mv *_2.fastq.gz > temp_2.fastq.gz
+
+#wget ${read_1_b_link}
+#wget ${read_2_b_link}
+
 # EXAMPLE: Phytophthora_kernoviae.GCA_000333075.1.31.dna.genome.fa.gz => Phytophthora_kernoviae.GCA_000333075.1.31.
 #gunzip ${genome_prefix}*
+#cat *_1.fastq.gz > ${SRA_prefix}_1.fastq.gz
+#cat *_2.fastq.gz > ${SRA_prefix}_2.fastq.gz
+
+#rm temp_*.fastq.gz
 
 
 # blast to get representative ITS regions.
@@ -83,7 +97,7 @@ cmd="makeblastdb -in ${genome_prefix}*.fa -dbtype nucl"
 echo ${cmd}
 eval ${cmd}
 
-cmd2="blastn -query ${path_to_ITS_clipping_file}/Phy_ITSregions_all_20160601.fasta -db ${genome_prefix}*.fna -outfmt 6 -out n.Pi_ITS_vs_${genome_prefix}.out" 
+cmd2="blastn -query ${path_to_ITS_clipping_file}/Phy_ITSregions_all_20160601_nr80.fasta -db ${genome_prefix}*.fa -outfmt 6 -out n.Pi_ITS_vs_${genome_prefix}.out" 
 echo ${cmd2}
 eval ${cmd2}
 
@@ -94,6 +108,10 @@ echo "STEP 3: prepare ITS gff. python
 cmd_python_ITS="python ${path_to_ITS_clipping_file}/generate_ITS_GFF.py --blast n.Pi_ITS_vs_${genome_prefix}.out --prefix ${genome_prefix} -o ${genome_prefix}.ITS.GFF" 
 echo ${cmd_python_ITS}
 eval ${cmd_python_ITS}
+
+cat ${genome_prefix}.ITS.GFF | sort -k1 > temp.out
+mv temp.out ${genome_prefix}.ITS.GFF
+rm temp.out
 
 wait
 #quality trim the reads
@@ -113,7 +131,7 @@ mkdir $TMP
 
 # index genome
 echo "index genome"
-cmd_index="bowtie2-build --quiet -f ${genome_prefix}*.fna bowtie_index_files" 
+cmd_index="bowtie2-build --quiet -f ${genome_prefix}*.fa bowtie_index_files" 
 echo ${cmd_index}
 eval ${cmd_index}
 
