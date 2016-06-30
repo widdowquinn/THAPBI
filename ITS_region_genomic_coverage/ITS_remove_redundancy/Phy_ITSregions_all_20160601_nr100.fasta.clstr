@@ -1,0 +1,707 @@
+>Cluster 0
+0	1194nt, >PD_02814_ITS... *
+>Cluster 1
+0	1194nt, >PD_02804_ITS... *
+>Cluster 2
+0	1194nt, >PD_02813_ITS... *
+>Cluster 3
+0	1193nt, >PD_02819_ITS... *
+>Cluster 4
+0	1193nt, >PD_02817_ITS... *
+>Cluster 5
+0	892nt, >PD_00033_ITS... *
+>Cluster 6
+0	879nt, >PD_01627_ITS... *
+>Cluster 7
+0	831nt, >PD_02161_ITS... at +/100.00%
+1	860nt, >PD_00691_ITS... *
+2	860nt, >PD_00202_ITS... at +/100.00%
+>Cluster 8
+0	802nt, >PD_00994_ITS_2... at +/100.00%
+1	827nt, >PD_00994_ITS... at +/100.00%
+2	802nt, >PD_00767_ITS... at +/100.00%
+3	772nt, >PD_01145_ITS... at +/100.00%
+4	802nt, >PD_00713_ITS... at +/100.00%
+5	826nt, >PD_00982_ITS... at +/100.00%
+6	827nt, >PD_00120_ITS... at +/100.00%
+7	856nt, >PD_00455_ITS... *
+8	824nt, >PD_00778_ITS... at +/100.00%
+9	802nt, >PD_00764_ITS... at +/100.00%
+>Cluster 9
+0	856nt, >PD_00507_ITS... *
+>Cluster 10
+0	856nt, >PD_00509_ITS... *
+>Cluster 11
+0	826nt, >PD_01720_ITS... at +/100.00%
+1	855nt, >PD_00466_ITS... *
+>Cluster 12
+0	855nt, >PD_00506_ITS... *
+>Cluster 13
+0	826nt, >PD_01283_ITS... at +/100.00%
+1	855nt, >PD_00508_ITS... *
+>Cluster 14
+0	850nt, >PD_01138_ITS... *
+>Cluster 15
+0	848nt, >PD_00481_ITS... *
+>Cluster 16
+0	848nt, >PD_00420_ITS... *
+>Cluster 17
+0	726nt, >PD_01906_ITS... at +/100.00%
+1	847nt, >PD_00472_ITS... *
+>Cluster 18
+0	847nt, >PD_00419_ITS... *
+>Cluster 19
+0	847nt, >PD_00421_ITS... *
+>Cluster 20
+0	847nt, >PD_00416_ITS... *
+>Cluster 21
+0	816nt, >PD_01803_ITS... at +/100.00%
+1	845nt, >PD_00456_ITS... *
+>Cluster 22
+0	844nt, >PD_01143_ITS... *
+>Cluster 23
+0	842nt, >PD_00708_ITS... *
+>Cluster 24
+0	813nt, >PD_02428_ITS... at +/100.00%
+1	842nt, >PD_00704_ITS... *
+>Cluster 25
+0	842nt, >PD_00468_ITS... *
+>Cluster 26
+0	842nt, >PD_00467_ITS... *
+>Cluster 27
+0	838nt, >PD_00188_ITS... *
+>Cluster 28
+0	813nt, >PD_00044_ITS... at +/100.00%
+1	837nt, >PD_00788_ITS... *
+>Cluster 29
+0	836nt, >PD_00784_ITS... *
+>Cluster 30
+0	834nt, >PD_00554_ITS... *
+>Cluster 31
+0	833nt, >PD_00589_ITS... *
+>Cluster 32
+0	803nt, >PD_02463_ITS... at +/100.00%
+1	813nt, >PD_00312_ITS... at +/100.00%
+2	833nt, >PD_00450_ITS... *
+>Cluster 33
+0	832nt, >PD_00273_ITS... *
+1	803nt, >PD_01839_ITS... at +/100.00%
+2	832nt, >PD_00581_ITS... at +/100.00%
+>Cluster 34
+0	832nt, >PD_00922_ITS... *
+>Cluster 35
+0	803nt, >PD_00016_ITS... at +/100.00%
+1	813nt, >PD_00322_ITS... at +/100.00%
+2	832nt, >PD_00588_ITS... *
+>Cluster 36
+0	832nt, >PD_00677_ITS... *
+>Cluster 37
+0	832nt, >PD_00403_ITS... *
+>Cluster 38
+0	832nt, >PD_00651_ITS... *
+>Cluster 39
+0	832nt, >PD_00652_ITS... *
+>Cluster 40
+0	802nt, >PD_02084_ITS... at +/100.00%
+1	832nt, >PD_00449_ITS... *
+>Cluster 41
+0	831nt, >PD_00908_ITS... *
+>Cluster 42
+0	831nt, >PD_02163_ITS... *
+>Cluster 43
+0	831nt, >PD_00084_ITS... *
+>Cluster 44
+0	831nt, >PD_00082_ITS... *
+>Cluster 45
+0	831nt, >PD_00914_ITS... *
+>Cluster 46
+0	830nt, >PD_02131_ITS... *
+>Cluster 47
+0	830nt, >PD_02801_ITS... *
+>Cluster 48
+0	830nt, >PD_02697_ITS... *
+>Cluster 49
+0	830nt, >PD_02042_ITS... *
+1	830nt, >PD_02041_ITS... at +/100.00%
+>Cluster 50
+0	828nt, >PD_00527_ITS... *
+>Cluster 51
+0	827nt, >PD_00181_ITS... *
+>Cluster 52
+0	827nt, >PD_01666_ITS... *
+>Cluster 53
+0	827nt, >PD_01659_ITS... *
+>Cluster 54
+0	827nt, >PD_00998_ITS... *
+>Cluster 55
+0	798nt, >PD_01767_ITS... at +/100.00%
+1	827nt, >PD_00242_ITS... *
+2	827nt, >PD_00469_ITS... at +/100.00%
+3	798nt, >PD_01746_ITS... at +/100.00%
+4	827nt, >PD_00239_ITS... at +/100.00%
+>Cluster 56
+0	798nt, >PD_01656_ITS... at +/100.00%
+1	798nt, >PD_01227_ITS... at +/100.00%
+2	827nt, >PD_00476_ITS... *
+>Cluster 57
+0	827nt, >PD_00579_ITS... *
+>Cluster 58
+0	827nt, >PD_00441_ITS... *
+>Cluster 59
+0	827nt, >PD_00597_ITS... *
+1	827nt, >PD_00235_ITS... at +/100.00%
+>Cluster 60
+0	808nt, >PD_00319_ITS... at +/100.00%
+1	798nt, >PD_00086_ITS... at +/100.00%
+2	827nt, >PD_00633_ITS... *
+>Cluster 61
+0	827nt, >PD_00453_ITS... *
+>Cluster 62
+0	827nt, >PD_00519_ITS... *
+>Cluster 63
+0	827nt, >PD_02092_ITS... *
+>Cluster 64
+0	826nt, >PD_01665_ITS... *
+>Cluster 65
+0	826nt, >PD_02158_ITS... *
+>Cluster 66
+0	826nt, >PD_02006_ITS... *
+>Cluster 67
+0	797nt, >PD_01763_ITS... at +/100.00%
+1	826nt, >PD_00511_ITS... *
+2	797nt, >PD_02252_ITS... at +/100.00%
+>Cluster 68
+0	826nt, >PD_00659_ITS_2... *
+>Cluster 69
+0	826nt, >PD_00697_ITS... *
+>Cluster 70
+0	826nt, >PD_00498_ITS... *
+>Cluster 71
+0	826nt, >PD_00114_ITS... *
+>Cluster 72
+0	826nt, >PD_01119_ITS... *
+>Cluster 73
+0	826nt, >PD_01297_ITS... *
+>Cluster 74
+0	825nt, >PD_02156_ITS... *
+>Cluster 75
+0	825nt, >PD_00661_ITS... *
+>Cluster 76
+0	824nt, >PD_02830_ITS... *
+>Cluster 77
+0	794nt, >PD_00059_ITS... at +/100.00%
+1	823nt, >PD_00705_ITS... *
+>Cluster 78
+0	822nt, >PD_02743_ITS... *
+>Cluster 79
+0	792nt, >PD_00950_ITS... at +/100.00%
+1	802nt, >PD_00281_ITS... at +/100.00%
+2	821nt, >PD_00410_ITS... *
+3	802nt, >PD_00292_ITS... at +/100.00%
+>Cluster 80
+0	802nt, >PD_00347_ITS... at +/100.00%
+1	821nt, >PD_00425_ITS... *
+>Cluster 81
+0	821nt, >PD_00656_ITS... *
+>Cluster 82
+0	792nt, >PD_02154_ITS... at +/100.00%
+1	821nt, >PD_00512_ITS... *
+>Cluster 83
+0	792nt, >PD_02150_ITS... at +/100.00%
+1	802nt, >PD_00301_ITS... at +/100.00%
+2	821nt, >PD_00565_ITS... *
+3	802nt, >PD_00371_ITS... at +/100.00%
+>Cluster 84
+0	820nt, >PD_02827_ITS... *
+>Cluster 85
+0	820nt, >PD_01849_ITS... *
+>Cluster 86
+0	820nt, >PD_02714_ITS... *
+>Cluster 87
+0	820nt, >PD_02711_ITS... *
+>Cluster 88
+0	820nt, >PD_02715_ITS... *
+>Cluster 89
+0	820nt, >PD_02720_ITS... *
+>Cluster 90
+0	819nt, >PD_02751_ITS... *
+>Cluster 91
+0	819nt, >PD_02806_ITS... *
+>Cluster 92
+0	819nt, >PD_02833_ITS... *
+>Cluster 93
+0	819nt, >PD_00783_ITS... *
+>Cluster 94
+0	819nt, >PD_01776_ITS... *
+>Cluster 95
+0	819nt, >PD_02717_ITS... *
+>Cluster 96
+0	819nt, >PD_01777_ITS... *
+>Cluster 97
+0	818nt, >PD_01281_ITS... *
+1	818nt, >PD_02431_ITS... at +/100.00%
+>Cluster 98
+0	818nt, >PD_00094_ITS... *
+>Cluster 99
+0	818nt, >PD_02276_ITS... *
+>Cluster 100
+0	818nt, >PD_00040_ITS... *
+>Cluster 101
+0	818nt, >PD_02745_ITS... *
+>Cluster 102
+0	817nt, >PD_01296_ITS... *
+>Cluster 103
+0	817nt, >PD_01628_ITS... *
+>Cluster 104
+0	817nt, >PD_02831_ITS... *
+>Cluster 105
+0	816nt, >PD_02803_ITS... *
+1	816nt, >PD_02832_ITS... at +/100.00%
+>Cluster 106
+0	816nt, >PD_02776_ITS... *
+>Cluster 107
+0	816nt, >PD_00018_ITS... *
+>Cluster 108
+0	816nt, >PD_01804_ITS... *
+>Cluster 109
+0	816nt, >PD_02732_ITS... *
+>Cluster 110
+0	816nt, >PD_02734_ITS... *
+>Cluster 111
+0	815nt, >PD_02035_ITS... *
+>Cluster 112
+0	815nt, >PD_01783_ITS... *
+>Cluster 113
+0	815nt, >PD_00145_ITS... *
+>Cluster 114
+0	786nt, >PD_00022_ITS... at +/100.00%
+1	815nt, >PD_00491_ITS... *
+>Cluster 115
+0	815nt, >PD_01107_ITS... *
+>Cluster 116
+0	814nt, >PD_01136_ITS... *
+1	761nt, >PD_02185_ITS... at +/100.00%
+>Cluster 117
+0	814nt, >PD_00105_ITS... *
+>Cluster 118
+0	814nt, >PD_02076_ITS... *
+>Cluster 119
+0	814nt, >PD_00123_ITS... *
+>Cluster 120
+0	813nt, >PD_00164_ITS... *
+>Cluster 121
+0	813nt, >PD_00489_ITS... *
+>Cluster 122
+0	813nt, >PD_00023_ITS... *
+>Cluster 123
+0	813nt, >PD_00021_ITS... *
+>Cluster 124
+0	813nt, >PD_02432_ITS... *
+>Cluster 125
+0	813nt, >PD_00296_ITS... *
+>Cluster 126
+0	813nt, >PD_00124_ITS... *
+>Cluster 127
+0	813nt, >PD_01124_ITS... *
+>Cluster 128
+0	783nt, >PD_01705_ITS... at +/100.00%
+1	706nt, >PD_01909_ITS... at +/100.00%
+2	783nt, >PD_00024_ITS... at +/100.00%
+3	793nt, >PD_00300_ITS... at +/100.00%
+4	812nt, >PD_00550_ITS... *
+>Cluster 129
+0	812nt, >PD_00785_ITS... *
+>Cluster 130
+0	812nt, >PD_02100_ITS... *
+>Cluster 131
+0	812nt, >PD_00012_ITS... *
+>Cluster 132
+0	811nt, >PD_00050_ITS... *
+>Cluster 133
+0	792nt, >PD_00314_ITS... at +/100.00%
+1	811nt, >PD_00591_ITS... *
+>Cluster 134
+0	811nt, >PD_02809_ITS... *
+>Cluster 135
+0	811nt, >PD_01114_ITS... *
+>Cluster 136
+0	811nt, >PD_02741_ITS... *
+>Cluster 137
+0	761nt, >PD_02180_ITS... at +/100.00%
+1	761nt, >PD_01634_ITS... at +/100.00%
+2	811nt, >PD_01132_ITS... *
+3	761nt, >PD_00395_ITS... at +/100.00%
+>Cluster 138
+0	810nt, >PD_00109_ITS... *
+>Cluster 139
+0	781nt, >PD_01704_ITS... at +/100.00%
+1	810nt, >PD_00448_ITS... *
+2	810nt, >PD_00270_ITS... at +/100.00%
+3	810nt, >PD_00231_ITS... at +/100.00%
+>Cluster 140
+0	809nt, >PD_02810_ITS... *
+>Cluster 141
+0	807nt, >PD_01648_ITS... *
+>Cluster 142
+0	807nt, >PD_02759_ITS... *
+>Cluster 143
+0	807nt, >PD_02807_ITS... *
+1	807nt, >PD_02068_ITS... at +/100.00%
+>Cluster 144
+0	806nt, >PD_00004_ITS... *
+>Cluster 145
+0	806nt, >PD_01670_ITS... *
+>Cluster 146
+0	806nt, >PD_02506_ITS... *
+1	806nt, >PD_00025_ITS... at +/100.00%
+>Cluster 147
+0	806nt, >PD_02508_ITS... *
+>Cluster 148
+0	805nt, >PD_02104_ITS... *
+>Cluster 149
+0	805nt, >PD_02507_ITS... *
+>Cluster 150
+0	805nt, >PD_00076_ITS... *
+>Cluster 151
+0	804nt, >PD_01657_ITS... *
+>Cluster 152
+0	804nt, >PD_00035_ITS... *
+>Cluster 153
+0	804nt, >PD_01865_ITS... *
+>Cluster 154
+0	804nt, >PD_02824_ITS... *
+>Cluster 155
+0	803nt, >PD_00524_ITS... *
+>Cluster 156
+0	803nt, >PD_00001_ITS... *
+>Cluster 157
+0	802nt, >PD_00718_ITS... *
+>Cluster 158
+0	792nt, >PD_02282_ITS... at +/100.00%
+1	802nt, >PD_00280_ITS... *
+>Cluster 159
+0	800nt, >PD_00186_ITS... *
+>Cluster 160
+0	800nt, >PD_00162_ITS... *
+1	799nt, >PD_00401_ITS... at +/100.00%
+>Cluster 161
+0	800nt, >PD_00112_ITS... *
+>Cluster 162
+0	800nt, >PD_00111_ITS... *
+>Cluster 163
+0	800nt, >PD_01856_ITS... *
+>Cluster 164
+0	799nt, >PD_00110_ITS... *
+>Cluster 165
+0	799nt, >PD_01797_ITS... *
+>Cluster 166
+0	799nt, >PD_00156_ITS... *
+1	798nt, >PD_01249_ITS... at +/100.00%
+>Cluster 167
+0	799nt, >PD_01270_ITS... *
+>Cluster 168
+0	799nt, >PD_00048_ITS... *
+>Cluster 169
+0	798nt, >PD_01770_ITS... *
+1	798nt, >PD_01722_ITS... at +/100.00%
+>Cluster 170
+0	798nt, >PD_01764_ITS... *
+>Cluster 171
+0	798nt, >PD_01725_ITS... *
+>Cluster 172
+0	798nt, >PD_00128_ITS... *
+>Cluster 173
+0	798nt, >PD_01829_ITS... *
+>Cluster 174
+0	798nt, >PD_00064_ITS... *
+>Cluster 175
+0	798nt, >PD_00065_ITS... *
+>Cluster 176
+0	798nt, >PD_00119_ITS... *
+>Cluster 177
+0	798nt, >PD_01115_ITS... *
+>Cluster 178
+0	797nt, >PD_00031_ITS... *
+>Cluster 179
+0	797nt, >PD_00036_ITS... *
+>Cluster 180
+0	797nt, >PD_00010_ITS... *
+>Cluster 181
+0	797nt, >PD_01821_ITS... *
+>Cluster 182
+0	796nt, >PD_01654_ITS... *
+1	795nt, >PD_01011_ITS... at +/100.00%
+2	795nt, >PD_00795_ITS... at +/100.00%
+3	795nt, >PD_00102_ITS... at +/100.00%
+>Cluster 183
+0	796nt, >PD_01758_ITS... *
+>Cluster 184
+0	796nt, >PD_00014_ITS... *
+>Cluster 185
+0	796nt, >PD_00799_ITS... *
+>Cluster 186
+0	796nt, >PD_00804_ITS... *
+>Cluster 187
+0	796nt, >PD_00850_ITS... *
+>Cluster 188
+0	796nt, >PD_00080_ITS... *
+>Cluster 189
+0	796nt, >PD_02400_ITS... *
+>Cluster 190
+0	796nt, >PD_02412_ITS... *
+>Cluster 191
+0	795nt, >PD_01013_ITS... *
+1	795nt, >PD_02365_ITS... at +/100.00%
+2	795nt, >PD_00069_ITS... at +/100.00%
+>Cluster 192
+0	795nt, >PD_00793_ITS... *
+>Cluster 193
+0	794nt, >PD_00907_ITS... at +/100.00%
+1	795nt, >PD_00808_ITS... *
+>Cluster 194
+0	795nt, >PD_00822_ITS... *
+>Cluster 195
+0	795nt, >PD_00842_ITS... *
+>Cluster 196
+0	795nt, >PD_00870_ITS... *
+>Cluster 197
+0	795nt, >PD_00078_ITS... *
+>Cluster 198
+0	795nt, >PD_00015_ITS... *
+>Cluster 199
+0	795nt, >PD_00122_ITS... *
+>Cluster 200
+0	793nt, >PD_00126_ITS... at +/100.00%
+1	795nt, >PD_00172_ITS... *
+>Cluster 201
+0	794nt, >PD_02826_ITS... *
+>Cluster 202
+0	794nt, >PD_00030_ITS... *
+>Cluster 203
+0	794nt, >PD_00806_ITS... *
+>Cluster 204
+0	794nt, >PD_00823_ITS... *
+>Cluster 205
+0	794nt, >PD_00826_ITS... *
+>Cluster 206
+0	794nt, >PD_00897_ITS... *
+>Cluster 207
+0	794nt, >PD_01095_ITS... *
+>Cluster 208
+0	794nt, >PD_01831_ITS... *
+>Cluster 209
+0	794nt, >PD_00067_ITS... *
+>Cluster 210
+0	793nt, >PD_00932_ITS... *
+>Cluster 211
+0	793nt, >PD_00370_ITS... *
+>Cluster 212
+0	793nt, >PD_00179_ITS... *
+>Cluster 213
+0	792nt, >PD_00936_ITS... *
+>Cluster 214
+0	792nt, >PD_00959_ITS... *
+>Cluster 215
+0	792nt, >PD_00338_ITS... *
+>Cluster 216
+0	792nt, >PD_00177_ITS... *
+>Cluster 217
+0	792nt, >PD_00029_ITS... *
+>Cluster 218
+0	791nt, >PD_00173_ITS... *
+>Cluster 219
+0	791nt, >PD_00151_ITS... *
+>Cluster 220
+0	791nt, >PD_00146_ITS... *
+>Cluster 221
+0	790nt, >PD_02805_ITS... *
+>Cluster 222
+0	790nt, >PD_00615_ITS... *
+>Cluster 223
+0	761nt, >PD_02181_ITS... at +/100.00%
+1	771nt, >PD_00287_ITS... at +/100.00%
+2	790nt, >PD_00567_ITS... *
+3	771nt, >PD_00272_ITS... at +/100.00%
+>Cluster 224
+0	790nt, >PD_00553_ITS... *
+>Cluster 225
+0	771nt, >PD_00303_ITS... at +/100.00%
+1	771nt, >PD_00284_ITS... at +/100.00%
+2	790nt, >PD_00446_ITS... *
+>Cluster 226
+0	771nt, >PD_00283_ITS... at +/100.00%
+1	790nt, >PD_00531_ITS... *
+>Cluster 227
+0	790nt, >PD_00039_ITS... *
+>Cluster 228
+0	789nt, >PD_00134_ITS... *
+>Cluster 229
+0	789nt, >PD_02053_ITS... *
+>Cluster 230
+0	787nt, >PD_00081_ITS... at +/100.00%
+1	789nt, >PD_00099_ITS... *
+>Cluster 231
+0	789nt, >PD_00530_ITS... *
+>Cluster 232
+0	789nt, >PD_00093_ITS... *
+>Cluster 233
+0	788nt, >PD_02825_ITS... *
+>Cluster 234
+0	788nt, >PD_00166_ITS... *
+>Cluster 235
+0	788nt, >PD_00133_ITS... *
+>Cluster 236
+0	769nt, >PD_00380_ITS... at +/100.00%
+1	788nt, >PD_00637_ITS... *
+>Cluster 237
+0	788nt, >PD_02105_ITS... *
+>Cluster 238
+0	786nt, >PD_02802_ITS... *
+>Cluster 239
+0	786nt, >PD_02681_ITS... *
+>Cluster 240
+0	786nt, >PD_00075_ITS... *
+>Cluster 241
+0	784nt, >PD_01678_ITS... *
+>Cluster 242
+0	784nt, >PD_02700_ITS... *
+>Cluster 243
+0	783nt, >PD_00147_ITS... *
+>Cluster 244
+0	781nt, >PD_00144_ITS... *
+>Cluster 245
+0	781nt, >PD_02141_ITS... *
+>Cluster 246
+0	781nt, >PD_02140_ITS... *
+1	781nt, >PD_01695_ITS... at +/100.00%
+>Cluster 247
+0	752nt, >PD_00009_ITS... at +/100.00%
+1	781nt, >PD_00674_ITS... *
+2	752nt, >PD_00061_ITS... at +/100.00%
+>Cluster 248
+0	781nt, >PD_00442_ITS... *
+>Cluster 249
+0	781nt, >PD_00443_ITS... *
+>Cluster 250
+0	781nt, >PD_00445_ITS... *
+>Cluster 251
+0	735nt, >PD_00710_ITS... at +/100.00%
+1	752nt, >PD_00187_ITS... at +/100.00%
+2	781nt, >PD_00693_ITS... *
+>Cluster 252
+0	781nt, >PD_00694_ITS... *
+>Cluster 253
+0	781nt, >PD_00695_ITS... *
+>Cluster 254
+0	781nt, >PD_00444_ITS... *
+>Cluster 255
+0	752nt, >PD_00392_ITS... at +/100.00%
+1	781nt, >PD_00540_ITS... *
+>Cluster 256
+0	781nt, >PD_00471_ITS... *
+>Cluster 257
+0	781nt, >PD_00539_ITS... *
+>Cluster 258
+0	750nt, >PD_01861_ITS... at +/100.00%
+1	781nt, >PD_00628_ITS... *
+>Cluster 259
+0	781nt, >PD_00675_ITS... *
+>Cluster 260
+0	781nt, >PD_00520_ITS... *
+>Cluster 261
+0	780nt, >PD_02808_ITS... *
+>Cluster 262
+0	780nt, >PD_00135_ITS... *
+>Cluster 263
+0	779nt, >PD_00139_ITS... *
+>Cluster 264
+0	779nt, >PD_00176_ITS... *
+>Cluster 265
+0	779nt, >PD_02214_ITS... *
+>Cluster 266
+0	779nt, >PD_00495_ITS... *
+>Cluster 267
+0	779nt, >PD_02422_ITS... *
+>Cluster 268
+0	778nt, >PD_00041_ITS... *
+>Cluster 269
+0	777nt, >PD_02209_ITS... *
+>Cluster 270
+0	776nt, >PD_00969_ITS... *
+>Cluster 271
+0	775nt, >PD_00971_ITS... *
+>Cluster 272
+0	775nt, >PD_00972_ITS... *
+>Cluster 273
+0	775nt, >PD_01852_ITS... *
+>Cluster 274
+0	771nt, >PD_00344_ITS... *
+1	771nt, >PD_00373_ITS... at +/100.00%
+>Cluster 275
+0	770nt, >PD_00233_ITS... *
+1	770nt, >PD_00232_ITS... at +/100.00%
+>Cluster 276
+0	769nt, >PD_01832_ITS... *
+>Cluster 277
+0	768nt, >PD_01122_ITS... *
+>Cluster 278
+0	762nt, >PD_00317_ITS... *
+>Cluster 279
+0	761nt, >PD_02187_ITS... *
+>Cluster 280
+0	761nt, >PD_02196_ITS... *
+1	761nt, >PD_02811_ITS... at +/100.00%
+>Cluster 281
+0	761nt, >PD_00096_ITS... *
+>Cluster 282
+0	760nt, >PD_01862_ITS... *
+1	760nt, >PD_00019_ITS... at +/100.00%
+>Cluster 283
+0	760nt, >PD_02710_ITS... *
+>Cluster 284
+0	753nt, >PD_00028_ITS... *
+>Cluster 285
+0	702nt, >PD_02698_ITS... at +/100.00%
+1	753nt, >PD_02453_ITS... *
+>Cluster 286
+0	753nt, >PD_00095_ITS... *
+>Cluster 287
+0	752nt, >PD_01931_ITS... *
+1	752nt, >PD_01963_ITS... at +/100.00%
+>Cluster 288
+0	752nt, >PD_01676_ITS... *
+>Cluster 289
+0	752nt, >PD_00011_ITS... *
+1	752nt, >PD_01945_ITS... at +/100.00%
+>Cluster 290
+0	752nt, >PD_01975_ITS... *
+1	752nt, >PD_01935_ITS... at +/100.00%
+>Cluster 291
+0	752nt, >PD_01112_ITS... *
+>Cluster 292
+0	752nt, >PD_02096_ITS... *
+>Cluster 293
+0	750nt, >PD_01636_ITS... at +/100.00%
+1	752nt, >PD_02516_ITS... *
+>Cluster 294
+0	752nt, >PD_01272_ITS... *
+>Cluster 295
+0	752nt, >PD_00152_ITS... *
+>Cluster 296
+0	750nt, >PD_01677_ITS... *
+>Cluster 297
+0	748nt, >PD_01117_ITS... *
+>Cluster 298
+0	747nt, >PD_02778_ITS... *
+>Cluster 299
+0	746nt, >PD_00712_ITS... *
+>Cluster 300
+0	745nt, >PD_02777_ITS... *
+>Cluster 301
+0	745nt, >PD_01300_ITS... *
+>Cluster 302
+0	726nt, >PD_01642_ITS... *
+>Cluster 303
+0	722nt, >PD_01647_ITS... *
+>Cluster 304
+0	579nt, >PD_01682_ITS... *

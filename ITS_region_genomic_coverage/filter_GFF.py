@@ -67,10 +67,10 @@ def write_out_ITS_GFF(gff, out): # this is a long function
         #populate the dictionaly
         blast_hit_to_info_dict[hit_number] = i
 
-        print "------------------"
-        print "scaf", scaf, "last_scaffold", last_scaffold
-        print "current :", i
-        print "start :", start, "stop", stop
+        #print "------------------"
+        #print "scaf", scaf, "last_scaffold", last_scaffold
+        #print "current :", i
+        #print "start :", start, "stop", stop
         
         # this is the first iteration. Populate the variables. 
         if last_scaffold == "tmp":
@@ -88,7 +88,7 @@ def write_out_ITS_GFF(gff, out): # this is a long function
                     cat ${genome_prefix}.ITS.GFF | sort -k1,1 -k4,4 -k5,5
                     > sorted.gff""")
 
-            print "best_start ;", best_start, "best_stop", best_stop, "\n"
+            #print "best_start ;", best_start, "best_stop", best_stop, "\n"
 
             same_hit = False
             # same scaffold. Is the hit in the same region.
@@ -99,11 +99,11 @@ def write_out_ITS_GFF(gff, out): # this is a long function
                 # or does it extend the current merged hit?
                 if int(stop) <= best_stop:
                     # Falls within the current merged hit, boring
-                    print ("i am ignoring: %s" %(hit_number))
+                    #print ("i am ignoring: %s" %(hit_number))
                     del blast_hit_to_info_dict[hit_number]
                     # leave merged_blast_hits as it is.
                 else:
-                    print("Extends the current merged hit which was %i %i" % (best_start, best_stop))
+                    #print("Extends the current merged hit which was %i %i" % (best_start, best_stop))
                     #print "stop" , stop, "best_stop", best_stop
                     #update the stop value
                     best_stop = int(stop)
@@ -122,13 +122,13 @@ def write_out_ITS_GFF(gff, out): # this is a long function
                     
                     #update this blast enery in the 
                     blast_hit_to_info_dict[last_hit_number] = updated_values
-                    print("Merged hit now %i %i" % (best_start, best_stop))
+                    #print("Merged hit now %i %i" % (best_start, best_stop))
                     # Replace last value with extended hit
                     merged_blast_hits[-1] = updated_values
             else:
                 # This does not overlap, it is the first hit in a new
                 # merged hit.
-                print("This is a new region (did not overlap with %i %i)" % (best_start, best_stop))
+                #print("This is a new region (did not overlap with %i %i)" % (best_start, best_stop))
                 best_stop = int(stop)
                 best_start = int(start)
                 merged_blast_hits.append(i)
@@ -145,9 +145,11 @@ def write_out_ITS_GFF(gff, out): # this is a long function
     print_list = []        
     for key, val in blast_hit_to_info_dict.items():
         print_list.append(val)
-    print "\n\nResults:"
-    for i in merged_blast_hits:
-        print i
+    #print "\n\nResults:"
+    for concensus_hit in merged_blast_hits:
+        GFF_out.write(concensus_hit+"\n")
+        
+        
         
             
                     

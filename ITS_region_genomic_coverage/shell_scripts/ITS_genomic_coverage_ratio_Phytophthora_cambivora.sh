@@ -83,7 +83,7 @@ cmd="makeblastdb -in ${genome_prefix}*.fa -dbtype nucl"
 echo ${cmd}
 eval ${cmd}
 
-cmd2="blastn -query ${path_to_ITS_clipping_file}/Phy_ITSregions_all_20160601_nr80.fasta -db ${genome_prefix}*.fa -outfmt 6 -out n.Pi_ITS_vs_${genome_prefix}.out" 
+cmd2="blastn -query ${path_to_ITS_clipping_file}/Phy_ITSregions_all_20160601.fasta -db ${genome_prefix}*.fa -outfmt 6 -out n.Pi_ITS_vs_${genome_prefix}.out" 
 echo ${cmd2}
 eval ${cmd2}
 
@@ -95,8 +95,14 @@ cmd_python_ITS="python ${path_to_ITS_clipping_file}/generate_ITS_GFF.py --blast 
 echo ${cmd_python_ITS}
 eval ${cmd_python_ITS}
 
-cat ${genome_prefix}.ITS.GFF | sort -k1 > temp.out
+cat ${genome_prefix}.ITS.GFF | uniq | sort -k1,1 -k4,4 -k5,5 > temp.out
 mv temp.out ${genome_prefix}.ITS.GFF
+
+# genearate consensus blast hit ITS GFF file from the sorted file above.
+wait
+cmd_python_ITS_consensus="python ${path_to_ITS_clipping_file}/filter_GFF.py --gff ${genome_prefix}.ITS.GFF -o ${genome_prefix}.ITS.consensus.GFF"
+echo ${cmd_python_ITS_consensus}
+eval ${cmd_python_ITS_consensus}
 
 
 wait
@@ -152,8 +158,13 @@ rmdir $TMP
 
 # get only the genes, not bothered about other stuff ...
 echo "prepare GFF for genes only"
-cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
-echo cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
+cmd_python_gene_to_gff=" python ${path_to_ITS_clipping_file}/THAPBI/ITS_region_genomic_coverage/get_genes_from_GFF.py --gff ${genome_prefix}*gff3 -o ${genome_prefix}.gene.gff"
+echo ${cmd_python_gene_to_gff}
+eval ${cmd_python_gene_to_gff}
+ 
+#old commands - doesnt always work 
+#cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
+#echo cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
 
 # use bedtools to get the number of reads that map to specific regions
 
@@ -163,7 +174,7 @@ cmd_count="bedtools multicov -bams ${genome_prefix}.bam -bed ${genome_prefix}.ge
 echo ${cmd_count}
 eval ${cmd_count}
 
-cmd_ITS_count="bedtools multicov -bams ${genome_prefix}.bam -bed ${genome_prefix}.ITS.GFF > ${genome_prefix}_genomic.ITS.cov"
+cmd_ITS_count="bedtools multicov -bams ${genome_prefix}.bam -bed ${genome_prefix}.ITS.consensus.GFF > ${genome_prefix}_genomic.ITS.cov"
 echo ${cmd_ITS_count}
 eval ${cmd_ITS_count}
 
@@ -180,8 +191,8 @@ cat  ${genome_prefix}_genomic.ITS.cov | cut -f10 >  ${genome_prefix}_genomic.ITS
 echo cat  ${genome_prefix}_genomic.ITS.cov | cut -f10 >  ${genome_prefix}_genomic.ITS.cov.values
 
 # get stats summary of coverages
-python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats.out
-echo python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats.out
+python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats.out
+echo python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats.out
 
 
 

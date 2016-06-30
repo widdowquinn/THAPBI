@@ -4,7 +4,7 @@
 #$ -l hostname="n13*"
 # Deliver notifications to the following address
 # Send notifications when the job begins (b), ends (e), or is aborted (a)
-#$ -m a e -M peter.thorpe@hutton.ac.uk
+
 #Abort on any error,
 set -e
 #(and thus quit the script right away)
