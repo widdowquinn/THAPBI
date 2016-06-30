@@ -7,7 +7,7 @@
 #dollar -M email.address@somewhere .... currently doesnt work
 #dollar -m a 
 #Abort on any error,
-set -euo pipefail
+#set -euo pipefail
 #(and thus quit the script right away)
 
 echo Running on $HOSTNAME
@@ -22,7 +22,7 @@ export TMP=~/scratch/${USER}_${JOB_ID}
 
 species=Phytophthora_ramorum
 
-genome_prefix=Phytophthora_ramorum.ASM14973v1.31
+genome_prefix=GCA_000443045.1_PhytoCambi_1.0
 
 genome_fasta=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/fasta/phytophthora_ramorum/dna/Phytophthora_ramorum.ASM14973v1.31.dna.genome.fa.gz
 
@@ -114,6 +114,28 @@ mv temp.out ${genome_prefix}.ITS.GFF
 rm temp.out
 
 
+ #for for eukaryotes - BUSCO
+ mkdir LINEAGE 
+ln -s /home/pt40963/scratch/Downloads/BUSCO_v1.1b1/eukaryota ./LINEAGE/
+
+cmd_python_BUSCO="python3 ${HOME}/scratch/Downloads/BUSCO_v1.1b1/BUSCO_v1.1b1.py -in ${genome_prefix}*.fa -l ./LINEAGE/eukaryota -o busco -m genome -f -Z 827000000 --long --cpu ${num_threads}"
+echo ${cmd_python_BUSCO}
+eval ${cmd_python_BUSCO}
+
+ 
+# prepare a busco gff
+cd run_BUSCO
+cd gffs
+cat * ../../${genome_prefix}_BUSCO_GENES.gff 
+cd ..
+cd ..
+
+# get only the genes, not bothered about other stuff ...
+echo "prepare GFF for genes only"
+cmd_python_gene_to_gff=" python ${path_to_ITS_clipping_file}/ITS_region_genomic_coverage/get_genes_from_GFF.py --gff ${genome_prefix}_BUSCO_GENES.gff -o ${genome_prefix}_BUSCO_GENES.gene.gff"
+echo ${cmd_python_gene_to_gff}
+eval ${cmd_python_gene_to_gff} 
+
 # genearate consensus blast hit ITS GFF file from the sorted file above.
 wait
 cmd_python_ITS_consensus="python ${path_to_ITS_clipping_file}/filter_GFF.py --gff ${genome_prefix}.ITS.GFF -o ${genome_prefix}.ITS.consensus.GFF"
@@ -187,6 +209,12 @@ eval ${cmd_python_gene_to_gff}
 
 echo "bedtools count"
 # for nomralisation use ? bedtools genomecov [OPTIONS] [-i|-ibam] -g (iff. -i)
+
+cmd_Busco_count="bedtools multicov -bams ${genome_prefix}.bam -bed ${genome_prefix}_BUSCO_GENES.gene.gff > ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov"
+echo ${cmd_Busco_count}
+eval ${cmd_Busco_count}
+
+
 cmd_count="bedtools multicov -bams ${genome_prefix}.bam -bed ${genome_prefix}.gene.gff > ${genome_prefix}_genomic.genes.cov"
 echo ${cmd_count}
 eval ${cmd_count}
@@ -204,12 +232,19 @@ echo counting done
 cat ${genome_prefix}_genomic.genes.cov | grep -v "RNA" | cut -f10 > ${genome_prefix}_genomic.genes.cov.values
 echo cat ${genome_prefix}_genomic.genes.cov | grep -v "RNA" | cut -f10 > ${genome_prefix}_genomic.genes.cov.values
 
+# for the ITS genes regions
 cat  ${genome_prefix}_genomic.ITS.cov | cut -f10 >  ${genome_prefix}_genomic.ITS.cov.values
 echo cat  ${genome_prefix}_genomic.ITS.cov | cut -f10 >  ${genome_prefix}_genomic.ITS.cov.values
 
+#for the busco genes
+cat  ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov | cut -f10 >  ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values
+echo cat  ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov | cut -f10 >  ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values
+
 # get stats summary of coverages
-python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats.out
-echo python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats.out
+python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats_all_genes_versus_ITS.out
+echo python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats_all_genes_versus_ITS.out
 
-
+# get stats summary of coverages with BUSCO genes
+python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values -o ${genome_prefix}_stats_BUSCO_versus_ITS.out
+echo python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values -o ${genome_prefix}_stats_BUSCO_versus_ITS.out
 
