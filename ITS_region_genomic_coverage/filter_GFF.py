@@ -16,7 +16,7 @@ from optparse import OptionParser
 ###########################################################################
 
 def parse_tab_outfile(blast):
-    """read in the blast tab file. Reads whole file into memeroy.
+    """read in the blast tab file. Reads whole file into memory.
     returns a list, one list item per blast hit.
     """
     with open(blast) as file:
@@ -37,8 +37,8 @@ def write_out_ITS_GFF(gff, out): # this is a long function
     #this is out list of so called top/ longest matches which we will
     #append/remove as applicable
     blast_hit_to_info_dict = dict()
-    current_stop = 0
-    current_start = 0
+    best_stop = 0
+    best_start = 0
     last_scaffold = "tmp"
     last_gff_line = "tmp"
     last_hit_number = ""
@@ -52,6 +52,7 @@ def write_out_ITS_GFF(gff, out): # this is a long function
     
     ############################################################################
     for i in blast_hits:
+        #print "best_start, best_stop", best_start, best_stop
         if i.startswith("#"): #allows line to have comment.
             continue
         if not i.strip():
@@ -67,67 +68,82 @@ def write_out_ITS_GFF(gff, out): # this is a long function
         
         # this is the first iteration. Populate the variables. 
         if last_scaffold == "tmp":
-            current_stop = int(stop)
-            current_start = int(start)
+            best_stop = int(stop)
+            best_start = int(start)
             last_scaffold = scaf
             last_gff_line = i
             last_hit_number = hit_number
             continue
         
         #lower and upper threshold for ranges. 
-        lower_range_start = current_start - 50
-        uppper_range_start = (current_stop - current_start) - 30
+        lower_range_start = best_start - 50
+        uppper_range_start = (best_stop - best_start) - 30
         
-        upper_range_stop = current_stop + 50
-        lower_range_stop = current_stop - current_start
+        upper_range_stop = best_stop + 50
+        lower_range_stop = best_stop - best_start
         
         if scaf == last_scaffold:
+            print "scaf", scaf, "last_scaffold", last_scaffold
+            same_hit = False
             # same scaffold. Is the hit in the same region.
             #this means it could the same blast hit region
             if int(start) in range(lower_range_start, uppper_range_start):
-                assert int(start) < current_start, ("""your
+                same_hit = True
+                print "current :", i
+                print "last time :", last_gff_line
+                print "start :", start, "best_start ;", best_start, "\n\n"
+                assert int(start) > int(best_start), ("""your
                     gff file has not been sorted by linux sort
                     please run this command
                     cat ${genome_prefix}.ITS.GFF | sort -k1,1 -k4,4 -k5,5
                     > sorted.gff""")
             #making sure it is the same blast hit region
-            print "stop = ", stop
-            if stop in range(lower_range_stop, upper_range_stop):
+            if int(stop) in range(lower_range_stop, upper_range_stop):
+                same_hit = True
+
                 # is the current stop greater or equal to the last?
-                if int(stop) >= current_stop:
-                    print "yes to stop"
+                if int(stop) >= best_stop:
+                    #print "stop" , stop, "best_stop", best_stop
                     #update the stop value
-                    current_stop = stop
+                    best_stop = stop
                     #remove this current dictionary entry
                     print ("iam removing: %s" %(hit_number))
+                    same_hit = False # just to avoid removing again later
                     del blast_hit_to_info_dict[hit_number]
 
                     # get the old values again!
                     scaf, genome, hit_number, start, stop, dot, direction, \
-                          dot2, description = split_gff_line(last_gff_line)
+                          dot2, description = split_gff_line(i)
                     #use this old vlaues with the new end coordinate
-                    updated_values = "%s\t%s\t%s\t%d\t%d\t%s\t%s\t%s\t%s" %(scaf,\
+                    updated_values = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" %(scaf,\
                                      genome, hit_number, \
-                                     start, current_stop, \
+                                     start, best_stop, \
                                      dot, direction, dot2, description)
                     
                     last_gff_line = updated_values
                     #update this blast enery in the 
                     blast_hit_to_info_dict[last_hit_number] = updated_values
-             # fill the variable at end of loop       
-            current_stop = int(current_stop)
-            current_start = int(current_start)
+            if same_hit:
+                print ("iam removing: %s" %(hit_number))
+                del blast_hit_to_info_dict[hit_number]
+                
+             # fill the variable at end of loop
+            if not same_hit:
+                best_stop = int(stop)
+                best_start = int(start)
             last_scaffold = scaf
             last_gff_line = i
         else:
-            current_stop = int(stop)
-            current_start = int(start)
+            best_stop = int(stop)
+            best_start = int(start)
             last_scaffold = scaf
             last_gff_line = i
             last_hit_number = hit_number
-            
+    print_list = []        
     for key, val in blast_hit_to_info_dict.items():
-        print key, val
+        print_list.append(val)
+    for i in sorted(print_list):
+        print i
         
             
                     
