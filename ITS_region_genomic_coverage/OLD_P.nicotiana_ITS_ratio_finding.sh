@@ -17,8 +17,8 @@ echo Current PATH is $PATH
 
 #which blastx
 
-cd /home/pt40963/scratch/tree_health/nicotianae
-export TMP=/home/pt40963/scratch/${USER}_${JOB_ID}
+cd ${HOME}/scratch/tree_health/nicotianae
+export TMP=${HOME}/scratch/${USER}_${JOB_ID}
 #prepare the data
 # grep for gene field in the gff
 #mv GCA_001482985.1_ASM148298v1_genomic.gff p.nicotiana_genome.gff
@@ -40,7 +40,7 @@ python ~/misc_python/THAPBI/ITS_region_genomic_coverage/generate_ITS_GFF.py --bl
 
 
  #quality trim the reads
-#java -jar /home/pt40963/Downloads/Trimmomatic-0.32/trimmomatic-0.32.jar PE -threads 12 -phred33 SRR2198696_1.fastq.gz SRR2198696_2.fastq.gz R1.fq.gz unpaired_R1.fq.gz R2.fq.gz R2_unpaired.fq.gz ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 LEADING:3 HEADCROP:9 TRAILING:3 SLIDINGWINDOW:4:22 MINLEN:51
+#java -jar ${HOME}/Downloads/Trimmomatic-0.32/trimmomatic-0.32.jar PE -threads 12 -phred33 SRR2198696_1.fastq.gz SRR2198696_2.fastq.gz R1.fq.gz unpaired_R1.fq.gz R2.fq.gz R2_unpaired.fq.gz ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 LEADING:3 HEADCROP:9 TRAILING:3 SLIDINGWINDOW:4:22 MINLEN:51
 
 
 mkdir $TMP
