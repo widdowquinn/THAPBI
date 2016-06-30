@@ -36,11 +36,12 @@ def write_out_ITS_GFF(gff, out): # this is a long function
     like manner. """
     #this is out list of so called top/ longest matches which we will
     #append/remove as applicable
+    merged_blast_hits = []
     blast_hit_to_info_dict = dict()
+
     best_stop = 0
     best_start = 0
     last_scaffold = "tmp"
-    last_gff_line = "tmp"
     last_hit_number = ""
     
     # call function to get list of blast hits.
@@ -65,84 +66,87 @@ def write_out_ITS_GFF(gff, out): # this is a long function
                   dot2, description = split_gff_line(i)
         #populate the dictionaly
         blast_hit_to_info_dict[hit_number] = i
+
+        print "------------------"
+        print "scaf", scaf, "last_scaffold", last_scaffold
+        print "current :", i
+        print "start :", start, "stop", stop
         
         # this is the first iteration. Populate the variables. 
         if last_scaffold == "tmp":
             best_stop = int(stop)
             best_start = int(start)
             last_scaffold = scaf
-            last_gff_line = i
             last_hit_number = hit_number
+            merged_blast_hits.append(i)
             continue
-        
-        #lower and upper threshold for ranges. 
-        lower_range_start = best_start - 50
-        uppper_range_start = (best_stop - best_start) - 30
-        
-        upper_range_stop = best_stop + 50
-        lower_range_stop = best_stop - best_start
-        
+
         if scaf == last_scaffold:
-            print "scaf", scaf, "last_scaffold", last_scaffold
-            same_hit = False
-            # same scaffold. Is the hit in the same region.
-            #this means it could the same blast hit region
-            if int(start) in range(lower_range_start, uppper_range_start):
-                same_hit = True
-                print "current :", i
-                print "last time :", last_gff_line
-                print "start :", start, "best_start ;", best_start, "\n\n"
-                assert int(start) > int(best_start), ("""your
+            assert int(start) >= int(best_start), ("""your
                     gff file has not been sorted by linux sort
                     please run this command
                     cat ${genome_prefix}.ITS.GFF | sort -k1,1 -k4,4 -k5,5
                     > sorted.gff""")
-            #making sure it is the same blast hit region
-            if int(stop) in range(lower_range_stop, upper_range_stop):
-                same_hit = True
 
-                # is the current stop greater or equal to the last?
-                if int(stop) >= best_stop:
+            print "best_start ;", best_start, "best_stop", best_stop, "\n"
+
+            same_hit = False
+            # same scaffold. Is the hit in the same region.
+            #this means it could the same blast hit region
+            if best_start <= int(start) <= best_stop:
+                same_hit = True
+                # Does this fall within the current merged hit,
+                # or does it extend the current merged hit?
+                if int(stop) <= best_stop:
+                    # Falls within the current merged hit, boring
+                    print ("i am ignoring: %s" %(hit_number))
+                    del blast_hit_to_info_dict[hit_number]
+                    # leave merged_blast_hits as it is.
+                else:
+                    print("Extends the current merged hit which was %i %i" % (best_start, best_stop))
                     #print "stop" , stop, "best_stop", best_stop
                     #update the stop value
-                    best_stop = stop
+                    best_stop = int(stop)
                     #remove this current dictionary entry
-                    print ("iam removing: %s" %(hit_number))
-                    same_hit = False # just to avoid removing again later
-                    del blast_hit_to_info_dict[hit_number]
-
-                    # get the old values again!
+ 
+                    # get the current merged values, want to use old name
                     scaf, genome, hit_number, start, stop, dot, direction, \
-                          dot2, description = split_gff_line(i)
+                          dot2, description = split_gff_line(merged_blast_hits[-1])
+                    if not hit_number.endswith("_merged"):
+                        hit_number += "_merged"
                     #use this old vlaues with the new end coordinate
                     updated_values = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" %(scaf,\
                                      genome, hit_number, \
-                                     start, best_stop, \
+                                     best_start, best_stop, \
                                      dot, direction, dot2, description)
                     
-                    last_gff_line = updated_values
                     #update this blast enery in the 
                     blast_hit_to_info_dict[last_hit_number] = updated_values
-            if same_hit:
-                print ("iam removing: %s" %(hit_number))
-                del blast_hit_to_info_dict[hit_number]
-                
-             # fill the variable at end of loop
-            if not same_hit:
+                    print("Merged hit now %i %i" % (best_start, best_stop))
+                    # Replace last value with extended hit
+                    merged_blast_hits[-1] = updated_values
+            else:
+                # This does not overlap, it is the first hit in a new
+                # merged hit.
+                print("This is a new region (did not overlap with %i %i)" % (best_start, best_stop))
                 best_stop = int(stop)
                 best_start = int(start)
-            last_scaffold = scaf
-            last_gff_line = i
+                merged_blast_hits.append(i)
+            # Carry on to next hit on this scaffold...
+            assert last_scaffold == scaf
         else:
+            # new scafold
+            # (results from last scaffold already saved in blast_hit_to_info_dict)
             best_stop = int(stop)
             best_start = int(start)
             last_scaffold = scaf
-            last_gff_line = i
             last_hit_number = hit_number
+            merged_blast_hits.append(i)
     print_list = []        
     for key, val in blast_hit_to_info_dict.items():
         print_list.append(val)
-    for i in sorted(print_list):
+    print "\n\nResults:"
+    for i in merged_blast_hits:
         print i
         
             
