@@ -109,7 +109,7 @@ cmd_python_ITS="python ${path_to_ITS_clipping_file}/generate_ITS_GFF.py --blast 
 echo ${cmd_python_ITS}
 eval ${cmd_python_ITS}
 
-cat ${genome_prefix}.ITS.GFF | sort -k1 > temp.out
+cat ${genome_prefix}.ITS.GFF | sort -k1,1 -k4n -k5n > temp.out
 mv temp.out ${genome_prefix}.ITS.GFF
 rm temp.out
 
