@@ -20,25 +20,25 @@ export TMP=~/scratch/${USER}_${JOB_ID}
 ##################################################################################################################################################################
 # THESE VARIABLE NEED TO BE FILLED IN BY USER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-species=
-
-genome_prefix=Phytophthora_kernoviae.GCA_000333075.1.31
-
-genome_fasta=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/fasta/${species}/dna/${species}.GCA_000333075.1.31.dna.genome.fa.gz
-
-genome_GFF=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/gff3/${species}/${species}.GCA_000333075.1.31.gff3.gz
-
-read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_1.fastq.gz
-
-read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_2.fastq.gz
-
-trimmomatic_path=~/Downloads/Trimmomatic-0.32
-
-SRA_prefix=SRR2785298
-
-path_to_ITS_clipping_file=~/misc_python/THAPBI/ITS_region_genomic_coverage
-
-num_threads=12
+#species=ABC????
+#
+#genome_prefix=Phytophthora_kernoviae.GCA_000333075.1.31
+#
+#genome_fasta=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/fasta/${species}/dna/${species}.GCA_000333075.1.31.dna.genome.fa.gz
+#
+#genome_GFF=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/gff3/${species}/${species}.GCA_000333075.1.31.gff3.gz
+#
+#read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_1.fastq.gz
+#
+#read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_2.fastq.gz
+#
+#trimmomatic_path=~/Downloads/Trimmomatic-0.32
+#
+#SRA_prefix=SRR2785298
+#
+#path_to_ITS_clipping_file=~/misc_python/THAPBI/ITS_region_genomic_coverage
+#
+#num_threads=12
 
 
 # NOTHING TO BE FILLED IN BY USER FROM HERE!!!!
@@ -66,14 +66,42 @@ cd ${genome_prefix}
 # use the advance.  Species ENTER, Lib.layout=paired,  platform=illumina, lib.source=genomic > search
 echo STEP1: Downloading reads and genome files
 wget ${genome_fasta}
+gunzip *.gz
+
+# Want to have consistent extensions on all the genome FASTA files, .fa
+# If we have example_silly.fna rename it to example.fa
+# Real example GCA_000149735.1_ASM14973v1_genomic.fna -->
+# just GCA_000149735.1_ASM14973v1.fa
+if [ -f ${genome_prefix}*.fna ]; then
+    # WARNING - This assumes the wildcard will match only one file!
+	echo "Renaming ${genome_prefix}*.fna to ${genome_prefix}*.fa"
+    mv ${genome_prefix}*.fna ${genome_prefix}.fa
+fi
+
+if [ -f ${genome_prefix}*.fa ]; then
+    # WARNING - This assumes the wildcard will match only one file!
+	echo "Renaming ${genome_prefix}*.fna to ${genome_prefix}*.fa"
+    mv ${genome_prefix}*.fa ${genome_prefix}.fa
+fi
+
 wget ${genome_GFF}
 gunzip *.gz
+
+#rename the GFF3 file
+#if [ -f ${genome_prefix}*.gff3 ]; then
+#    # WARNING - This assumes the wildcard will match only one file!
+#	echo "Renaming ${genome_prefix}*.fna to ${genome_prefix}*.fa"
+#    mv ${genome_prefix}*.gff3 ${genome_prefix}.gff3
+#fi
+
+
+
 
 wget ${read_1_link}
 wget ${read_2_link}
 # EXAMPLE: Phytophthora_kernoviae.GCA_000333075.1.31.dna.genome.fa.gz => Phytophthora_kernoviae.GCA_000333075.1.31.
 #gunzip ${genome_prefix}*
-
+wait
 
 # blast to get representative ITS regions.
 
@@ -82,17 +110,37 @@ cmd="makeblastdb -in ${genome_prefix}*.fa -dbtype nucl"
 echo ${cmd}
 eval ${cmd}
 
-cmd2="blastn -query ${path_to_ITS_clipping_file}/Phy_ITSregions_all_20160601.fasta -db ${genome_prefix}*.fa -outfmt 6 -out n.Pi_ITS_vs_${genome_prefix}.out" 
+cmd2="blastn -query ${path_to_ITS_clipping_file}/Phy_ITSregions_all_20160601.fasta -db ${genome_prefix}.fa -outfmt 6 -out n.ITS_vs_${genome_prefix}.out" 
 echo ${cmd2}
 eval ${cmd2}
 
 
+# prepare ITS gff. python:
+echo "STEP 3: prepare ITS gff. python
+"
+cmd_python_ITS="python ${path_to_ITS_clipping_file}/generate_ITS_GFF.py --blast n.ITS_vs_${genome_prefix}.out --prefix ${genome_prefix} -o ${genome_prefix}.ITS.GFF" 
+echo ${cmd_python_ITS}
+eval ${cmd_python_ITS}
 
-#for for eukaryotes - BUSCO
+cat ${genome_prefix}.ITS.GFF | uniq | sort -k1,1 -k4n -k5n > temp.out
+mv temp.out ${genome_prefix}.ITS.GFF
+
+# genearate consensus blast hit ITS GFF file from the sorted file above.
+wait
+cmd_python_ITS_consensus="python ${path_to_ITS_clipping_file}/filter_GFF.py --gff ${genome_prefix}.ITS.GFF -o ${genome_prefix}.ITS.consensus.GFF"
+echo ${cmd_python_ITS_consensus}
+eval ${cmd_python_ITS_consensus}
+
+###############################################################################################################################################################
+#for for eukaryotes - BUSCO --long removed for testing
 mkdir LINEAGE 
 ln -s /home/pt40963/scratch/Downloads/BUSCO_v1.1b1/eukaryota ./LINEAGE/
-
-cmd_python_BUSCO="python3 ${HOME}/scratch/Downloads/BUSCO_v1.1b1/BUSCO_v1.1b1.py -in ${genome_prefix}*.fna -l ./LINEAGE/eukaryota -o busco -m genome -f -Z 827000000 --long --cpu ${num_threads}"
+# We add the && true to supress the unix error return code from BUSCO so that the script keeps going.
+# BUSCO ouputs several gig of logs to stdout and/or stderr
+# We add the > /dev/null to send the stdout to /dev/null (throw it away)
+# We add the 2&>1 to send stderr to stdout (which we send to dev null)
+#slow busco cmd_python_BUSCO="python3 ${HOME}/scratch/Downloads/BUSCO_v1.21/BUSCO_v1.21.py -in ${genome_prefix}.fa -l ../LINEAGE/eukaryota -o busco -m genome -f -Z 827000000 --long --cpu ${num_threads}"
+cmd_python_BUSCO="python3 ${HOME}/scratch/Downloads/BUSCO_v1.21/BUSCO_v1.21.py -in ${genome_prefix}.fa -l ../LINEAGE/eukaryota -o busco -m genome -f -Z 827000000 --cpu ${num_threads} >/dev/null 2>&1 %% true"
 echo ${cmd_python_BUSCO}
 eval ${cmd_python_BUSCO}
 
@@ -108,32 +156,7 @@ echo "prepare GFF for genes only"
 cmd_python_gene_to_gff=" python ${path_to_ITS_clipping_file}/ITS_region_genomic_coverage/get_genes_from_GFF.py --gff ${genome_prefix}_BUSCO_GENES.gff -o ${genome_prefix}_BUSCO_GENES.gene.gff"
 echo ${cmd_python_gene_to_gff}
 eval ${cmd_python_gene_to_gff}
-
-
-
-# prepare ITS gff. python:
-echo "STEP 3: prepare ITS gff. python
-"
-cmd_python_ITS="python ${path_to_ITS_clipping_file}/generate_ITS_GFF.py --blast n.Pi_ITS_vs_${genome_prefix}.out --prefix ${genome_prefix} -o ${genome_prefix}.ITS.GFF" 
-echo ${cmd_python_ITS}
-eval ${cmd_python_ITS}
-
-# prepare ITS gff. python:
-echo "STEP 3: prepare ITS gff. python
-"
-cmd_python_ITS="python ${path_to_ITS_clipping_file}/generate_ITS_GFF.py --blast n.Pi_ITS_vs_${genome_prefix}.out --prefix ${genome_prefix} -o ${genome_prefix}.ITS.GFF" 
-echo ${cmd_python_ITS}
-eval ${cmd_python_ITS}
-
-cat ${genome_prefix}.ITS.GFF | uniq | sort -k1,1 -k4n -k5n > temp.out
-mv temp.out ${genome_prefix}.ITS.GFF
-
-# genearate consensus blast hit ITS GFF file from the sorted file above.
-wait
-cmd_python_ITS_consensus="python ${path_to_ITS_clipping_file}/filter_GFF.py --gff ${genome_prefix}.ITS.GFF -o ${genome_prefix}.ITS.consensus.GFF"
-echo ${cmd_python_ITS_consensus}
-eval ${cmd_python_ITS_consensus}
-
+###############################################################################################################################################################
 
 wait
 #quality trim the reads
@@ -152,7 +175,7 @@ mkdir $TMP
 
 # index genome
 echo "index genome"
-cmd_index="bowtie2-build --quiet -f ${genome_prefix}*.fa bowtie_index_files" 
+cmd_index="bowtie2-build --quiet -f ${genome_prefix}.fa bowtie_index_files" 
 echo ${cmd_index}
 eval ${cmd_index}
 
@@ -188,19 +211,15 @@ rmdir $TMP
 
 # get only the genes, not bothered about other stuff ...
 echo "prepare GFF for genes only"
-cmd_python_gene_to_gff=" python ${path_to_ITS_clipping_file}/THAPBI/ITS_region_genomic_coverage/get_genes_from_GFF.py --gff ${genome_prefix}*gff3 -o ${genome_prefix}.gene.gff"
+cmd_python_gene_to_gff=" python ${path_to_ITS_clipping_file}/ITS_region_genomic_coverage/get_genes_from_GFF.py --gff ${genome_prefix}.gff3 -o ${genome_prefix}.gene.gff"
 echo ${cmd_python_gene_to_gff}
 eval ${cmd_python_gene_to_gff}
  
-#old commands - doesnt always work 
-#cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
-#echo cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
 
 
 # use bedtools to get the number of reads that map to specific regions
 
 echo "bedtools count"
-# for nomralisation use ? bedtools genomecov [OPTIONS] [-i|-ibam] -g (iff. -i)
 cmd_Busco_count="bedtools multicov -bams ${genome_prefix}.bam -bed ${genome_prefix}_BUSCO_GENES.gene.gff > ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov"
 echo ${cmd_Busco_count}
 eval ${cmd_Busco_count}
@@ -237,5 +256,4 @@ echo python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}
 # get stats summary of coverages with BUSCO genes
 python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values -o ${genome_prefix}_stats_BUSCO_versus_ITS.out
 echo python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values -o ${genome_prefix}_stats_BUSCO_versus_ITS.out
-
 
