@@ -20,25 +20,24 @@ export TMP=~/scratch/${USER}_${JOB_ID}
 ##################################################################################################################################################################
 # THESE VARIABLE NEED TO BE FILLED IN BY USER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-species=Phytophthora_ramorum
+species=Phytophthora_kernoviae
 
-genome_prefix=GCA_000443045.1_PhytoCambi_1.0
+genome_prefix=Phytophthora_kernoviae.GCA_000333075.1.31
 
-genome_fasta=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/fasta/phytophthora_ramorum/dna/Phytophthora_ramorum.ASM14973v1.31.dna.genome.fa.gz
+genome_fasta=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/fasta/phytophthora_kernoviae/dna/Phytophthora_kernoviae.GCA_000333075.1.31.dna.genome.fa.gz
 
-genome_GFF=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/gff3/phytophthora_ramorum/Phytophthora_ramorum.ASM14973v1.31.gff3.gz
+genome_GFF=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/gff3/phytophthora_kernoviae/Phytophthora_kernoviae.GCA_000333075.1.31.gff3.gz
 
-read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR610/SRR610900/SRR610900_1.fastq.gz
+read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR639/SRR639379/SRR639379_1.fastq.gz
 
-read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR610/SRR610900/SRR610900_2.fastq.gz
+read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR639/SRR639379/SRR639379_2.fastq.gz
 
-#read_1_b_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR610/SRR610900/SRR610900_1.fastq.gz
-
-#read_2_b_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR610/SRR610900/SRR610900_2.fastq.gz
+read_1_b_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_1.fastq.gz
+read_2_b_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_2.fastq.gz
 
 trimmomatic_path=~/Downloads/Trimmomatic-0.32
 
-SRA_prefix=SRR610900
+SRA_prefix=SRR639379
 
 path_to_ITS_clipping_file=~/misc_python/THAPBI/ITS_region_genomic_coverage
 
@@ -79,17 +78,15 @@ wget ${read_2_link}
 #mv *_1.fastq.gz > temp_1.fastq.gz
 #mv *_2.fastq.gz > temp_2.fastq.gz
 
-#wget ${read_1_b_link}
-#wget ${read_2_b_link}
-
+wget ${read_1_b_link}
+wget ${read_2_b_link}
+wait
 # EXAMPLE: Phytophthora_kernoviae.GCA_000333075.1.31.dna.genome.fa.gz => Phytophthora_kernoviae.GCA_000333075.1.31.
 #gunzip ${genome_prefix}*
 #cat *_1.fastq.gz > ${SRA_prefix}_1.fastq.gz
 #cat *_2.fastq.gz > ${SRA_prefix}_2.fastq.gz
 
 #rm temp_*.fastq.gz
-
-
 # blast to get representative ITS regions.
 
 echo " STEP2: blast searches"
@@ -102,27 +99,14 @@ echo ${cmd2}
 eval ${cmd2}
 
 
-# prepare ITS gff. python:
-echo "STEP 3: prepare ITS gff. python
-"
-cmd_python_ITS="python ${path_to_ITS_clipping_file}/generate_ITS_GFF.py --blast n.Pi_ITS_vs_${genome_prefix}.out --prefix ${genome_prefix} -o ${genome_prefix}.ITS.GFF" 
-echo ${cmd_python_ITS}
-eval ${cmd_python_ITS}
-
-cat ${genome_prefix}.ITS.GFF | sort -k1,1 -k4n -k5n > temp.out
-mv temp.out ${genome_prefix}.ITS.GFF
-rm temp.out
-
-
- #for for eukaryotes - BUSCO
- mkdir LINEAGE 
+#for for eukaryotes - BUSCO
+mkdir LINEAGE 
 ln -s /home/pt40963/scratch/Downloads/BUSCO_v1.1b1/eukaryota ./LINEAGE/
 
-cmd_python_BUSCO="python3 ${HOME}/scratch/Downloads/BUSCO_v1.1b1/BUSCO_v1.1b1.py -in ${genome_prefix}*.fa -l ./LINEAGE/eukaryota -o busco -m genome -f -Z 827000000 --long --cpu ${num_threads}"
+cmd_python_BUSCO="python3 ${HOME}/scratch/Downloads/BUSCO_v1.1b1/BUSCO_v1.1b1.py -in ${genome_prefix}*.fa -l ../LINEAGE/eukaryota -o busco -m genome -f -Z 827000000 --long --cpu ${num_threads}"
 echo ${cmd_python_BUSCO}
 eval ${cmd_python_BUSCO}
 
- 
 # prepare a busco gff
 cd run_BUSCO
 cd gffs
@@ -134,7 +118,17 @@ cd ..
 echo "prepare GFF for genes only"
 cmd_python_gene_to_gff=" python ${path_to_ITS_clipping_file}/ITS_region_genomic_coverage/get_genes_from_GFF.py --gff ${genome_prefix}_BUSCO_GENES.gff -o ${genome_prefix}_BUSCO_GENES.gene.gff"
 echo ${cmd_python_gene_to_gff}
-eval ${cmd_python_gene_to_gff} 
+eval ${cmd_python_gene_to_gff}
+
+# prepare ITS gff. python:
+echo "STEP 3: prepare ITS gff. python
+"
+cmd_python_ITS="python ${path_to_ITS_clipping_file}/generate_ITS_GFF.py --blast n.Pi_ITS_vs_${genome_prefix}.out --prefix ${genome_prefix} -o ${genome_prefix}.ITS.GFF" 
+echo ${cmd_python_ITS}
+eval ${cmd_python_ITS}
+
+cat ${genome_prefix}.ITS.GFF | uniq | sort -k1,1 -k4n -k5n > temp.out
+mv temp.out ${genome_prefix}.ITS.GFF
 
 # genearate consensus blast hit ITS GFF file from the sorted file above.
 wait
@@ -144,9 +138,8 @@ eval ${cmd_python_ITS_consensus}
 
 wait
 #quality trim the reads
-# head crop 9 as all illumina data seems to have non-random bases at frist 9-12 nt. Weird!
-echo "Trimming: head crop 9 as all illumina data seems to have non-random bases at frist 9-12 nt. Weird!"
-cmd_trimming="java -jar ${trimmomatic_path}/trimmomatic-0.32.jar PE -threads ${num_threads} -phred33 ${SRA_prefix}_1.fastq.gz ${SRA_prefix}_2.fastq.gz R1.fq.gz unpaired_R1.fq.gz R2.fq.gz unpaired_R2.fq.gz ILLUMINACLIP:${path_to_ITS_clipping_file}/TruSeq3-PE.fa:2:30:10 LEADING:3 HEADCROP:9 TRAILING:3 SLIDINGWINDOW:4:22 MINLEN:51" 
+echo "Trimming:"
+cmd_trimming="java -jar ${trimmomatic_path}/trimmomatic-0.32.jar PE -threads ${num_threads} -phred33 ${SRA_prefix}_1.fastq.gz ${SRA_prefix}_2.fastq.gz R1.fq.gz unpaired_R1.fq.gz R2.fq.gz unpaired_R2.fq.gz ILLUMINACLIP:${path_to_ITS_clipping_file}/TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:45" 
 echo ${cmd_trimming}
 eval ${cmd_trimming}
 echo "Trimming done"
@@ -196,14 +189,13 @@ rmdir $TMP
 
 # get only the genes, not bothered about other stuff ...
 echo "prepare GFF for genes only"
-cmd_python_gene_to_gff=" python ${path_to_ITS_clipping_file}/ITS_region_genomic_coverage/get_genes_from_GFF.py --gff ${genome_prefix}*gff3 -o ${genome_prefix}.gene.gff"
+cmd_python_gene_to_gff=" python ${path_to_ITS_clipping_file}/THAPBI/ITS_region_genomic_coverage/get_genes_from_GFF.py --gff ${genome_prefix}*gff3 -o ${genome_prefix}.gene.gff"
 echo ${cmd_python_gene_to_gff}
 eval ${cmd_python_gene_to_gff}
  
 #old commands - doesnt always work 
 #cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
 #echo cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
-
 
 # use bedtools to get the number of reads that map to specific regions
 
@@ -213,7 +205,6 @@ echo "bedtools count"
 cmd_Busco_count="bedtools multicov -bams ${genome_prefix}.bam -bed ${genome_prefix}_BUSCO_GENES.gene.gff > ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov"
 echo ${cmd_Busco_count}
 eval ${cmd_Busco_count}
-
 
 cmd_count="bedtools multicov -bams ${genome_prefix}.bam -bed ${genome_prefix}.gene.gff > ${genome_prefix}_genomic.genes.cov"
 echo ${cmd_count}
