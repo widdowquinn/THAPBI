@@ -85,8 +85,8 @@ def write_out_ITS_GFF(gff, out): # this is a long function
             assert int(start) >= int(best_start), ("""your
                     gff file has not been sorted by linux sort
                     please run this command
-                    cat ${genome_prefix}.ITS.GFF | sort -k1,1 -k4,4 -k5,5
-                    > sorted.gff""")
+                    cat ${genome_prefix}.ITS.GFF | sort -k1,1 -k4n -k5n
+                    > sorted.gff .. error in line %s""" %i)
 
             #print "best_start ;", best_start, "best_stop", best_stop, "\n"
 
