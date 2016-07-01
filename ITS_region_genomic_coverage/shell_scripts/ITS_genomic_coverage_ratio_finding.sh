@@ -18,30 +18,9 @@ cd ~/scratch/tree_health/ITS_ratio
 export TMP=~/scratch/${USER}_${JOB_ID}
 
 ##################################################################################################################################################################
-# THESE VARIABLE NEED TO BE FILLED IN BY USER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-#species=ABC????
-#
-#genome_prefix=Phytophthora_kernoviae.GCA_000333075.1.31
-#
-#genome_fasta=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/fasta/${species}/dna/${species}.GCA_000333075.1.31.dna.genome.fa.gz
-#
-#genome_GFF=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/gff3/${species}/${species}.GCA_000333075.1.31.gff3.gz
-#
-#read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_1.fastq.gz
-#
-#read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_2.fastq.gz
-#
-#trimmomatic_path=~/Downloads/Trimmomatic-0.32
-#
-#SRA_prefix=SRR2785298
-#
-#path_to_ITS_clipping_file=~/misc_python/THAPBI/ITS_region_genomic_coverage
-#
-#num_threads=12
+# THESE VARIABLE NEED TO BE FILLED IN BY USER from the species scripts
 
 
-# NOTHING TO BE FILLED IN BY USER FROM HERE!!!!
 ##################################################################################################################################################################
 
 #put these variable to file for logging purposes.
@@ -78,7 +57,7 @@ if [ -f ${genome_prefix}*.fna ]; then
     mv ${genome_prefix}*.fna ${genome_prefix}.fa
 fi
 
-if [ -f ${genome_prefix}*.fa ]; then
+if [ -f ${genome_prefix}.*.fa ]; then
     # WARNING - This assumes the wildcard will match only one file!
 	echo "Renaming ${genome_prefix}*.fna to ${genome_prefix}*.fa"
     mv ${genome_prefix}*.fa ${genome_prefix}.fa
@@ -133,19 +112,24 @@ eval ${cmd_python_ITS_consensus}
 
 ###############################################################################################################################################################
 #for for eukaryotes - BUSCO --long removed for testing
-mkdir LINEAGE 
-ln -s /home/pt40963/scratch/Downloads/BUSCO_v1.1b1/eukaryota ./LINEAGE/
+#mkdir LINEAGE 
+#ln -s /home/pt40963/scratch/Downloads/BUSCO_v1.1b1/eukaryota ./LINEAGE/
 # We add the && true to supress the unix error return code from BUSCO so that the script keeps going.
 # BUSCO ouputs several gig of logs to stdout and/or stderr
 # We add the > /dev/null to send the stdout to /dev/null (throw it away)
 # We add the 2&>1 to send stderr to stdout (which we send to dev null)
 #slow busco cmd_python_BUSCO="python3 ${HOME}/scratch/Downloads/BUSCO_v1.21/BUSCO_v1.21.py -in ${genome_prefix}.fa -l ../LINEAGE/eukaryota -o busco -m genome -f -Z 827000000 --long --cpu ${num_threads}"
-cmd_python_BUSCO="python3 ${HOME}/scratch/Downloads/BUSCO_v1.21/BUSCO_v1.21.py -in ${genome_prefix}.fa -l ../LINEAGE/eukaryota -o busco -m genome -f -Z 827000000 --cpu ${num_threads} >/dev/null 2>&1 %% true"
+#cmd_python_BUSCO="python3 ${HOME}/scratch/Downloads/BUSCO_v1.21/BUSCO_v1.21.py -in ${genome_prefix}.fa -l ../LINEAGE/eukaryota -o busco -m genome -f -Z 827000000 --cpu ${num_threads} >/dev/null 2>&1 %% true"
+
+### failed busco attempts.cmd_python_BUSCO="python3 ${HOME}/scratch/Downloads/BUSCO_v1.21/BUSCO_v1.21.py -in ${genome_prefix}.fa -l ../LINEAGE/eukaryota -o busco -m genome -f -Z 827000000 --cpu ${num_threads}"
+
+cmd_python_BUSCO="python3 ${HOME}/scratch/Downloads/BUSCO_v1.1b1/BUSCO_v1.1b1.py -in ${genome_prefix}.fa -l ../LINEAGE/eukaryota -o busco -m genome -f -Z 827000000 --cpu ${num_threads}"
 echo ${cmd_python_BUSCO}
 eval ${cmd_python_BUSCO}
+wait
 
 # prepare a busco gff
-cd run_BUSCO
+cd run_busco
 cd gffs
 cat * ../../${genome_prefix}_BUSCO_GENES.gff 
 cd ..
