@@ -149,7 +149,7 @@ eval ${cmd_python_ITS_consensus}
 
 ### failed busco attempts.cmd_python_BUSCO="python3 ${HOME}/scratch/Downloads/BUSCO_v1.21/BUSCO_v1.21.py -in ${genome_prefix}.fa -l ../LINEAGE/eukaryota -o busco -m genome -f -Z 827000000 --cpu ${num_threads}"
 
-cmd_python_BUSCO="python3 ${HOME}/scratch/Downloads/BUSCO_v1.1b1/BUSCO_v1.1b1.py -in ${genome_prefix}.fa -l ../LINEAGE/eukaryota -o busco -m genome -f -Z 827000000 --cpu ${num_threads}"
+cmd_python_BUSCO="python3 ${HOME}/scratch/Downloads/BUSCO_v1.1b1/BUSCO_v1.1b1.py -in ${genome_prefix}.fa -l ../LINEAGE/eukaryota -o busco -m genome -f -Z 827000000 --long --cpu ${num_threads}"
 echo ${cmd_python_BUSCO}
 eval ${cmd_python_BUSCO}
 wait
@@ -250,16 +250,18 @@ echo counting done
 # just get the values using cut
 # remove RNA genes from the all gene values, as these are what we are measuring in the other
 # dataset. Assuming they are annotated in the GFF. It not... results may be a bit skewed.
-cat ${genome_prefix}_genomic.genes.cov | grep -v "RNA" | cut -f10 > ${genome_prefix}_genomic.genes.cov.values
-echo cat ${genome_prefix}_genomic.genes.cov | grep -v "RNA" | cut -f10 > ${genome_prefix}_genomic.genes.cov.values
+
+
+cut -f10 ${genome_prefix}_genomic.genes.cov > ${genome_prefix}_genomic.genes.cov.values
+echo cut -f10 ${genome_prefix}_genomic.genes.cov to ${genome_prefix}_genomic.genes.cov.values
 
 # for the ITS genes regions
-cat  ${genome_prefix}_genomic.ITS.cov | cut -f10 >  ${genome_prefix}_genomic.ITS.cov.values
-echo cat  ${genome_prefix}_genomic.ITS.cov | cut -f10 >  ${genome_prefix}_genomic.ITS.cov.values
+cut -f10 ${genome_prefix}_genomic.ITS.cov >  ${genome_prefix}_genomic.ITS.cov.values
+echo cut -f10 ${genome_prefix}_genomic.ITS.cov to  ${genome_prefix}_genomic.ITS.cov.values
 
 #for the busco genes
-cat  ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov | cut -f10 >  ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values
-echo cat  ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov | cut -f10 >  ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values
+cut -f10 ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov>  ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values
+echo cut -f10 ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov to  ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values
 
 # get stats summary of coverages
 python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats_all_genes_versus_ITS.out
