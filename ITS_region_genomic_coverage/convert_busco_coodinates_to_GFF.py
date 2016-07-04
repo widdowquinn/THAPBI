@@ -3,7 +3,6 @@
 
 #Title:
 #script to convert the BUSCO coordinates to GFF for bedtools
-"
 
 #imports
 import os
@@ -48,6 +47,8 @@ def write_out_ITS_GFF(busco, prefix, out): # this is a long function
             temp_stop = start
             start = temp_start
             stop = temp_stop
+        if int(start) == 0:
+            start = "1"
         line = "%s\t%s_Busco_gene\t%d\t%s\t%s\t.\t+\t.\t%s\n" %(scaff,\
                         prefix,EOG_counter, start, stop, EOG)
         GFF_out.write(line)
@@ -103,13 +104,13 @@ out_file = options.out_file
 
 #run the program
 
-if not os.path.isfile(gff):
+if not os.path.isfile(busco):
     print("sorry, couldn't open the file: " + ex.strerror + "\n")
     print ("current working directory is :", os.getcwd() + "\n")
     print ("files are :", [f for f in os.listdir('.')])
     sys_exit("\n\nInput busco file not found: %s" % gff)
 
 # call the top function    
-write_out_ITS_GFF(busco, out_file)
+write_out_ITS_GFF(busco, prefix, out_file)
 
 
