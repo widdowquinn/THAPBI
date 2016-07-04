@@ -63,6 +63,7 @@ def write_out_stats(ITS_cov, GFF, all_genes_cov, out_file):
     """function to write out summary stats. """
     # call function to get list of coverage per file.
     number_of_ITS_blast_hits = len(parse_result_file(GFF))
+    number_of_all_genes_hits = len(parse_result_file(all_genes_cov))
     try:
         ITS_cov_str = parse_result_file(ITS_cov)
         #print ITS_cov_str
@@ -87,16 +88,19 @@ def write_out_stats(ITS_cov, GFF, all_genes_cov, out_file):
     summary_stats_out.write(ITS_data_formatted)
 
     GENEmin_cov, GENEmax_cov, GENEmean_cov, GENEstandard_dev = stat_tests(all_genes_cov)
-    GENE_data_formatted = "allGenes:\t%s\t%s\t%s\t%s\n" %(GENEmin_cov,\
-                    GENEmax_cov, GENEmean_cov, GENEstandard_dev)
+    GENE_data_formatted = "allGenes:\t%s\t%s\t%.1f\t%.1f\n" %(GENEmin_cov,\
+                    GENEmax_cov, float(GENEmean_cov), float(GENEstandard_dev))
     summary_stats_out.write(GENE_data_formatted)
 
-    blast_hits_info = "\nITS_blast_hit = %s \n" %(number_of_ITS_blast_hits)
-    ratio_info = "ITS to gene ratio = %.1f \n" %(float(ITSmean_cov) / GENEmean_cov)
+    blast_hits_info = "\nnumber of ITS_blast_hit = %s \n" %(number_of_ITS_blast_hits)
+    number_of_all_genes_hits_out = "\nnumber of 'all genes' = %s \n" %(number_of_all_genes_hits)
+    ratio_info = "\nITS to gene ratio = %.1f \n" %(float(ITSmean_cov) / GENEmean_cov)
     summary_stats_out.write(blast_hits_info)
+    summary_stats_out.write(number_of_all_genes_hits_out)
     summary_stats_out.write(ratio_info)
     final_count_info = "There may be %.1f ITS regions\n" %((int(number_of_ITS_blast_hits)\
                                                     *(float(ITSmean_cov) / GENEmean_cov)))
+    #print final_count_info
     summary_stats_out.write(final_count_info)
     
 
