@@ -44,3 +44,10 @@ BUSCO is used to predict the "EOG" genes from the genomes. WHY?
 basically very few of them have publically availble gene models.
 To get a backgroud gene count, and one that is supposed to be, as 
 far as possible, based on single copy genes - BUSCO is used. 
+
+You will have to prepare the data for BUSCO before hand by dowloading
+http://busco.ezlab.org/files/eukaryota_buscos.tar.gz
+.. put the path to this, once decompressed in the shell scripts as
+required.
+
+
