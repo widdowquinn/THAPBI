@@ -4,10 +4,13 @@ author: Peter Thorpe September 2016. The James Hutton Insitute, Dundee, UK.
 
 basic usage:
 
-``./ITS_genomic_coverage_ratio_finding.sh`` 
+``./P.X.sh``
 
-All regions in this file between ####
-need to be filled in by the user.
+some variables in here need to be set by the user, if this piplien isused for other purposes.
+These shells call the following script. (All regions in this file between ####
+need to be filled in by the user).
+
+``./ITS_genomic_coverage_ratio_finding.sh`` 
 
 why?: We are interested in the raio of coverage of all identified
 ITS regions in a genome versus "normal" genes - whatever they are.
@@ -32,5 +35,12 @@ coverage is normal and representative of gene number.
 	4) python
 	5) bowtie2
 	6) samtools
-	7) bedtools 
-	7b)(for poorly formamted GFF files - try reformmatting with GenomeTools)
+	7) bedtools   *
+	8) BUSCO version 1.1b - currently does not run with version 1.2
+		
+*(for poorly formamted GFF files - try reformmatting with GenomeTools)
+
+BUSCO is used to predict the "EOG" genes from the genomes. WHY? 
+basically very few of them have publically availble gene models.
+To get a backgroud gene count, and one that is supposed to be, as 
+far as possible, based on single copy genes - BUSCO is used. 
