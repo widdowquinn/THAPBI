@@ -27,7 +27,7 @@ genome_prefix=GCA_000149735.1_ASM14973v1
 genome_fasta=ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_000149735.1_ASM14973v1/GCA_000149735.1_ASM14973v1_genomic.fna.gz
 
 genome_GFF=ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_000149735.1_ASM14973v1/GCA_000149735.1_ASM14973v1_genomic.gff.gz
-
+#http://www.ncbi.nlm.nih.gov/bioproject/?term=ADVJ00000000
 #read_1_link=NO DATA AVAILBLE
 
 #read_2_link=NO DATA AVAILBLE
