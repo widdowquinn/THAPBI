@@ -20,21 +20,21 @@ export TMP=~/scratch/${USER}_${JOB_ID}
 ##################################################################################################################################################################
 # THESE VARIABLE NEED TO BE FILLED IN BY USER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-species=
+species=Phytophthora_cambivora
 
-genome_prefix=Phytophthora_kernoviae.GCA_000333075.1.31
+genome_prefix=GCA_000443045.1_PhytoCambi_1.0
 
-genome_fasta=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/fasta/${species}/dna/${species}.GCA_000333075.1.31.dna.genome.fa.gz
+genome_fasta=ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_000443045.1_PhytoCambi_1.0/GCA_000443045.1_PhytoCambi_1.0_genomic.fna.gz
 
-genome_GFF=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/gff3/${species}/${species}.GCA_000333075.1.31.gff3.gz
+genome_GFF=ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_000443045.1_PhytoCambi_1.0/GCA_000443045.1_PhytoCambi_1.0_genomic.gff.gz
 
-read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_1.fastq.gz
+read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR870/SRR870485/SRR870485_1.fastq.gz
 
-read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_2.fastq.gz
+read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR870/SRR870485/SRR870485_2.fastq.gz
 
 trimmomatic_path=~/Downloads/Trimmomatic-0.32
 
-SRA_prefix=SRR2785298
+SRA_prefix=SRR870485
 
 path_to_ITS_clipping_file=~/misc_python/THAPBI/ITS_region_genomic_coverage
 
@@ -71,6 +71,7 @@ gunzip *.gz
 
 wget ${read_1_link}
 wget ${read_2_link}
+
 # EXAMPLE: Phytophthora_kernoviae.GCA_000333075.1.31.dna.genome.fa.gz => Phytophthora_kernoviae.GCA_000333075.1.31.
 #gunzip ${genome_prefix}*
 
@@ -164,7 +165,6 @@ eval ${cmd_python_gene_to_gff}
 #old commands - doesnt always work 
 #cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
 #echo cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
-
 
 # use bedtools to get the number of reads that map to specific regions
 

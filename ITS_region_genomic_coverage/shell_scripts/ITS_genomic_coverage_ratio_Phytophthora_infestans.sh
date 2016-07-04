@@ -20,21 +20,21 @@ export TMP=~/scratch/${USER}_${JOB_ID}
 ##################################################################################################################################################################
 # THESE VARIABLE NEED TO BE FILLED IN BY USER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-species=
+species=Phytophthora_infestans
 
-genome_prefix=Phytophthora_kernoviae.GCA_000333075.1.31
+genome_prefix=Phytophthora_infestans.ASM14294v1.31
 
-genome_fasta=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/fasta/${species}/dna/${species}.GCA_000333075.1.31.dna.genome.fa.gz
+genome_fasta=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/fasta/phytophthora_infestans/dna/Phytophthora_infestans.ASM14294v1.31.dna.genome.fa.gz
 
-genome_GFF=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/gff3/${species}/${species}.GCA_000333075.1.31.gff3.gz
+genome_GFF=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/gff3/phytophthora_infestans/Phytophthora_infestans.ASM14294v1.31.gff3.gz
 
-read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_1.fastq.gz
+read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR248/ERR248792/ERR248792_1.fastq.gz
 
-read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_2.fastq.gz
+read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR248/ERR248792/ERR248792_2.fastq.gz
 
 trimmomatic_path=~/Downloads/Trimmomatic-0.32
 
-SRA_prefix=SRR2785298
+SRA_prefix=ERR248792
 
 path_to_ITS_clipping_file=~/misc_python/THAPBI/ITS_region_genomic_coverage
 
@@ -94,7 +94,7 @@ cmd_python_ITS="python ${path_to_ITS_clipping_file}/generate_ITS_GFF.py --blast 
 echo ${cmd_python_ITS}
 eval ${cmd_python_ITS}
 
-cat ${genome_prefix}.ITS.GFF | uniq | sort -k1,1 -k4,4 -k5,5 > temp.out
+cat ${genome_prefix}.ITS.GFF | sort -k1 > temp.out
 mv temp.out ${genome_prefix}.ITS.GFF
 
 # genearate consensus blast hit ITS GFF file from the sorted file above.
@@ -157,14 +157,13 @@ rmdir $TMP
 
 # get only the genes, not bothered about other stuff ...
 echo "prepare GFF for genes only"
-cmd_python_gene_to_gff=" python ${path_to_ITS_clipping_file}/THAPBI/ITS_region_genomic_coverage/get_genes_from_GFF.py --gff ${genome_prefix}*gff3 -o ${genome_prefix}.gene.gff"
+cmd_python_gene_to_gff=" python ${path_to_ITS_clipping_file}/ITS_region_genomic_coverage/get_genes_from_GFF.py --gff ${genome_prefix}*gff3 -o ${genome_prefix}.gene.gff"
 echo ${cmd_python_gene_to_gff}
 eval ${cmd_python_gene_to_gff}
  
 #old commands - doesnt always work 
 #cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
 #echo cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
-
 
 # use bedtools to get the number of reads that map to specific regions
 

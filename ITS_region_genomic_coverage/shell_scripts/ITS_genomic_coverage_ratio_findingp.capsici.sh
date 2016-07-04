@@ -20,21 +20,21 @@ export TMP=~/scratch/${USER}_${JOB_ID}
 ##################################################################################################################################################################
 # THESE VARIABLE NEED TO BE FILLED IN BY USER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-species=
+species=Phytophthora_ramorum
 
-genome_prefix=Phytophthora_kernoviae.GCA_000333075.1.31
+genome_prefix=Phytophthora_ramorum.ASM14973v1.31
 
-genome_fasta=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/fasta/${species}/dna/${species}.GCA_000333075.1.31.dna.genome.fa.gz
+genome_fasta=ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_000149735.1_ASM14973v1/GCA_000149735.1_ASM14973v1_genomic.fna.gz
 
-genome_GFF=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/gff3/${species}/${species}.GCA_000333075.1.31.gff3.gz
+genome_GFF=ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_000149735.1_ASM14973v1/GCA_000149735.1_ASM14973v1_genomic.gff.gz
 
-read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_1.fastq.gz
+#read_1_link=NO DATA AVAILBLE
 
-read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_2.fastq.gz
+#read_2_link=NO DATA AVAILBLE
 
 trimmomatic_path=~/Downloads/Trimmomatic-0.32
 
-SRA_prefix=SRR2785298
+SRA_prefix=SRR610900
 
 path_to_ITS_clipping_file=~/misc_python/THAPBI/ITS_region_genomic_coverage
 
@@ -71,6 +71,7 @@ gunzip *.gz
 
 wget ${read_1_link}
 wget ${read_2_link}
+
 # EXAMPLE: Phytophthora_kernoviae.GCA_000333075.1.31.dna.genome.fa.gz => Phytophthora_kernoviae.GCA_000333075.1.31.
 #gunzip ${genome_prefix}*
 
@@ -82,7 +83,7 @@ cmd="makeblastdb -in ${genome_prefix}*.fa -dbtype nucl"
 echo ${cmd}
 eval ${cmd}
 
-cmd2="blastn -query ${path_to_ITS_clipping_file}/Phy_ITSregions_all_20160601.fasta -db ${genome_prefix}*.fa -outfmt 6 -out n.Pi_ITS_vs_${genome_prefix}.out" 
+cmd2="blastn -query ${path_to_ITS_clipping_file}/Phy_ITSregions_all_20160601.fasta -db ${genome_prefix}*.fna -outfmt 6 -out n.Pi_ITS_vs_${genome_prefix}.out" 
 echo ${cmd2}
 eval ${cmd2}
 
@@ -121,7 +122,7 @@ mkdir $TMP
 
 # index genome
 echo "index genome"
-cmd_index="bowtie2-build --quiet -f ${genome_prefix}*.fa bowtie_index_files" 
+cmd_index="bowtie2-build --quiet -f ${genome_prefix}*.fna bowtie_index_files" 
 echo ${cmd_index}
 eval ${cmd_index}
 

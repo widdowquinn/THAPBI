@@ -20,21 +20,24 @@ export TMP=~/scratch/${USER}_${JOB_ID}
 ##################################################################################################################################################################
 # THESE VARIABLE NEED TO BE FILLED IN BY USER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-species=
+species=Phytophthora_kernoviae
 
-genome_prefix=Phytophthora_kernoviae.GCA_000333075.1.31
+genome_prefix=Phytophthora_kernoviae.GCA_000333075.1.31.dna.genome
 
-genome_fasta=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/fasta/${species}/dna/${species}.GCA_000333075.1.31.dna.genome.fa.gz
+genome_fasta=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/fasta/phytophthora_kernoviae/dna/Phytophthora_kernoviae.GCA_000333075.1.31.dna.genome.fa.gz
 
-genome_GFF=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/gff3/${species}/${species}.GCA_000333075.1.31.gff3.gz
+genome_GFF=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/gff3/phytophthora_kernoviae/Phytophthora_kernoviae.GCA_000333075.1.31.gff3.gz
 
-read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_1.fastq.gz
+read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR639/SRR639379/SRR639379_1.fastq.gz
 
-read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_2.fastq.gz
+read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR639/SRR639379/SRR639379_2.fastq.gz
+
+read_1_b_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_1.fastq.gz
+read_2_b_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_2.fastq.gz
 
 trimmomatic_path=~/Downloads/Trimmomatic-0.32
 
-SRA_prefix=SRR2785298
+SRA_prefix=SRR639379
 
 path_to_ITS_clipping_file=~/misc_python/THAPBI/ITS_region_genomic_coverage
 
@@ -71,10 +74,19 @@ gunzip *.gz
 
 wget ${read_1_link}
 wget ${read_2_link}
+
+#mv *_1.fastq.gz > temp_1.fastq.gz
+#mv *_2.fastq.gz > temp_2.fastq.gz
+
+wget ${read_1_b_link}
+wget ${read_2_b_link}
+
 # EXAMPLE: Phytophthora_kernoviae.GCA_000333075.1.31.dna.genome.fa.gz => Phytophthora_kernoviae.GCA_000333075.1.31.
 #gunzip ${genome_prefix}*
+#cat *_1.fastq.gz > ${SRA_prefix}_1.fastq.gz
+#cat *_2.fastq.gz > ${SRA_prefix}_2.fastq.gz
 
-
+#rm temp_*.fastq.gz
 # blast to get representative ITS regions.
 
 echo " STEP2: blast searches"
@@ -102,7 +114,6 @@ wait
 cmd_python_ITS_consensus="python ${path_to_ITS_clipping_file}/filter_GFF.py --gff ${genome_prefix}.ITS.GFF -o ${genome_prefix}.ITS.consensus.GFF"
 echo ${cmd_python_ITS_consensus}
 eval ${cmd_python_ITS_consensus}
-
 
 wait
 #quality trim the reads
@@ -164,7 +175,6 @@ eval ${cmd_python_gene_to_gff}
 #old commands - doesnt always work 
 #cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
 #echo cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
-
 
 # use bedtools to get the number of reads that map to specific regions
 

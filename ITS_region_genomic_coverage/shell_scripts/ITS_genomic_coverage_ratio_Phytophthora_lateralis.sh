@@ -20,21 +20,21 @@ export TMP=~/scratch/${USER}_${JOB_ID}
 ##################################################################################################################################################################
 # THESE VARIABLE NEED TO BE FILLED IN BY USER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-species=
+species=Phytophthora_lateralis
 
-genome_prefix=Phytophthora_kernoviae.GCA_000333075.1.31
+genome_prefix=Phytophthora_lateralis.GCA_000318465.1.31
 
-genome_fasta=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/fasta/${species}/dna/${species}.GCA_000333075.1.31.dna.genome.fa.gz
+genome_fasta=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/fasta/phytophthora_lateralis/dna/Phytophthora_lateralis.GCA_000318465.1.31.dna.genome.fa.gz
 
-genome_GFF=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/gff3/${species}/${species}.GCA_000333075.1.31.gff3.gz
+genome_GFF=ftp://ftp.ensemblgenomes.org/pub/protists/release-31/gff3/phytophthora_lateralis/Phytophthora_lateralis.GCA_000318465.1.31.gff3.gz
 
-read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_1.fastq.gz
+read_1_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR610/SRR610737/SRR610737_1.fastq.gz
 
-read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR278/008/SRR2785298/SRR2785298_2.fastq.gz
+read_2_link=ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR610/SRR610737/SRR610737_2.fastq.gz
 
 trimmomatic_path=~/Downloads/Trimmomatic-0.32
 
-SRA_prefix=SRR2785298
+SRA_prefix=SRR610737
 
 path_to_ITS_clipping_file=~/misc_python/THAPBI/ITS_region_genomic_coverage
 
@@ -103,7 +103,6 @@ cmd_python_ITS_consensus="python ${path_to_ITS_clipping_file}/filter_GFF.py --gf
 echo ${cmd_python_ITS_consensus}
 eval ${cmd_python_ITS_consensus}
 
-
 wait
 #quality trim the reads
 echo "Trimming:"
@@ -164,7 +163,6 @@ eval ${cmd_python_gene_to_gff}
 #old commands - doesnt always work 
 #cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
 #echo cat ${genome_prefix}*gff3 | grep "ID=gene" | grep -v "mRNA" > ${genome_prefix}.gene.gff
-
 
 # use bedtools to get the number of reads that map to specific regions
 
