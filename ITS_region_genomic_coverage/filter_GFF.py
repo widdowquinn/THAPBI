@@ -148,23 +148,9 @@ def write_out_ITS_GFF(gff, out): # this is a long function
     #print "\n\nResults:"
     for concensus_hit in merged_blast_hits:
         GFF_out.write(concensus_hit+"\n")
-        
-        
-        
-            
-                    
-                    
-            
-        
-        
-            
-        
-        
 
-        #write to file
-        #GFF_out.write(out_format)
     #close the write file
-    #GFF_out.close()         
+    GFF_out.close()         
 
 
 ###########################################################################
