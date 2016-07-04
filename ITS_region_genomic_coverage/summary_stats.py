@@ -95,6 +95,9 @@ def write_out_stats(ITS_cov, GFF, all_genes_cov, out_file):
     ratio_info = "ITS to gene ratio = %.1f \n" %(float(ITSmean_cov) / GENEmean_cov)
     summary_stats_out.write(blast_hits_info)
     summary_stats_out.write(ratio_info)
+    final_count_info = "There may be %.1f ITS regions\n" %((int(number_of_ITS_blast_hits)\
+                                                    *(float(ITSmean_cov) / GENEmean_cov)))
+    summary_stats_out.write(final_count_info)
     
 
     #close the write file
