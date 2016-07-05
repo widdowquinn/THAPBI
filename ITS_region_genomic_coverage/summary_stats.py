@@ -55,8 +55,9 @@ def stat_tests(in_list):
     max_cov = max(in_list)
     mean_cov = mean(in_list)
     standard_dev = numpy.std(in_list)
+    median=numpy.median(in_list)
     assert min_cov <= mean_cov <= max_cov
-    return min_cov, max_cov, mean_cov, standard_dev
+    return min_cov, max_cov, mean_cov, median, standard_dev
 
 
 def write_out_stats(ITS_cov, GFF, all_genes_cov, out_file):
@@ -77,32 +78,44 @@ def write_out_stats(ITS_cov, GFF, all_genes_cov, out_file):
         raise ValueError("something wrong with all genes cov. file")
     # out file to write to
     summary_stats_out = open(out_file, "w")
-    title = "#gene_class\tmin_cov\tmax_cov\tmean_cov\tstandard_dev\n"
+    title = "#gene_class\tmin_cov\tmax_cov\tmean_cov\tstandard_dev\tmedian\n"
     summary_stats_out.write(title)
     
     # call stats function
-    ITSmin_cov, ITSmax_cov, ITSmean_cov, ITSstandard_dev = stat_tests(ITS_cov)
-    ITS_data_formatted = "ITS:\t%s\t%s\t%s\t%s\n" %(ITSmin_cov,\
-                    ITSmax_cov, ITSmean_cov, ITSstandard_dev)
+    ITSmin_cov, ITSmax_cov, ITSmean_cov, ITSmedian, ITSstandard_dev = stat_tests(ITS_cov)
+    ITS_data_formatted = "ITS:\t%s\t%s\t%s\t%s\t%s\n" %(ITSmin_cov,\
+                    ITSmax_cov, ITSmean_cov, ITSstandard_dev, ITSmedian)
     #write out ITS results
     summary_stats_out.write(ITS_data_formatted)
 
-    GENEmin_cov, GENEmax_cov, GENEmean_cov, GENEstandard_dev = stat_tests(all_genes_cov)
-    GENE_data_formatted = "allGenes:\t%s\t%s\t%.1f\t%.1f\n" %(GENEmin_cov,\
-                    GENEmax_cov, float(GENEmean_cov), float(GENEstandard_dev))
+    GENEmin_cov, GENEmax_cov, GENEmean_cov, GENEmedian, GENEstandard_dev = stat_tests(all_genes_cov)
+    GENE_data_formatted = "allGenes:\t%s\t%s\t%.1f\t%.1f\t%s\n" %(GENEmin_cov,\
+                    GENEmax_cov, float(GENEmean_cov), float(GENEstandard_dev), GENEmedian)
     summary_stats_out.write(GENE_data_formatted)
+
 
     blast_hits_info = "\nnumber of ITS_blast_hit = %s \n" %(number_of_ITS_blast_hits)
     number_of_all_genes_hits_out = "\nnumber of 'all genes' = %s \n" %(number_of_all_genes_hits)
     ratio_info = "\nITS to gene ratio = %.1f \n" %(float(ITSmean_cov) / GENEmean_cov)
     summary_stats_out.write(blast_hits_info)
     summary_stats_out.write(number_of_all_genes_hits_out)
+    
+    #results based on mean coverage values
+    summary_stats_out.write("\n#BASED on MEAN coverage values")
+    
     summary_stats_out.write(ratio_info)
     final_count_info = "There may be %.1f ITS regions\n" %((int(number_of_ITS_blast_hits)\
                                                     *(float(ITSmean_cov) / GENEmean_cov)))
     #print final_count_info
     summary_stats_out.write(final_count_info)
-    
+
+    #results based on median coverage values
+    summary_stats_out.write("\n#BASED on MEDIAN coverage values")
+    ratio_info = "\nITS to gene ratio = %.1f \n" %(float(ITSmedian) / GENEmedian)
+    summary_stats_out.write(ratio_info)
+    final_count_info = "There may be %.1f ITS regions\n" %((int(number_of_ITS_blast_hits)\
+                                                    *(float(ITSmedian) / GENEmedian)))
+    summary_stats_out.write(final_count_info)
 
     #close the write file
     summary_stats_out.close()         
