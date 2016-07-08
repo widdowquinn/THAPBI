@@ -17,11 +17,11 @@ echo Current PATH is $PATH
 cd ~/scratch/tree_health/ITS_ratio
 export TMP=~/scratch/${USER}_${JOB_ID}
 
-##################################################################################################################################################################
+##
 # THESE VARIABLE NEED TO BE FILLED IN BY USER from the species scripts
 
 
-##################################################################################################################################################################
+##
 
 
 mkdir ${genome_prefix}
@@ -35,7 +35,7 @@ read_2_link = ${read_2_link},
 genome_fasta = ${genome_fasta} 
 genome_GFF = ${genome_GFF}
 num_threads = ${num_threads}
-path_to_ITS_clipping_file = ${path_to_ITS_clipping_file}
+repository_path = ${repository_path}
 trimmomatic_path = ${trimmomatic_path}
 "
 
@@ -44,30 +44,30 @@ trimmomatic_path = ${trimmomatic_path}
 #wget ${read_1_link}
 #wget ${read_2_link}
 #makeblastdb -in ${genome_prefix}*.fa -dbtype nucl
-#blastn -query ${path_to_ITS_clipping_file}/Phy_ITSregions_all_20160601.fasta -db ${genome_prefix}.fa -outfmt 6 -out n.ITS_vs_${genome_prefix}.out
-#python ${path_to_ITS_clipping_file}/generate_ITS_GFF.py --blast n.ITS_vs_${genome_prefix}.out --prefix ${genome_prefix} -o ${genome_prefix}.ITS.GFF
-#python ${path_to_ITS_clipping_file}/filter_GFF.py --gff ${genome_prefix}.ITS.GFF -o ${genome_prefix}.ITS.consensus.GFF
+#blastn -query ${repository_path}/Phy_ITSregions_all_20160601.fasta -db ${genome_prefix}.fa -outfmt 6 -out n.ITS_vs_${genome_prefix}.out
+#python ${repository_path}/generate_ITS_GFF.py --blast n.ITS_vs_${genome_prefix}.out --prefix ${genome_prefix} -o ${genome_prefix}.ITS.GFF
+#python ${repository_path}/filter_GFF.py --gff ${genome_prefix}.ITS.GFF -o ${genome_prefix}.ITS.consensus.GFF
 #cat ${genome_prefix}.ITS.GFF | uniq | sort -k1,1 -k4n -k5n > temp.out
 #mv temp.out ${genome_prefix}.ITS.GFF
 #python3 ${HOME}/scratch/Downloads/BUSCO_v1.1b1/BUSCO_v1.1b1.py -in ${genome_prefix}.fa -l ../LINEAGE/eukaryota -o busco -m genome -f -Z 827000000 --cpu ${num_threads}
-#python ${path_to_ITS_clipping_file}/convert_busco_coodinates_to_GFF.py -b ./run_busco/coordinates_busco --prefix ${genome_prefix}_BUSCO_GENES.gff -o ${genome_prefix}_BUSCO_GENES.gene.gff
+#python ${repository_path}/convert_busco_coodinates_to_GFF.py -b ./run_busco/coordinates_busco --prefix ${genome_prefix}_BUSCO_GENES.gff -o ${genome_prefix}_BUSCO_GENES.gene.gff
 #cat ${genome_prefix}_BUSCO_GENES.gene.gff | uniq | sort -k1,1 -k4n -k5n > temp.out
 #mv temp.out ${genome_prefix}_BUSCO_GENES.gene.gff
-#java -jar ${trimmomatic_path}/trimmomatic-0.32.jar PE -threads ${num_threads} -phred33 ${SRA_prefix}_1.fastq.gz ${SRA_prefix}_2.fastq.gz R1.fq.gz unpaired_R1.fq.gz R2.fq.gz unpaired_R2.fq.gz ILLUMINACLIP:${path_to_ITS_clipping_file}/TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:45
+#java -jar ${trimmomatic_path}/trimmomatic-0.32.jar PE -threads ${num_threads} -phred33 ${SRA_prefix}_1.fastq.gz ${SRA_prefix}_2.fastq.gz R1.fq.gz unpaired_R1.fq.gz R2.fq.gz unpaired_R2.fq.gz ILLUMINACLIP:${repository_path}/TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:45
 #bowtie2-build --quiet -f ${genome_prefix}.fa bowtie_index_files
 #bowtie2 --very-sensitive --non-deterministic --seed 1 --no-mixed --no-unal -p ${num_threads} -x bowtie_index_files -1 R1.fq.gz -2 R2.fq.gz | samtools view -@ ${num_threads} -S -b -o $TMP/tmp_unsorted.bam -
 #samtools sort -@ ${num_threads} $TMP/tmp_unsorted.bam ${genome_prefix}
-#python ${path_to_ITS_clipping_file}/get_genes_from_GFF.py --gff ${genome_prefix}.gff3 -o ${genome_prefix}.gene.gff
+#python ${repository_path}/get_genes_from_GFF.py --gff ${genome_prefix}.gff3 -o ${genome_prefix}.gene.gff
 #bedtools multicov -bams ${genome_prefix}.bam -bed ${genome_prefix}_BUSCO_GENES.gene.gff > ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov
 #bedtools multicov -bams ${genome_prefix}.bam -bed ${genome_prefix}.gene.gff > ${genome_prefix}_genomic.genes.cov
 #bedtools multicov -bams ${genome_prefix}.bam -bed ${genome_prefix}.ITS.consensus.GFF > ${genome_prefix}_genomic.ITS.cov
 #cat ${genome_prefix}_genomic.genes.cov  | cut -f10 > ${genome_prefix}_genomic.genes.cov.values
 #cat  ${genome_prefix}_genomic.ITS.cov | cut -f10 >  ${genome_prefix}_genomic.ITS.cov.values
 #cat  ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov | cut -f10 >  ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values
-#python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats_all_genes_versus_ITS.out
-#python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values -o ${genome_prefix}_stats_BUSCO_versus_ITS.out" > ${genome_fasta}.COMMANDS.txt
+#python ${repository_path}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats_all_genes_versus_ITS.out
+#python ${repository_path}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values -o ${genome_prefix}_stats_BUSCO_versus_ITS.out" > ${genome_fasta}.COMMANDS.txt
 
-#################################################################################
+#
 #reads genome and GFF, gunzip 
 
 # i get my reads from: http://www.ebi.ac.uk/ena/data/warehouse/search
@@ -116,14 +116,14 @@ cmd="makeblastdb -in ${genome_prefix}*.fa -dbtype nucl"
 echo ${cmd}
 eval ${cmd}
 
-cmd2="blastn -query ${path_to_ITS_clipping_file}/Phy_ITSregions_all_20160601.fasta -db ${genome_prefix}.fa -outfmt 6 -out n.ITS_vs_${genome_prefix}.out" 
+cmd2="blastn -query ${repository_path}/Phy_ITSregions_all_20160601.fasta -db ${genome_prefix}.fa -outfmt 6 -out n.ITS_vs_${genome_prefix}.out" 
 echo ${cmd2}
 eval ${cmd2}
 
 
 # prepare ITS gff. python:
 echo "STEP 3: prepare ITS gff. python "
-cmd_python_ITS="python ${path_to_ITS_clipping_file}/generate_ITS_GFF.py --blast n.ITS_vs_${genome_prefix}.out --prefix ${genome_prefix} -o ${genome_prefix}.ITS.GFF" 
+cmd_python_ITS="python ${repository_path}/generate_ITS_GFF.py --blast n.ITS_vs_${genome_prefix}.out --prefix ${genome_prefix} -o ${genome_prefix}.ITS.GFF" 
 echo ${cmd_python_ITS}
 eval ${cmd_python_ITS}
 
@@ -132,11 +132,22 @@ mv temp.out ${genome_prefix}.ITS.GFF
 
 # genearate consensus blast hit ITS GFF file from the sorted file above.
 wait
-cmd_python_ITS_consensus="python ${path_to_ITS_clipping_file}/filter_GFF.py --gff ${genome_prefix}.ITS.GFF -o ${genome_prefix}.ITS.consensus.GFF"
+cmd_python_ITS_consensus="python ${repository_path}/filter_GFF.py --gff ${genome_prefix}.ITS.GFF -o ${genome_prefix}.ITS.consensus.GFF"
 echo ${cmd_python_ITS_consensus}
 eval ${cmd_python_ITS_consensus}
 
-###############################################################################################################################################################
+# hmm search with pre generated hmm profile for phyto ITS regions.
+#most strict with least gap at the expense of good alignment
+#hmmsearch --cut_ga --domtblout ${genome_prefix}.gap8000.refine.hmm.tab ${repository_path}/ITS_remove_redundancy/Phy_ITSnr100.muscle.gap8000.refine.hmm ${genome_prefix}.fa
+# decent alignment and removed some gaps ...
+hmmsearch --cut_ga --domtblout ${genome_prefix}.gap4000.refine.hmm.tab ${repository_path}/ITS_remove_redundancy/Phy_ITSnr100.muscle.gap4000.refine.hmm ${genome_prefix}.fa
+# similar to above but sightly more gaps
+hmmsearch --cut_ga --domtblout ${genome_prefix}.gap1000.refine.hmm.tab ${repository_path}/ITS_remove_redundancy/Phy_ITSnr100.muscle.gap1000.refine.hmm ${genome_prefix}.fa
+# alignmnet with lots of gaps used to make hmm profile
+#hmmbuild oufile infile
+hmmsearch --cut_ga --domtblout ${genome_prefix}.Phy_ITSregions_all_20160601_nr100.fasta.aligned.refine.tab ${repository_path}/ITS_remove_redundancy/Phy_ITSregions_all_20160601_nr100.fasta.aligned.refine.hmm ${genome_prefix}.fa
+
+###
 #for for eukaryotes - BUSCO --long removed for testing
 #mkdir LINEAGE 
 #ln -s /home/pt40963/scratch/Downloads/BUSCO_v1.1b1/eukaryota ./LINEAGE/
@@ -156,7 +167,7 @@ wait
 
 # prepare a busco gff
 
-cmd_python_busc_coordinate_to_gff="python ${path_to_ITS_clipping_file}/convert_busco_coodinates_to_GFF.py -b ./run_busco/coordinates_busco --prefix ${genome_prefix}_BUSCO_GENES.gff -o ${genome_prefix}_BUSCO_GENES.gene.gff"
+cmd_python_busc_coordinate_to_gff="python ${repository_path}/convert_busco_coodinates_to_GFF.py -b ./run_busco/coordinates_busco --prefix ${genome_prefix}_BUSCO_GENES.gff -o ${genome_prefix}_BUSCO_GENES.gene.gff"
 echo ${cmd_python_busc_coordinate_to_gff}
 eval ${cmd_python_busc_coordinate_to_gff}
 wait
@@ -165,15 +176,15 @@ mv temp.out ${genome_prefix}_BUSCO_GENES.gene.gff
 
 # get only the genes, not bothered about other stuff ...
 #echo "prepare GFF for genes only"
-#cmd_python_gene_to_gff=" python ${path_to_ITS_clipping_file}/get_genes_from_GFF.py --gff ${genome_prefix}_BUSCO_GENES.gff -o ${genome_prefix}_BUSCO_GENES.gene.gff"
+#cmd_python_gene_to_gff=" python ${repository_path}/get_genes_from_GFF.py --gff ${genome_prefix}_BUSCO_GENES.gff -o ${genome_prefix}_BUSCO_GENES.gene.gff"
 #echo ${cmd_python_gene_to_gff}
 #eval ${cmd_python_gene_to_gff}
-###############################################################################################################################################################
+###
 
 wait
 #quality trim the reads
 echo "Trimming:"
-cmd_trimming="java -jar ${trimmomatic_path}/trimmomatic-0.32.jar PE -threads ${num_threads} -phred33 ${SRA_prefix}_1.fastq.gz ${SRA_prefix}_2.fastq.gz R1.fq.gz unpaired_R1.fq.gz R2.fq.gz unpaired_R2.fq.gz ILLUMINACLIP:${path_to_ITS_clipping_file}/TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:45" 
+cmd_trimming="java -jar ${trimmomatic_path}/trimmomatic-0.32.jar PE -threads ${num_threads} -phred33 ${SRA_prefix}_1.fastq.gz ${SRA_prefix}_2.fastq.gz R1.fq.gz unpaired_R1.fq.gz R2.fq.gz unpaired_R2.fq.gz ILLUMINACLIP:${repository_path}/TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:45" 
 echo ${cmd_trimming}
 eval ${cmd_trimming}
 echo "Trimming done"
@@ -223,7 +234,7 @@ rmdir $TMP
 
 # get only the genes, not bothered about other stuff ...
 echo "prepare GFF for genes only"
-cmd_python_gene_to_gff="python ${path_to_ITS_clipping_file}/get_genes_from_GFF.py --gff ${genome_prefix}.gff3 -o ${genome_prefix}.gene.gff"
+cmd_python_gene_to_gff="python ${repository_path}/get_genes_from_GFF.py --gff ${genome_prefix}.gff3 -o ${genome_prefix}.gene.gff"
 echo ${cmd_python_gene_to_gff}
 eval ${cmd_python_gene_to_gff}
  
@@ -264,10 +275,10 @@ cut -f10 ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov>  ${genome_prefix}_BUSC
 echo cut -f10 ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov to  ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values
 
 # get stats summary of coverages
-python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats_all_genes_versus_ITS.out
-echo python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats_all_genes_versus_ITS.out
+python ${repository_path}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats_all_genes_versus_ITS.out
+echo python ${repository_path}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats_all_genes_versus_ITS.out
 
 # get stats summary of coverages with BUSCO genes
-python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values -o ${genome_prefix}_stats_BUSCO_versus_ITS.out
-echo python ${path_to_ITS_clipping_file}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values -o ${genome_prefix}_stats_BUSCO_versus_ITS.out
+python ${repository_path}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values -o ${genome_prefix}_stats_BUSCO_versus_ITS.out
+echo python ${repository_path}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values -o ${genome_prefix}_stats_BUSCO_versus_ITS.out
 
