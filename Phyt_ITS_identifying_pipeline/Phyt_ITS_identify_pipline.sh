@@ -10,7 +10,9 @@
 
 trimmomatic_path=~/Downloads/Trimmomatic-0.32
 
-repository_path=~/misc_python/THAPBI/ITS_region_genomic_coverage
+repository_path=~/misc_python/THAPBI/Phyt_ITS_identifying_pipeline
+
+read_name_prefix="M01157:20:000000000-D07KA:1:"
 
 num_threads=4
 
@@ -52,7 +54,6 @@ fastqc R1.fq.gz
 fastqc R2.fq.gz
 
 
-
 # Move untrimmed, collated read files to output subdirectory
 mv DCM1.fastq fastq-join_joined
 mv DCM2.fastq fastq-join_joined
@@ -68,8 +69,6 @@ echo "cmd_pear done"
 # Move the joined read files to the output subdirectory
 mv fastq-join_joined.assembled.fastq fastq-join_joined
 
-# Remove all .zip files in current directory
-rm *.zip
 
 # Change directory to the output subdirectory
 cd fastq-join_joined
@@ -79,23 +78,29 @@ fastqc fastqjoin.join.fastq
 
 # Convert read format from FASTQ to FASTA
 # convert_format comes from seq_crumbs: https://github.com/JoseBlanca/seq_crumbs
-convert_format -t fastq -o fastqjoin.join.fasta -f fasta fastq-join_joined.assembled.fastq
-
-# Trim something?
-# This seems to be adaptor sequences, from the Materials and Methods
-python trim_longitudes.py # this script take off the first and last 20 bp? needed???
-
-# Cluster FASTA reads with BLASTCLUST and [convert output to FASTA]?
-#blastclust -L 0.90 -S 99 -i fastqjoin.join.fasta -o fastqjoin.join.blastclust99.lst -a 4 -p F
+echo "converting the fq to fa file"
+cmd_convert="convert_format -t fastq -o fastqjoin.join.fasta -f fasta fastq-join_joined.assembled.fastq" 
+echo ${cmd_convert}
+eval ${cmd_convert}
+echo "cmd_convert done"
 
 
 #cluster with swarm.
 #need to rename the reads.
-python 
-swarm [OPTIONS] [filename]
 
- swarm -d 1 -o swarm_results test.fasta
-swarm -t ${num_threads} 
+echo "renaming the fa id. Swarm doesnt like these as they are"
+cmd_rename="python ${repository_path}/re_format_fasta.py -f fastqjoin.join.fasta --prefix ${read_name_prefix}" 
+echo ${cmd_rename}
+eval ${cmd_rename}
+echo "cmd_rename done"
+
+echo "running swarm: swarm [OPTIONS] [filename]"
+cmd_swarm="swarm -t ${num_threads} -d 1 -o swarm_results fastqjoin.join_alt.fasta" 
+echo ${cmd_swarm}
+eval ${cmd_swarm}
+echo "cmd_swarm done"
+ 
+swarm -t ${num_threads} -d 1 -o swarm_results temp.fasta 
 		   
 python blastclust_lst2fasta.py
 
@@ -122,5 +127,5 @@ do
 done
 
 # Use QIIME to pick OTUs
-pick_closed_reference_otus.py -i fastqjoin.join.fasta -r reference.fasta -o otus/
-pick_otus.py -i fastqjoin.join.fasta -r reference.fasta -m uclust_ref -s 0.99
+python ~/bin/pick_closed_reference_otus.py -i fastqjoin.join.fasta -r reference.fasta -o otus/
+python ~/bin/pick_otus.py  -i fastqjoin.join.fasta -r reference.fasta -m uclust_ref -s 0.99
