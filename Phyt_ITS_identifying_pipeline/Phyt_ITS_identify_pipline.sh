@@ -30,6 +30,7 @@ export trimmomatic_path
 export repository_path
 export num_threads
 
+cd $HOME/misc_python/THAPBI/Phyt_ITS_identifying_pipeline/data
 
 # Create directory for output
 mkdir fastq-join_joined
@@ -67,11 +68,6 @@ echo ${cmd_fastqc2}
 eval ${cmd_fastqc2}
 echo "cmd_fastqc done"
 
-
-# Move untrimmed, collated read files to output subdirectory
-mv DCM1.fastq ${Name_of_project}_outfiles
-mv DCM2.fastq ${Name_of_project}_outfiles
-
 # Join trimmed paired-end read files together
 # use a program called PEAR
 echo "puttin the reads together:"
@@ -82,7 +78,6 @@ echo "cmd_pear done"
 
 # Move the joined read files to the output subdirectory
 mv ${Name_of_project}_PEAR.assembled.fastq ${Name_of_project}_outfiles
-
 
 # Change directory to the output subdirectory
 cd ${Name_of_project}_outfiles
@@ -114,8 +109,12 @@ echo ${cmd_swarm}
 eval ${cmd_swarm}
 echo "cmd_swarm done"
  
-swarm -t ${num_threads} -d 1 -o swarm_results temp.fasta 
-		   
+swarm -t ${num_threads} -d 1 -o Phy_ITSregions_all_20160601.fixed02.fasta.swarm_clusters Phy_ITSregions_all_20160601.fixed02.fasta 
+
+
+python ${repository_path}/parse_clusters.py -i ${repository_path}/data/fastq-join_joined/Phy_ITSregions_all_20160601.fixed02.fasta.swarm_clusters
+
+	   
 python blastclust_lst2fasta.py
 
 # Create subdirectories for output
