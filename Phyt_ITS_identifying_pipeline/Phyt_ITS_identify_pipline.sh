@@ -36,11 +36,6 @@ export num_threads
 cd ${working_directory_path}
 
 
-# for the databases of ITS sequences. Swarm needs these reformatting:
-python ${repository_path}/completely_rename_ID.py -f ${repository_path}/Santi_database.fasta -d ${repository_path}/santi_old_to_new_names.out -o ${repository_path}/Santi_database_alt_names.fasta
- 
-
-
 # Create directory for output
 mkdir fastq-join_joined
 
@@ -107,7 +102,7 @@ echo "cmd_convert done"
 #need to rename the reads.
 
 echo "renaming the fa id. Swarm doesnt like these as they are"
-cmd_rename="python ${repository_path}/re_format_fasta.py -f fastqjoin.join.fasta --prefix ${read_name_prefix}" 
+cmd_rename="python ${repository_path}/Python_ITS_scripts/re_format_fasta.py -f fastqjoin.join.fasta --prefix ${read_name_prefix}" 
 echo ${cmd_rename}
 eval ${cmd_rename}
 echo "cmd_rename done"
@@ -127,38 +122,40 @@ do
 	echo ${swarm_command}
 	eval ${swarm_command}
 	wait
-	py_command="python ${repository_path}/parse_clusters.py -i ${repository_path}/data/fastq-join_joined/Phy_ITSregions_all_20160601.fixed02.fasta.swarm_clusters_d${v} -o swarm_clusters_d${v}" 
+	py_command="python ${repository_path}/Python_ITS_scripts/parse_clusters.py -i ${repository_path}/data/fastq-join_joined/Phy_ITSregions_all_20160601.fixed02.fasta.swarm_clusters_d${v} -o swarm_clusters_d${v}" 
 	echo ${py_command}
 	eval ${py_command}
 	
 done
-	   
+
+#clustering of santi's database:
+# for the databases of ITS sequences. Swarm needs these reformatting:
+python ${repository_path}/Python_ITS_scripts/completely_rename_ID.py -f ${repository_path}/Santi_database.fasta -d ${repository_path}/santi_old_to_new_names.out -o ${repository_path}/Santi_database_alt_names.fasta  
+
 swarm -t ${num_threads} -d 1 -o ${repository_path}/Santi_database.fasta.swarm_clusters_d1 ${repository_path}/Santi_database.fasta
 
-python ${repository_path}/parse_clusters.py -i ${repository_path}/Santi_database.fasta.swarm_clusters_d1 -d ${repository_path}/santi_old_to_new_names.out -o ${repository_path}/Santi_database.fasta.swarm_clusters_d1
+python ${repository_path}/Python_ITS_scripts/parse_clusters.py -i ${repository_path}/Santi_database.fasta.swarm_clusters_d1 -d ${repository_path}/santi_old_to_new_names.out -o ${repository_path}/Santi_database.fasta.swarm_clusters_d1
 
-# Create subdirectories for output
-mkdir data
-mkdir scripts
-mv *.py scripts
-mkdir align
 
-# Move output to subdirectories
-mv *OTU* align
-mv *fastq data
-mv *lst data
-mc *.fasta data
-mc *txt data
-rm *.zip
-mv *error* data
+# create graphs based on clustering information
+python ${repository_path}/Python_ITS_scripts/draw_bar_chart_of_clusters.py -i ${repository_path}/Santi_database.fasta.swarm_clusters_d1_RESULTS -o testing
 
-# Change to align subdirectory, and run MUSCLE alignment
-cd align
-for i in fasta
-do
-  muscle -in $i -out $i"_muscle.fasta"
-done
 
-# Use QIIME to pick OTUs
-python ~/bin/pick_closed_reference_otus.py -i fastqjoin.join.fasta -r reference.fasta -o otus/
-python ~/bin/pick_otus.py  -i fastqjoin.join.fasta -r reference.fasta -m uclust_ref -s 0.99
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

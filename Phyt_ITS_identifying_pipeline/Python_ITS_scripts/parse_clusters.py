@@ -73,7 +73,7 @@ def parse_tab_file_get_clusters(filename1, database, out_file):
             #print member
             try:
                 species = coded_name_to_species_dict[member]
-                #print species
+                print species
             except:
                 KeyError
                 rev_coded_name_to_species_dict = rev_coded_name_to_species(database)
