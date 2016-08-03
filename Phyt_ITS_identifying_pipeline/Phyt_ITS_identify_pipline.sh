@@ -22,6 +22,8 @@ repository_path=~/misc_python/THAPBI/Phyt_ITS_identifying_pipeline
 
 num_threads=4
 
+working_directory_path=$HOME/misc_python/THAPBI/Phyt_ITS_identifying_pipeline/data
+
 
 # NOTHING TO BE FILLED IN BY USER FROM HERE!!!!
 ##################################################################################################################################################################
@@ -30,7 +32,14 @@ export trimmomatic_path
 export repository_path
 export num_threads
 
-cd $HOME/misc_python/THAPBI/Phyt_ITS_identifying_pipeline/data
+
+cd ${working_directory_path}
+
+
+# for the databases of ITS sequences. Swarm needs these reformatting:
+python ${repository_path}/completely_rename_ID.py -f ${repository_path}/Santi_database.fasta -d ${repository_path}/santi_old_to_new_names.out -o ${repository_path}/Santi_database_alt_names.fasta
+ 
+
 
 # Create directory for output
 mkdir fastq-join_joined
@@ -108,14 +117,25 @@ cmd_swarm="swarm -t ${num_threads} -d 1 -o swarm_results fastqjoin.join_alt.fast
 echo ${cmd_swarm}
 eval ${cmd_swarm}
 echo "cmd_swarm done"
- 
-swarm -t ${num_threads} -d 1 -o Phy_ITSregions_all_20160601.fixed02.fasta.swarm_clusters Phy_ITSregions_all_20160601.fixed02.fasta 
 
 
-python ${repository_path}/parse_clusters.py -i ${repository_path}/data/fastq-join_joined/Phy_ITSregions_all_20160601.fixed02.fasta.swarm_clusters
-
+# to test different parameters with swarm
+values="0,1,2,3"
+for v in ${values}
+do
+	swarm_command="swarm -t ${num_threads} -d ${v} -o Phy_ITSregions_all_20160601.fixed02.fasta.swarm_clusters_d${v} Phy_ITSregions_all_20160601.coded_name.fasta" 
+	echo ${swarm_command}
+	eval ${swarm_command}
+	wait
+	py_command="python ${repository_path}/parse_clusters.py -i ${repository_path}/data/fastq-join_joined/Phy_ITSregions_all_20160601.fixed02.fasta.swarm_clusters_d${v} -o swarm_clusters_d${v}" 
+	echo ${py_command}
+	eval ${py_command}
+	
+done
 	   
-python blastclust_lst2fasta.py
+swarm -t ${num_threads} -d 1 -o ${repository_path}/Santi_database.fasta.swarm_clusters_d1 ${repository_path}/Santi_database.fasta
+
+python ${repository_path}/parse_clusters.py -i ${repository_path}/Santi_database.fasta.swarm_clusters_d1 -d ${repository_path}/santi_old_to_new_names.out -o ${repository_path}/Santi_database.fasta.swarm_clusters_d1
 
 # Create subdirectories for output
 mkdir data

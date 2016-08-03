@@ -30,12 +30,30 @@ def coded_name_to_species(database_file):
         coded_name_to_species_dict[coded_name.rstrip()] = species
     return coded_name_to_species_dict
 
+def rev_coded_name_to_species(database_file):
+    """functiong takes the already generated tab separated
+    database of coded name to species file. Returns a dic
+    of coded_name to species"""
+    with open(database_file) as file:
+        data= file.read().split("\n")
+    rev_coded_name_to_species_dict=dict()
+    for line in data:
+        if not line.strip():
+            continue #if the last line is blank
+        if line.startswith("#"):
+            continue 
+        #print line
+        coded_name, species = line.split("\t")
+        #print coded_name, species
+        rev_coded_name_to_species_dict[species] = coded_name.rstrip()
+    return rev_coded_name_to_species_dict
+
 def parse_tab_file_get_clusters(filename1, database, out_file):
     """#script to open up a tab separeted clustering output and identify the
     species in the clustering"""
     #call the function to get the dictionary populated with the database
     coded_name_to_species_dict = coded_name_to_species(database)
-    #print coded_name_to_species_dict
+    print coded_name_to_species_dict
     cluster_file = open (filename1, "r")
     summary_out_file = open(out_file, "w")
 
@@ -55,10 +73,11 @@ def parse_tab_file_get_clusters(filename1, database, out_file):
             #print member
             try:
                 species = coded_name_to_species_dict[member]
-                #print species
+                print species
             except:
                 KeyError
-                species = ""
+                rev_coded_name_to_species_dict = rev_coded_name_to_species(database)
+                species = rev_coded_name_to_species_dict[member.rstrip()]
             #add the info to a str which we will write at the end of the cluster line    
             cluster_summary = "%s\t" %(species)
             out_put_str = out_put_str+cluster_summary

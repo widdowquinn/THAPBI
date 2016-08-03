@@ -5,8 +5,7 @@ import sys
 from optparse import OptionParser
 
 #Title:
-#script to reformt scaffold names for Braker.
-#remove pipes and reduce the length of the names
+#script to reformt fasta ID names.
 
 #############################################################################
 #functions
