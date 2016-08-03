@@ -15,6 +15,7 @@ import matplotlib
 import numpy
 
 
+
 ##############################################################################################
 # drawing a histogram
 #n, bins, patches = hist(data)
@@ -71,22 +72,27 @@ def covert_dict_to_list_of_value(in_dict):
     return sorted(output_list), number_of_keys
 
 def plot_graph(data_values, title, number_of_keys, file_in):
+    """function to draw a histogram of a given list of values.
+    http://matplotlib.org/1.3.0/examples/pylab_examples/histogram_demo_extended.html
+    https://github.com/widdowquinn/Teaching-Data-Visualisation/blob/master/exercises/one_variable_continuous/one_variable_continuous.ipynb
+    """
         #import matplotlib
         matplotlib.use('Agg')
         import pylab
         import matplotlib.mlab as mlab
-        bins = max(data_values)
-        pylab.hist(data_values, facecolor='blue')
-        mu = mean(data_values)
-        standard_dev = numpy.std(data_values)
+        #bins = max(data_values)
+        #pylab.hist(data_values, facecolor='blue')
+        pylab.hist(data_values, facecolor='green', alpha=0.6)
+
+        #mu = mean(data_values)
+        #standard_dev = numpy.std(data_values)
         # add a 'best fit' line
-        y = mlab.normpdf(bins, mu, standard_dev)
-        l = pylab.plot(bins, y, 'r--', linewidth=10)
+        #y = mlab.normpdf(bins, mu, standard_dev)
+        #l = pylab.plot(bins, y, 'r--', linewidth=1, color='blue')
         pylab.grid(True)
         pylab.title(title)
         pylab.xlabel('number in cluster')
         pylab.ylabel('Count')
-        pylab.show()
         pylab.savefig(file_in+"_"+title+'_histogram.png')
 
         os.chdir('..')
@@ -169,6 +175,8 @@ parser = OptionParser(usage=usage)
 
 parser.add_option("-i","--in", dest="in_file", default=None,
                   help="clustering out file")
+parser.add_option("--heatmap", dest="heatmap", default=False,
+                  help="draw a heat map of the species clustering")
 
 parser.add_option("-o", "--out_prefix", dest="out_file", default="summarise_clusters.out",
                   help="prefix to the output filenames")
@@ -177,10 +185,14 @@ parser.add_option("-o", "--out_prefix", dest="out_file", default="summarise_clus
 (options, args) = parser.parse_args()
 
 in_file = options.in_file
+heatmap = options.heatmap
 out_file = options.out_file
 
 #run the program
 
 parse_tab_file_get_clusters(in_file, out_file)
+
+if heatmap:
+    from draw_heat_map import *
 
 print "done"

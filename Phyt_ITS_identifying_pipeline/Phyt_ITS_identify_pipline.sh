@@ -108,6 +108,7 @@ eval ${cmd_rename}
 echo "cmd_rename done"
 
 echo "running swarm: swarm [OPTIONS] [filename]"
+#https://github.com/torognes/swarm/blob/master/man/swarm_manual.pdf
 cmd_swarm="swarm -t ${num_threads} -d 1 -o swarm_results fastqjoin.join_alt.fasta" 
 echo ${cmd_swarm}
 eval ${cmd_swarm}
