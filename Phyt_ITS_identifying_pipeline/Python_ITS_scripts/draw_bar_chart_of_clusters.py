@@ -22,6 +22,10 @@ import matplotlib.pyplot as plt
 import numpy
 import pylab
 
+# Turn off warning messages
+import warnings
+warnings.filterwarnings('ignore')
+
 
 ##############################################################################################
 # drawing a histogram
@@ -66,6 +70,7 @@ except ImportError:
         return sum(list_of_values) / float(len(list_of_values))
 
 assert mean([1,2,3,4,5]) == 3
+
 def covert_dict_to_list_of_value(in_dict):
     """function to convert a given dict, to convert it to a
     list of value. In dict should be something like this:
@@ -73,12 +78,27 @@ def covert_dict_to_list_of_value(in_dict):
     #need this value to plot the number of histogram bars
     number_of_keys = len(in_dict.keys())
     output_list = []
+    key_list = []
+    max_val = 0
+    vals_for_bar_chart = []
     for key, val in in_dict.items():
+        key_list.append(key)
 	for i in range(0,val):
             output_list.append(key)
-    return sorted(output_list), number_of_keys
+            #get the maximum val for graph
+            if val > max_val:
+                max_val = val
+    for i in range(1, max(key_list)+1):
+        try:
+            val = in_dict[i]
+            vals_for_bar_chart.append(val)
+        except:
+            KeyError
+            vals_for_bar_chart.append(0)
 
-def plot_hitstogram_graph(data_values, title, number_of_keys, file_in):
+    return sorted(output_list), number_of_keys, max_val, vals_for_bar_chart
+
+def plot_hitstogram_graph(data_values, title, number_of_keys, max_val, file_in):
     """function to draw a histogram of a given list of values.
     http://matplotlib.org/1.3.0/examples/pylab_examples/histogram_demo_extended.html
     https://github.com/widdowquinn/Teaching-Data-Visualisation/blob/master/exercises/one_variable_continuous/one_variable_continuous.ipynb
@@ -88,40 +108,78 @@ def plot_hitstogram_graph(data_values, title, number_of_keys, file_in):
     #pylab.hist(data_values, facecolor='blue')
     pylab.hist(data_values, facecolor='green', alpha=0.6)
     pylab.grid(True)
-    pylab.title(title)
+    pylab.title(title+"_histogram")
     pylab.xlabel('number in cluster')
     pylab.ylabel('Count')
     pylab.savefig(file_in+"_"+title+'_histogram.png')
+    plt.close()
+    pylab.close()
 
     os.chdir('..')
 
-def plot_bar_chart_graph(data_values, title, number_of_keys, file_in):
+def plot_bar_chart_graph(data_values, title, number_of_keys, max_val, vals_for_bar_chart, file_in):
     """function to draw a bar of a given list of values.
     FOR these data this IS the correct type of graph.
     http://matplotlib.org/examples/api/barchart_demo.html
     https://github.com/widdowquinn/Teaching-Data-Visualisation/blob/master/exercises/one_variable_continuous/one_variable_continuous.ipynb
+    bar(left, height, width=0.8, bottom=None, hold=None, **kwargs)
     """
-     # Create figure
-    
-    fig = plt.figure()
+    import numpy as np
+    import matplotlib.pyplot as plt
+    print "title", title, "values: ", vals_for_bar_chart
 
-    # Create subplot axes
-    ax1 = fig.add_subplot(1, 3, 1)  # 1x3 grid, position 1
-    ax2 = fig.add_subplot(1, 3, 2)  # 1x3 grid, position 1
-    ax3 = fig.add_subplot(1, 3, 3)  # 1x3 grid, position 1
+    n_groups = len(vals_for_bar_chart)
 
-    ind = numpy.arange(max(data_values))
-    width = 1.0       # the width of the bars
-    # set ax1 as a bar chart
-    rects1 = ax1.bar(ind, data_values, width, color='r')
-    # add some text for labels, title and axes ticks
-    ax1.set_ylabel('Count')
-    ax1.set_xlabel('number in cluster')
-    ax1.set_title(title)
-    ax1.set_xticks(ind + width)
-    #ax1.set_xticklabels(('G1', 'G2', 'G3', 'G4', 'G5'))
+    fig, ax = plt.subplots()
+
+    index = np.arange(n_groups)
+    #print index
+    bar_width = 0.9
+
+    opacity = 0.4
+
+    rects1 = plt.bar(index, vals_for_bar_chart, bar_width,
+                     alpha=opacity,
+                     color='b') # label='whatever'
+
+    #rects2 = plt.bar(index + bar_width, means_women, bar_width,
+                     #alpha=opacity,
+                     #color='r',
+                     #label='Women')
+
+    plt.xlabel('number in cluster')
+    plt.ylabel('Count')
+    plt.title(title+"_barchart")
+    plt.legend()
+    pylab.grid(True)
+
+    plt.tight_layout()
     plt.show()
-    plt.savefig(file_in+"_"+title+'_barchart.png')
+    pylab.savefig(file_in+"_"+title+'_barchart.png')
+    plt.close()
+    pylab.close()
+
+
+    
+##    fig = plt.figure()
+##
+##    # Create subplot axes
+##    ax1 = fig.add_subplot(1, 3, 1)  # 1x3 grid, position 1
+##    ax2 = fig.add_subplot(1, 3, 2)  # 1x3 grid, position 1
+##    ax3 = fig.add_subplot(1, 3, 3)  # 1x3 grid, position 1
+##
+##    index  = numpy.arange(max(data_values))
+##    width = 1.0       # the width of the bars
+##    # set ax1 as a bar chart
+##    rects1 = ax1.bar(index, data_values, width, color='r')
+##    # add some text for labels, title and axes ticks
+##    ax1.set_ylabel('Count')
+##    ax1.set_xlabel('number in cluster')
+##    ax1.set_title(title)
+##    ax1.set_xticks(index + width)
+##    #ax1.set_xticklabels(('G1', 'G2', 'G3', 'G4', 'G5'))
+##    plt.show()
+##    plt.savefig(file_in+"_"+title+'_barchart.png')
 
     
 def parse_tab_file_get_clusters(filename1, out_file):
@@ -161,21 +219,32 @@ def parse_tab_file_get_clusters(filename1, out_file):
         except:
             KeyError
             species_in_cluster_count_dict[species_count] = 1
-        
 
-    #print ("species_in_cluster_count_dict", species_in_cluster_count_dict)
-    #print ("member_in_cluster_to_count_dict", member_in_cluster_to_count_dict)
 
     #call the function to convert dic to list
-    species_in_cluster_list, species_number_of_keys = covert_dict_to_list_of_value(species_in_cluster_count_dict)
-    member_in_cluster_list, member_number_of_keys = covert_dict_to_list_of_value(member_in_cluster_to_count_dict)
-    #print ("we have this KEYS species in cluster", species_number_of_keys)
-    #print ("we have this KEYS memebers in cluster", member_number_of_keys)
+    print "species_in_cluster_count_dict: ", species_in_cluster_count_dict
+    species_in_cluster_list, species_number_of_keys, species_max_val, \
+                             species_vals_for_bar_chart = covert_dict_to_list_of_value(species_in_cluster_count_dict)
+
+    print "member_in_cluster_to_count_dict: ", member_in_cluster_to_count_dict
+    member_in_cluster_list, member_number_of_keys, member_max_val, \
+                            member_vals_for_bar_chart = covert_dict_to_list_of_value(member_in_cluster_to_count_dict)
+
 
     plot_bar_chart_graph(species_in_cluster_list, "species_in_cluster",\
-                         species_number_of_keys, filename1)
+                         species_number_of_keys, species_max_val, \
+                         species_vals_for_bar_chart, filename1)
+    
     plot_bar_chart_graph(member_in_cluster_list, "member_in_cluster", \
-                         member_number_of_keys, filename1)
+                         member_number_of_keys, member_max_val, \
+                         member_vals_for_bar_chart, filename1)
+
+    #plot histogram - inappropriate for the data
+    plot_hitstogram_graph(species_in_cluster_list, "species_in_cluster",\
+                         species_number_of_keys, species_max_val, filename1)
+    
+    plot_hitstogram_graph(member_in_cluster_list, "member_in_cluster", \
+                         member_number_of_keys, member_max_val, filename1)
 
 
     return True
