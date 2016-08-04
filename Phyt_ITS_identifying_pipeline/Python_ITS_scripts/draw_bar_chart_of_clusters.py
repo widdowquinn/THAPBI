@@ -11,9 +11,16 @@ import os
 from sys import stdin,argv
 #imports for graphs
 #import seaborn as sns
-import matplotlib
-import numpy
 
+import matplotlib
+# this code added to prevent this error:
+# self.tk = _tkinter.create(screenName, baseName, className, interactive, wantobjects, useTk, sync, use)
+#_tkinter.TclError: no display name and no $DISPLAY environment variable
+# Force matplotlib to not use any Xwindows backend.
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import numpy
+import pylab
 
 
 ##############################################################################################
@@ -71,31 +78,50 @@ def covert_dict_to_list_of_value(in_dict):
             output_list.append(key)
     return sorted(output_list), number_of_keys
 
-def plot_graph(data_values, title, number_of_keys, file_in):
+def plot_hitstogram_graph(data_values, title, number_of_keys, file_in):
     """function to draw a histogram of a given list of values.
     http://matplotlib.org/1.3.0/examples/pylab_examples/histogram_demo_extended.html
     https://github.com/widdowquinn/Teaching-Data-Visualisation/blob/master/exercises/one_variable_continuous/one_variable_continuous.ipynb
     """
-        #import matplotlib
-        matplotlib.use('Agg')
-        import pylab
-        import matplotlib.mlab as mlab
-        #bins = max(data_values)
-        #pylab.hist(data_values, facecolor='blue')
-        pylab.hist(data_values, facecolor='green', alpha=0.6)
+    
+    #bins = max(data_values)
+    #pylab.hist(data_values, facecolor='blue')
+    pylab.hist(data_values, facecolor='green', alpha=0.6)
+    pylab.grid(True)
+    pylab.title(title)
+    pylab.xlabel('number in cluster')
+    pylab.ylabel('Count')
+    pylab.savefig(file_in+"_"+title+'_histogram.png')
 
-        #mu = mean(data_values)
-        #standard_dev = numpy.std(data_values)
-        # add a 'best fit' line
-        #y = mlab.normpdf(bins, mu, standard_dev)
-        #l = pylab.plot(bins, y, 'r--', linewidth=1, color='blue')
-        pylab.grid(True)
-        pylab.title(title)
-        pylab.xlabel('number in cluster')
-        pylab.ylabel('Count')
-        pylab.savefig(file_in+"_"+title+'_histogram.png')
+    os.chdir('..')
 
-        os.chdir('..')
+def plot_bar_chart_graph(data_values, title, number_of_keys, file_in):
+    """function to draw a bar of a given list of values.
+    FOR these data this IS the correct type of graph.
+    http://matplotlib.org/examples/api/barchart_demo.html
+    https://github.com/widdowquinn/Teaching-Data-Visualisation/blob/master/exercises/one_variable_continuous/one_variable_continuous.ipynb
+    """
+     # Create figure
+    
+    fig = plt.figure()
+
+    # Create subplot axes
+    ax1 = fig.add_subplot(1, 3, 1)  # 1x3 grid, position 1
+    ax2 = fig.add_subplot(1, 3, 2)  # 1x3 grid, position 1
+    ax3 = fig.add_subplot(1, 3, 3)  # 1x3 grid, position 1
+
+    ind = numpy.arange(max(data_values))
+    width = 1.0       # the width of the bars
+    # set ax1 as a bar chart
+    rects1 = ax1.bar(ind, data_values, width, color='r')
+    # add some text for labels, title and axes ticks
+    ax1.set_ylabel('Count')
+    ax1.set_xlabel('number in cluster')
+    ax1.set_title(title)
+    ax1.set_xticks(ind + width)
+    #ax1.set_xticklabels(('G1', 'G2', 'G3', 'G4', 'G5'))
+    plt.show()
+    plt.savefig(file_in+"_"+title+'_barchart.png')
 
     
 def parse_tab_file_get_clusters(filename1, out_file):
@@ -146,8 +172,10 @@ def parse_tab_file_get_clusters(filename1, out_file):
     #print ("we have this KEYS species in cluster", species_number_of_keys)
     #print ("we have this KEYS memebers in cluster", member_number_of_keys)
 
-    plot_graph(species_in_cluster_list, "species_in_cluster", species_number_of_keys, filename1)
-    plot_graph(member_in_cluster_list, "member_in_cluster", member_number_of_keys, filename1)
+    plot_bar_chart_graph(species_in_cluster_list, "species_in_cluster",\
+                         species_number_of_keys, filename1)
+    plot_bar_chart_graph(member_in_cluster_list, "member_in_cluster", \
+                         member_number_of_keys, filename1)
 
 
     return True
