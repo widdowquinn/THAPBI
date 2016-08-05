@@ -198,6 +198,7 @@ def plot_multi_bar_chart_graph(title1, vals_for_bar_chart1,\
     fig.tight_layout()
     fig
     pylab.savefig(file_in+'_GROUP_barchart.png')
+    pylab.close()
 
 
     
