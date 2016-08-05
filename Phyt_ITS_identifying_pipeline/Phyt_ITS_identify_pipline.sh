@@ -115,43 +115,90 @@ eval ${cmd_swarm}
 echo "cmd_swarm done"
 
 
-# to test different parameters with swarm
-values="0,1,2,3"
-for v in ${values}
-do
-	swarm_command="swarm -t ${num_threads} -d ${v} -o Phy_ITSregions_all_20160601.fixed02.fasta.swarm_clusters_d${v} Phy_ITSregions_all_20160601.coded_name.fasta" 
-	echo ${swarm_command}
-	eval ${swarm_command}
-	wait
-	py_command="python ${repository_path}/Python_ITS_scripts/parse_clusters.py -i ${repository_path}/data/fastq-join_joined/Phy_ITSregions_all_20160601.fixed02.fasta.swarm_clusters_d${v} -o swarm_clusters_d${v}" 
-	echo ${py_command}
-	eval ${py_command}
+## to test different parameters with swarm
+#values="0,1,2,3"
+#for v in ${values}
+#do
+#	swarm_command="swarm -t ${num_threads} -d ${v} -o Phy_ITSregions_all_20160601.fixed02.fasta.swarm_clusters_d${v} Phy_ITSregions_all_20160601.coded_name.fasta" 
+#	echo ${swarm_command}
+#	eval ${swarm_command}
+#	wait
+#	py_command="python ${repository_path}/Python_ITS_scripts/parse_clusters.py -i ${repository_path}/data/fastq-join_joined/Phy_ITSregions_all_20160601.fixed02.fasta.swarm_clusters_d${v} -o swarm_clusters_d${v}" 
+#	echo ${py_command}
+#	eval ${py_command}
 	
 done
 
 #clustering of santi's database:
 # for the databases of ITS sequences. Swarm needs these reformatting:
-python ${repository_path}/Python_ITS_scripts/completely_rename_ID.py -f ${repository_path}/Santi_database.fasta -d ${repository_path}/santi_old_to_new_names.out -o ${repository_path}/Santi_database_alt_names.fasta  
+#python ${repository_path}/Python_ITS_scripts/completely_rename_ID.py -f ${repository_path}/Santi_database.fasta -d ${repository_path}/santi_old_to_new_names.out -o ${repository_path}/Santi_database_alt_names.fasta  
+#
+#swarm -t ${num_threads} -d 1 -o ${repository_path}/Santi_database.fasta.swarm_clusters_d1 ${repository_path}/Santi_database.fasta
+#
+#python ${repository_path}/Python_ITS_scripts/parse_clusters.py -i ${repository_path}/Santi_database.fasta.swarm_clusters_d1 -d ${repository_path}/santi_old_to_new_names.out -o ${repository_path}/Santi_database.fasta.swarm_clusters_d1
 
-swarm -t ${num_threads} -d 1 -o ${repository_path}/Santi_database.fasta.swarm_clusters_d1 ${repository_path}/Santi_database.fasta
 
-python ${repository_path}/Python_ITS_scripts/parse_clusters.py -i ${repository_path}/Santi_database.fasta.swarm_clusters_d1 -d ${repository_path}/santi_old_to_new_names.out -o ${repository_path}/Santi_database.fasta.swarm_clusters_d1
-
-
-# create graphs based on clustering information
+# create graphs based on clustering information - based on santi database
 python ${repository_path}/Python_ITS_scripts/draw_bar_chart_of_clusters.py -i ${repository_path}/Santi_database.fasta.swarm_clusters_d1_RESULTS -o testing
 
+# create graphs based on clustering information - based on phytophthoraDB ITS download database
+python ${repository_path}/Python_ITS_scripts/draw_bar_chart_of_clusters.py -i ${repository_path}/swarm_clusters_d1 -o testingswarm_clusters_d1
 
 
 
+# now to check some real data
 
 
+# rename the reads
+echo "renameing the reads"
+cmd_rename_real_data="python ${repository_path}/Python_ITS_scripts/completely_rename_ID.py -f ${repository_path}/data/fastq-join_joined/fastqjoin.join.fasta -d ${repository_path}/temp_read_names.database -o ${repository_path}/data/fastq-join_joined/fastqjoin.join_temp_names.fasta" 
+echo ${cmd_rename_real_data}
+eval ${cmd_rename_real_data}
+
+# cat the coded real and database file
+echo "cat the coded real and database file"
+cmd_cat="cat ${repository_path}/Phy_ITSregions_all_20160601.coded_name.fasta ${repository_path}/data/fastq-join_joined/fastqjoin.join_temp_names.fasta > ${repository_path}/data/temp_reads_plus_database" 
+echo ${cmd_cat}
+eval ${cmd_cat}
+
+# run the clustering on the REAL dataset
+swarm_command="swarm -t ${num_threads} -d 1 -o ${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd1.out ${repository_path}/data/temp_reads_plus_database" 
+echo ${swarm_command}
+eval ${swarm_command}
+
+# cat thedatabse files
+echo "cat the database files"
+cmd_cat_database="cat ${repository_path}/temp_read_names.database ${repository_path}/name_to_species_database.txt > read_and_species.database" 
+echo ${cmd_cat_database}
+eval ${cmd_cat_database}
 
 
+# python summarise clussters
+echo "python to summarise clusters"
+cmd_summarise_clustering="python ${repository_path}/Python_ITS_scripts/parse_clusters.py -i ${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd1.out -d ${repository_path}/read_and_species.database -o ${repository_path}/${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd1.RESULTS" 
+echo ${cmd_summarise_clustering}
+eval ${cmd_summarise_clustering}
 
 
+# python graphs the  clussters
+echo "python to graphically represent clusters"
+cmd_summarise_graphs="python ${repository_path}/Python_ITS_scripts/draw_bar_chart_of_clusters.py -i ${repository_path}/${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd1.RESULTS -o ${repository_path}/${Name_of_project}_reads_clust_w_phy_ITS_Swarmd1.graph" 
+echo ${cmd_summarise_graphs}
+eval ${cmd_summarise_graphs}
+
+# to avoid parsing gzip file. Uncompress these to a temp file. 
+zcat ${working_directory_path}/${left_read_file} > ${working_directory_path}/temp_not_trimmedr1.fq
+zcat ${working_directory_path}/${right_read_file} > ${working_directory_path}/temp_not_trimmedr2.fq
 
 
+# python find Phy species identified
+echo "python to find Phy species identified - I am using the original reads, not the trimmed ones to get the barcodes."
+cmd_what_phy_species="python ${repository_path}/Python_ITS_scripts/get_results_from_cluster.py --left ${working_directory_path}/temp_not_trimmedr1.fq --right ${working_directory_path}/temp_not_trimmedr2.fq -i ${repository_path}/${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd1.RESULTS -o ${repository_path}/${Name_of_project}_Phytophthora_species_identified.txt" 
+echo ${cmd_what_phy_species}
+eval ${cmd_what_phy_species}
+
+rm ${working_directory_path}/temp_not_trimmedr1.fq
+rm ${working_directory_path}/temp_not_trimmedr2.fq
 
 
 
