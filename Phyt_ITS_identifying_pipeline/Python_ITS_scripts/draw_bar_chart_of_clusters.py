@@ -117,7 +117,7 @@ def plot_hitstogram_graph(data_values, title, number_of_keys, max_val, file_in):
 
     os.chdir('..')
 
-def plot_bar_chart_graph(data_values, title, number_of_keys, max_val, vals_for_bar_chart, file_in):
+def plot_individual_bar_chart_graph(data_values, title, number_of_keys, max_val, vals_for_bar_chart, file_in):
     """function to draw a bar of a given list of values.
     FOR these data this IS the correct type of graph.
     http://matplotlib.org/examples/api/barchart_demo.html
@@ -126,26 +126,67 @@ def plot_bar_chart_graph(data_values, title, number_of_keys, max_val, vals_for_b
     """
     import numpy as np
     import matplotlib.pyplot as plt
-    print "title", title, "values: ", vals_for_bar_chart
-
     n_groups = len(vals_for_bar_chart)
-
     fig, ax = plt.subplots()
-
     index = np.arange(n_groups)
-    #print index
     bar_width = 0.9
-
     opacity = 0.4
 
     rects1 = plt.bar(index, vals_for_bar_chart, bar_width,
                      alpha=opacity,
                      color='b') # label='whatever'
 
-    #rects2 = plt.bar(index + bar_width, means_women, bar_width,
-                     #alpha=opacity,
-                     #color='r',
-                     #label='Women')
+    plt.xlabel('number in cluster')
+    plt.ylabel('Count')
+    plt.title(title+"_barchart")
+    plt.legend()
+    pylab.grid(True)
+    plt.tight_layout()
+    plt.show()
+    pylab.savefig(file_in+"_"+title+'_barchart.png')
+    plt.close()
+    pylab.close()
+
+
+def plot_multi_bar_chart_graph(data_values, title, number_of_keys, max_val, vals_for_bar_chart,\
+                                    position, file_in):
+    """function to draw a bar of a given list of values.
+    FOR these data this IS the correct type of graph.
+    http://matplotlib.org/examples/api/barchart_demo.html
+    https://github.com/widdowquinn/Teaching-Data-Visualisation/blob/master/exercises/one_variable_continuous/one_variable_continuous.ipynb
+    bar(left, height, width=0.8, bottom=None, hold=None, **kwargs)
+    """
+    import numpy as np
+    import matplotlib.pyplot as plt
+    n_groups = len(vals_for_bar_chart)
+    fig, ax = plt.subplots()
+    plt.figure(figsize=(10, 10))
+    fig, left = plt.subplots()
+    ##    # Create subplot axes
+##    left = fig.add_subplot(1, 2, 1)  # 1x3 grid, position 1
+##    right = fig.add_subplot(2, 2, 2)  # 1x3 grid, position 1
+##    bottom = fig.add_subplot(1, 2, 2)  # 1x3 grid, position 1
+
+    index = np.arange(n_groups)
+    #print index
+    bar_width = 0.9
+    opacity = 0.4
+    if position =="left":
+        left = fig.add_subplot(1, 1, 1)  # 1x3 grid, position 1
+        rects1 = left.bar(index, vals_for_bar_chart, bar_width,
+                     alpha=opacity,
+                     color='green') # label='whatever'
+        
+    if position =="right":
+        right = fig.add_subplot(2, 2, 2)  # 1x3 grid, position 1
+        rects2 = right.bar(index, vals_for_bar_chart, bar_width,
+                     alpha=opacity,
+                     color='b') # label='whatever'
+    if position =="bottom":
+        bottom = fig.add_subplot(1, 3, 3)  # 1x3 grid, position 1
+        rects3 = right.bar(index, vals_for_bar_chart, bar_width,
+                     alpha=opacity,
+                     color='b') # label='whatever'
 
     plt.xlabel('number in cluster')
     plt.ylabel('Count')
@@ -155,31 +196,13 @@ def plot_bar_chart_graph(data_values, title, number_of_keys, max_val, vals_for_b
 
     plt.tight_layout()
     plt.show()
-    pylab.savefig(file_in+"_"+title+'_barchart.png')
-    plt.close()
-    pylab.close()
+    pylab.savefig(file_in+'_GROUP_barchart.png')
 
 
-    
 ##    fig = plt.figure()
 ##
-##    # Create subplot axes
-##    ax1 = fig.add_subplot(1, 3, 1)  # 1x3 grid, position 1
-##    ax2 = fig.add_subplot(1, 3, 2)  # 1x3 grid, position 1
-##    ax3 = fig.add_subplot(1, 3, 3)  # 1x3 grid, position 1
-##
-##    index  = numpy.arange(max(data_values))
-##    width = 1.0       # the width of the bars
-##    # set ax1 as a bar chart
-##    rects1 = ax1.bar(index, data_values, width, color='r')
-##    # add some text for labels, title and axes ticks
-##    ax1.set_ylabel('Count')
-##    ax1.set_xlabel('number in cluster')
-##    ax1.set_title(title)
-##    ax1.set_xticks(index + width)
-##    #ax1.set_xticklabels(('G1', 'G2', 'G3', 'G4', 'G5'))
-##    plt.show()
-##    plt.savefig(file_in+"_"+title+'_barchart.png')
+
+
 
     
 def parse_tab_file_get_clusters(filename1, out_file):
@@ -230,21 +253,30 @@ def parse_tab_file_get_clusters(filename1, out_file):
     member_in_cluster_list, member_number_of_keys, member_max_val, \
                             member_vals_for_bar_chart = covert_dict_to_list_of_value(member_in_cluster_to_count_dict)
 
-
-    plot_bar_chart_graph(species_in_cluster_list, "species_in_cluster",\
+    #plot one graph per figure
+    plot_individual_bar_chart_graph(species_in_cluster_list, "species_in_cluster",\
                          species_number_of_keys, species_max_val, \
                          species_vals_for_bar_chart, filename1)
     
-    plot_bar_chart_graph(member_in_cluster_list, "member_in_cluster", \
+    plot_individual_bar_chart_graph(member_in_cluster_list, "member_in_cluster", \
                          member_number_of_keys, member_max_val, \
                          member_vals_for_bar_chart, filename1)
 
-    #plot histogram - inappropriate for the data
-    plot_hitstogram_graph(species_in_cluster_list, "species_in_cluster",\
-                         species_number_of_keys, species_max_val, filename1)
+    #plot_multi_bar_chart_graph
+    plot_multi_bar_chart_graph(species_in_cluster_list, "species_in_cluster",\
+                         species_number_of_keys, species_max_val, \
+                         species_vals_for_bar_chart, "left", filename1)
     
-    plot_hitstogram_graph(member_in_cluster_list, "member_in_cluster", \
-                         member_number_of_keys, member_max_val, filename1)
+    plot_multi_bar_chart_graph(member_in_cluster_list, "member_in_cluster", \
+                         member_number_of_keys, member_max_val, \
+                         member_vals_for_bar_chart, "right", filename1)
+
+    #plot histogram - inappropriate for the data
+    #plot_hitstogram_graph(species_in_cluster_list, "species_in_cluster",\
+                         #species_number_of_keys, species_max_val, filename1)
+    
+    #plot_hitstogram_graph(member_in_cluster_list, "member_in_cluster", \
+                         #member_number_of_keys, member_max_val, filename1)
 
 
     return True
