@@ -53,7 +53,7 @@ def parse_tab_file_get_clusters(filename1, database, out_file):
     species in the clustering"""
     #call the function to get the dictionary populated with the database
     coded_name_to_species_dict = coded_name_to_species(database)
-    print coded_name_to_species_dict
+    #print coded_name_to_species_dict
     cluster_file = open (filename1, "r")
     summary_out_file = open(out_file, "w")
 
@@ -73,11 +73,10 @@ def parse_tab_file_get_clusters(filename1, database, out_file):
             #print member
             try:
                 species = coded_name_to_species_dict[member]
-                print species
+                #print species
             except:
                 KeyError
-                rev_coded_name_to_species_dict = rev_coded_name_to_species(database)
-                species = rev_coded_name_to_species_dict[member.rstrip()]
+                species = member
             #add the info to a str which we will write at the end of the cluster line    
             cluster_summary = "%s\t" %(species)
             out_put_str = out_put_str+cluster_summary
