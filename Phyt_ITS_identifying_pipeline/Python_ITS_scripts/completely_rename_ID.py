@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-#os importsimport os
+#os imports
+import os
 from sys import stdin,argv
 import sys
 from optparse import OptionParser

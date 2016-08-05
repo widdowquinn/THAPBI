@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #title: Parse clusters and find the phy spcies
 #in the cluster
 #author: Peter Thorpe September 2016. The James Hutton Insitute, Dundee, UK.
