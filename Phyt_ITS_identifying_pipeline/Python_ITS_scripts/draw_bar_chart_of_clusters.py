@@ -21,6 +21,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy
 import pylab
+import numpy as np
 
 # Turn off warning messages
 import warnings
@@ -124,18 +125,15 @@ def plot_individual_bar_chart_graph(data_values, title, number_of_keys, max_val,
     https://github.com/widdowquinn/Teaching-Data-Visualisation/blob/master/exercises/one_variable_continuous/one_variable_continuous.ipynb
     bar(left, height, width=0.8, bottom=None, hold=None, **kwargs)
     """
-    import numpy as np
-    import matplotlib.pyplot as plt
+
     n_groups = len(vals_for_bar_chart)
     fig, ax = plt.subplots()
     index = np.arange(n_groups)
     bar_width = 0.9
     opacity = 0.4
-
+    #print vals_for_bar_chart
     rects1 = plt.bar(index, vals_for_bar_chart, bar_width,
-                     alpha=opacity,
-                     color='b') # label='whatever'
-
+                     alpha=opacity, color='b') # label='whatever'
     plt.xlabel('number in cluster')
     plt.ylabel('Count')
     plt.title(title+"_barchart")
@@ -156,42 +154,55 @@ def plot_multi_bar_chart_graph(data_values, title, number_of_keys, max_val, vals
     https://github.com/widdowquinn/Teaching-Data-Visualisation/blob/master/exercises/one_variable_continuous/one_variable_continuous.ipynb
     bar(left, height, width=0.8, bottom=None, hold=None, **kwargs)
     """
-    import numpy as np
-    import matplotlib.pyplot as plt
     n_groups = len(vals_for_bar_chart)
-    fig, ax = plt.subplots()
-    plt.figure(figsize=(10, 10))
-    fig, left = plt.subplots()
+    fig = plt.figure(figsize=(10, 8))
     ##    # Create subplot axes
-##    left = fig.add_subplot(1, 2, 1)  # 1x3 grid, position 1
-##    right = fig.add_subplot(2, 2, 2)  # 1x3 grid, position 1
-##    bottom = fig.add_subplot(1, 2, 2)  # 1x3 grid, position 1
-
+    ax1 = fig.add_subplot(1, 3, 1)  # 1x3 grid, position 1
+    ax2 = fig.add_subplot(1, 3, 2)  # 1x3 grid, position 2
+    ax3 = fig.add_subplot(1, 3, 3)  # 1x3 grid, position 3
+    
     index = np.arange(n_groups)
     #print index
     bar_width = 0.9
     opacity = 0.4
     if position =="left":
-        left = fig.add_subplot(1, 1, 1)  # 1x3 grid, position 1
-        rects1 = left.bar(index, vals_for_bar_chart, bar_width,
+        #ax1.add_subplot(1, 1, 1)  # 1x3 grid, position 1
+        rects1 = ax1.bar(index, vals_for_bar_chart, bar_width,
                      alpha=opacity,
                      color='green') # label='whatever'
+        ax1.set_xlabel('number in cluster')
+        ax1.set_ylabel('Count')
+        pylab.grid(True)
+        ax1.set_title(title+"_barchart")
+        fig.tight_layout()
+        fig
         
     if position =="right":
-        right = fig.add_subplot(2, 2, 2)  # 1x3 grid, position 1
-        rects2 = right.bar(index, vals_for_bar_chart, bar_width,
+        #ax2.add_subplot(2, 2, 2)  # 1x3 grid, position 1
+        rects2 = ax2.bar(index, vals_for_bar_chart, bar_width,
                      alpha=opacity,
                      color='b') # label='whatever'
+        plt.xlabel('number in cluster')
+        plt.ylabel('Count')
+        pylab.grid(True)
+        plt.title(title+"_barchart")
+        fig.tight_layout()
+        fig
     if position =="bottom":
-        bottom = fig.add_subplot(1, 3, 3)  # 1x3 grid, position 1
-        rects3 = right.bar(index, vals_for_bar_chart, bar_width,
+        #ax3.add_subplot(1, 3, 3)  # 1x3 grid, position 1
+        rects3 = ax3.bar(index, vals_for_bar_chart, bar_width,
                      alpha=opacity,
                      color='b') # label='whatever'
+        plt.xlabel('number in cluster')
+        plt.ylabel('Count')
+        pylab.grid(True)
+        plt.title(title+"_barchart")
+        fig.tight_layout()
+        fig
 
-    plt.xlabel('number in cluster')
-    plt.ylabel('Count')
-    plt.title(title+"_barchart")
-    plt.legend()
+
+    #plt.title(title+"_barchart")
+    #plt.legend()
     pylab.grid(True)
 
     plt.tight_layout()
@@ -262,6 +273,14 @@ def parse_tab_file_get_clusters(filename1, out_file):
                          member_number_of_keys, member_max_val, \
                          member_vals_for_bar_chart, filename1)
 
+
+
+    #plot histogram - inappropriate for the data
+    plot_hitstogram_graph(species_in_cluster_list, "species_in_cluster",\
+                         species_number_of_keys, species_max_val, filename1)
+    
+    plot_hitstogram_graph(member_in_cluster_list, "member_in_cluster", \
+                         member_number_of_keys, member_max_val, filename1)
     #plot_multi_bar_chart_graph
     plot_multi_bar_chart_graph(species_in_cluster_list, "species_in_cluster",\
                          species_number_of_keys, species_max_val, \
@@ -270,13 +289,6 @@ def parse_tab_file_get_clusters(filename1, out_file):
     plot_multi_bar_chart_graph(member_in_cluster_list, "member_in_cluster", \
                          member_number_of_keys, member_max_val, \
                          member_vals_for_bar_chart, "right", filename1)
-
-    #plot histogram - inappropriate for the data
-    #plot_hitstogram_graph(species_in_cluster_list, "species_in_cluster",\
-                         #species_number_of_keys, species_max_val, filename1)
-    
-    #plot_hitstogram_graph(member_in_cluster_list, "member_in_cluster", \
-                         #member_number_of_keys, member_max_val, filename1)
 
 
     return True
