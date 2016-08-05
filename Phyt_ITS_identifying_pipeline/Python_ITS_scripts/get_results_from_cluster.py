@@ -10,10 +10,42 @@ import datetime
 import os
 from sys import stdin,argv
 from Bio.SeqIO.QualityIO import FastqGeneralIterator
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+from Bio import SeqIO
+import gzip
 
 
 
 #####################################################################
+
+def turn_fq_to_dic(in_fastq, barcode_length):
+    """function to turn fq file into a dict
+    read = seq[:length of bar code]
+    return dict """
+    read_to_barcode_dict = dict()
+    #open the fastq file
+    in_file = open(in_fastq)
+    # iterate through the fatsq file
+    try:
+        for i, (title, seq, qual) in enumerate(FastqGeneralIterator(in_file)):
+            read_to_barcode_dict[title.split(" ")[0]] = seq[:barcode_length]
+    except:
+        ValueError
+        line_count = 0
+        read_name = ""
+        sequcene = ""
+        for line in in_file:
+            line_count = line_count+1
+            if line.startswith("@"):
+                #read line
+                read_name = line
+            if line_count % 4:
+                #seq line
+                sequcene = line[:barcode_length]
+            read_to_barcode_dict[read_name.split(" ")[0]] = sequcene
+    in_file.close()
+    return read_to_barcode_dict
 
 
 def get_barcode_seq (read, in_fastq):
@@ -21,19 +53,16 @@ def get_barcode_seq (read, in_fastq):
     fq file needs to be unzipped.
     currently assuming barcode if 8bp and at the start of each seq??
     """
-    #open the fastq file
-    in_file = open(in_fastq)
-    # iterate through the fatsq file
-    for i, (title, seq, qual) in enumerate(FastqGeneralIterator(in_file)):
-        if read in title:
-            in_file.close()
-            return seq[:8]
+    return True
 
 
-def parse_tab_file_get_clusters(filename1, left, right, out_file):
+def parse_tab_file_get_clusters(filename1, left, right, barcode_length, out_file):
     """#script to open up a tab separeted clustering output and identify the
     species in the clustering"""
     #print coded_name_to_species_dict
+    left_read_to_barcode_dic = turn_fq_to_dic(left, barcode_length)
+    right_read_to_barcode_dic = turn_fq_to_dic(right, barcode_length)
+
     cluster_file = open (filename1, "r")
     summary_out_file = open(out_file, "w")
     #title for the results file
@@ -51,34 +80,41 @@ def parse_tab_file_get_clusters(filename1, left, right, out_file):
         line = line.rstrip()
         out_put_str = ""
         cluster_line = line.rstrip("\n").split("\t")
+        # are the database Phy singletons? - then we wont be interested
         number_of_reads_hitting_species = len(cluster_line)
+
+        #set up some blank variables
         species = ""
         barcode_left = ""
         barcode_right = ""
-        #print cluster_line
+        #database phy counter
         phy_count = 0
         for member in cluster_line:
+            #is a memeber of the database in this cluster?
             if member.startswith("Phytophthora"):
+                # yes we are interested in this cluster
                 phy_count = phy_count+1
                 #print member
                 species = species+member+" "
                 #remove all the memebr which are database memebers
                 number_of_reads_hitting_species = number_of_reads_hitting_species-1
-        if phy_count >1:
+        if number_of_reads_hitting_species >1 and phy_count >0: #after the line, are there more memeber that are not database members?
             for member in cluster_line:
                 if "Phytophthora" in member:
-                    print ("YYYEEEESSSSSS")
-                    #call func to get the bar codes
-                    left_barcode = get_barcode_seq(member,left)
-                    # add to str
-                    barcode_left = barcode_left+left_barcode+" "
-                    right_barcode = get_barcode_seq(member,right)
-                    #add to str
-                    barcode_right = barcode_right+right_barcode+" "
-            data_output = "%s\t%d\t%s\t%s\t\n" %(species.rstrip(), number_of_reads_hitting_species,\
+                    #no barcode for these - obviously!
+                    continue
+                print ("YYYEEEESSSSSS")
+                #call func to get the bar codes
+                left_barcode = left_read_to_barcode_dic[member]
+                # add to str
+                barcode_left = barcode_left+left_barcode+" "
+                right_barcode = right_read_to_barcode_dic[member]
+                #add to str
+                barcode_right = barcode_right+right_barcode+" "
+        data_output = "%s\t%d\t%s\t%s\t\n" %(species.rstrip(), number_of_reads_hitting_species,\
                                                        barcode_left,\
                                                        barcode_right)
-            summary_out_file.write(data_output)
+        summary_out_file.write(data_output)
 
 
 
@@ -115,6 +151,11 @@ parser.add_option("-l", "--left", dest="left", default="R1.fq",
 parser.add_option("-r", "--right", dest="right", default="R2.fq",
                   help="right reads unzipped fq file. Need this to get the barcode",
                   metavar="FILE")
+
+parser.add_option("-b", "--barcode_length", dest="barcode_length", default=8,
+                  help="length of the barcode used. Default 8 ",
+                  metavar="FILE")
+
 parser.add_option("-o", "--out_prefix", dest="out_file", default="summarise_clusters.out",
                   help="prefix to the output filenames")
 
@@ -124,10 +165,12 @@ parser.add_option("-o", "--out_prefix", dest="out_file", default="summarise_clus
 in_file = options.in_file
 left = options.left
 right = options.right
+barcode_length = options.barcode_length
 out_file = options.out_file
 
 #run the program
+barcode_length = int(barcode_length)
 
-parse_tab_file_get_clusters(in_file, left, right, out_file)
+parse_tab_file_get_clusters(in_file, left, right, barcode_length, out_file)
 
 print "done"
