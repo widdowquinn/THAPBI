@@ -124,32 +124,42 @@ cmd_cat="cat ${repository_path}/database_files/Phy_ITSregions_all_20160601.coded
 echo ${cmd_cat}
 eval ${cmd_cat}
 
-# run the clustering on the REAL dataset
-swarm_command="swarm -t ${num_threads} --append-abundance 1 -d 1 -o ${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd1.out ${repository_path}/data/temp_reads_plus_database.fasta" 
-echo ${swarm_command}
-eval ${swarm_command}
-
-# python summarise clussters
-echo "python to summarise clusters"
-cmd_summarise_clustering="python ${repository_path}/Python_ITS_scripts/parse_clusters.py -i ${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd1.out -d ${repository_path}/database_files/name_to_species_database.txt -o ${working_directory_path}/${Name_of_project}_results/${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd1.RESULTS" 
-echo ${cmd_summarise_clustering}
-eval ${cmd_summarise_clustering}
-
-# python graphs the  clussters
-echo "python to graphically represent clusters"
-cmd_summarise_graphs="python ${repository_path}/Python_ITS_scripts/draw_bar_chart_of_clusters.py -i ${working_directory_path}/${Name_of_project}_results/${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd1.RESULTS -o ${working_directory_path}/${Name_of_project}_results/${Name_of_project}_reads_clust_w_phy_ITS_Swarmd1.graph" 
-echo ${cmd_summarise_graphs}
-eval ${cmd_summarise_graphs}
-
 # to avoid parsing gzip file. Uncompress these to a temp file. 
 zcat ${working_directory_path}/${left_read_file} > ${working_directory_path}/temp_not_trimmedr1.fq
 zcat ${working_directory_path}/${right_read_file} > ${working_directory_path}/temp_not_trimmedr2.fq
 
-# python find Phy species identified
-echo "python to find Phy species identified - I am using the original reads, not the trimmed ones to get the barcodes."
-cmd_what_phy_species="python ${repository_path}/Python_ITS_scripts/get_results_from_cluster.py --left ${working_directory_path}/temp_not_trimmedr1.fq --right ${working_directory_path}/temp_not_trimmedr2.fq -i ${working_directory_path}/${Name_of_project}_results/${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd1.RESULTS -o ${working_directory_path}/${Name_of_project}_results/${Name_of_project}_Phytophthora_species_identified.txt" 
-echo ${cmd_what_phy_species}
-eval ${cmd_what_phy_species}
+#run swarm with the different D values
+values="1 2 3"
+for v in ${values}
+do
+	# run the clustering on the REAL dataset
+	echo "running swarm at ${v} thresholds"
+	swarm_command="swarm -t ${num_threads} --append-abundance 1 -d ${v} -o ${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd${v}.out ${repository_path}/data/temp_reads_plus_database.fasta" 
+	echo ${swarm_command}
+	eval ${swarm_command}
+	wait
+	
+	# python summarise clussters
+	echo "python to summarise clusters"
+	cmd_summarise_clustering="python ${repository_path}/Python_ITS_scripts/parse_clusters.py -i ${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd${v}.out -d ${repository_path}/database_files/name_to_species_database.txt -o ${working_directory_path}/${Name_of_project}_results/${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd${v}.RESULTS" 
+	echo ${cmd_summarise_clustering}
+	eval ${cmd_summarise_clustering}
+	wait
+	
+	# python graphs the  clussters
+	echo "python to graphically represent clusters"
+	cmd_summarise_graphs="python ${repository_path}/Python_ITS_scripts/draw_bar_chart_of_clusters.py -i ${working_directory_path}/${Name_of_project}_results/${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd${v}.RESULTS -o ${working_directory_path}/${Name_of_project}_results/${Name_of_project}_reads_clust_w_phy_ITS_Swarmd${v}.graph" 
+	echo ${cmd_summarise_graphs}
+	eval ${cmd_summarise_graphs}
+	wait
+	
+	# python find Phy species identified
+	echo "python to find Phy species identified - I am using the original reads, not the trimmed ones to get the barcodes."
+	cmd_what_phy_species="python ${repository_path}/Python_ITS_scripts/get_results_from_cluster.py --left ${working_directory_path}/temp_not_trimmedr1.fq --right ${working_directory_path}/temp_not_trimmedr2.fq -i ${working_directory_path}/${Name_of_project}_results/${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd${v}.RESULTS -o ${working_directory_path}/${Name_of_project}_results/${Name_of_project}_Phytophthora_species_identified_swarm_${v}.txt" 
+	echo ${cmd_what_phy_species}
+	eval ${cmd_what_phy_species}
+	wait
+done
 
 rm ${working_directory_path}/temp_not_trimmedr1.fq
 rm ${working_directory_path}/temp_not_trimmedr2.fq
