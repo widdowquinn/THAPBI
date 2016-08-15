@@ -102,7 +102,7 @@ def parse_tab_file_get_clusters(filename1, left, right, barcode_length, show_me_
         for member in cluster_line:
             member = member.rstrip()
             #is a memeber of the database in this cluster?
-            if member.startswith("Phytophthora"):
+            if member.startswith("Phytophthora") or member.startswith("P."):
                 # yes we are interested in this cluster
                 phy_count = phy_count+1
                 #print member
@@ -111,7 +111,7 @@ def parse_tab_file_get_clusters(filename1, left, right, barcode_length, show_me_
                 number_of_reads_hitting_species = number_of_reads_hitting_species-1
         if number_of_reads_hitting_species >=1 and phy_count >0: #after the line, are there more memeber that are not database members?
             for member in cluster_line:
-                if "Phytophthora" in member:
+                if "Phytophthora" in member or "P." in member:
                     #no barcode for these - obviously!
                     continue
                 print ("YYYEEEESSSSSS")
@@ -120,11 +120,19 @@ def parse_tab_file_get_clusters(filename1, left, right, barcode_length, show_me_
                 reads_of_interest = reads_of_interest+member+" "
                 #call func to get the bar codes
                 print "I am getting the left bar code", left_read_to_barcode_dic[member]
-                left_barcode = left_read_to_barcode_dic[member]
+                try:
+                    left_barcode = left_read_to_barcode_dic[member]
+                except:
+                    ValueError
+                    left_barcode = "Not_found"
                 # add to str
                 barcode_left = barcode_left+left_barcode+" "
                 print "I am getting the right bar code", right_read_to_barcode_dic[member]
-                right_barcode = right_read_to_barcode_dic[member]
+                try:
+                    right_barcode = right_read_to_barcode_dic[member]
+                except:
+                    ValueError
+                    right_barcode = "Not_found"
                 #add to str
                 barcode_right = barcode_right+right_barcode+" "
             #format the data
