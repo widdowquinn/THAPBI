@@ -6,31 +6,8 @@ set -e
 
 
 ##################################################################################################################################################################
-# THESE VARIABLE NEED TO BE FILLED IN BY USER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# THESE VARIABLE NEED TO BE FILLED IN BY USER  in the config file
 
-Name_of_project=testing
-
-read_name_prefix="M01157:20:000000000-D07KA:1:"
-
-left_read_file=DNAMIX_S95_L001_R1_001.fastq.gz
-
-right_read_file=DNAMIX_S95_L001_R2_001.fastq.gz
-
-trimmomatic_path=~/Downloads/Trimmomatic-0.32
-
-repository_path=~/misc_python/THAPBI/Phyt_ITS_identifying_pipeline
-
-num_threads=4
-
-working_directory_path=$HOME/misc_python/THAPBI/Phyt_ITS_identifying_pipeline/data
-
-
-# NOTHING TO BE FILLED IN BY USER FROM HERE!!!!
-##################################################################################################################################################################
-#not needed but, may use it as a configuration style script later
-export trimmomatic_path
-export repository_path
-export num_threads
 
 
 cd ${working_directory_path}
@@ -38,6 +15,7 @@ cd ${working_directory_path}
 
 # Create directory for output
 #mkdir fastq-join_joined
+echo "making dir ${Name_of_project}_results"
 mkdir ${Name_of_project}_results
 mkdir ${Name_of_project}_outfiles
 mkdir ${Name_of_project}_quality_control_files
@@ -101,12 +79,17 @@ mv *.html ./${Name_of_project}_quality_control_files
 # Convert read format from FASTQ to FASTA
 # convert_format comes from seq_crumbs: https://github.com/JoseBlanca/seq_crumbs
 echo "converting the fq to fa file"
-cmd_convert="convert_format -t fastq -o ./${Name_of_project}_outfiles/fastqjoin.join.fasta -f fasta ./${Name_of_project}_outfiles/${Name_of_project}_PEAR.assembled.fastq" 
+cmd_convert="convert_format -t fastq -o ./${Name_of_project}_outfiles/fastqjoin.join.fasta_with_barcodes -f fasta ./${Name_of_project}_outfiles/${Name_of_project}_PEAR.assembled.fastq" 
 echo ${cmd_convert}
 eval ${cmd_convert}
 echo "cmd_convert done"
 
-
+# python remove barcodes and excess seq from sequences
+echo "python to remove barcodes and excess seq"
+cmd_remove_bar_excess="python ${repository_path}/Python_ITS_scripts/remove_barcodes.py -f ./${Name_of_project}_outfiles/fastqjoin.join.fasta_with_barcodes --barcode 6 --ITS CCACAC -o ./${Name_of_project}_outfiles/fastqjoin.join.fasta " 
+echo ${cmd_remove_bar_excess}
+eval ${cmd_remove_bar_excess}
+wait
 
 echo "running swarm: swarm [OPTIONS] [filename]"
 #https://github.com/torognes/swarm/blob/master/man/swarm_manual.pdf
@@ -120,21 +103,22 @@ echo "cmd_swarm done"
 # now to check some real data
 # cat the assembled ITS and the PhyDB ITS sequence
 echo "cat the assembled ITS and the PhyDB ITS sequences"
-cmd_cat="cat ${repository_path}/database_files/Phy_ITSregions_all_20160601.coded_name.fasta ${repository_path}/data/${Name_of_project}_outfiles/fastqjoin.join.fasta > ${repository_path}/data/temp_reads_plus_database.fasta" 
+cmd_cat="cat ${repository_path}/database_files/${Name_of_ITS_database} ${working_directory_path}/${Name_of_project}_outfiles/fastqjoin.join.fasta > ${working_directory_path}/temp_reads_plus_database.fasta" 
 echo ${cmd_cat}
 eval ${cmd_cat}
 
 # to avoid parsing gzip file. Uncompress these to a temp file. 
-zcat ${working_directory_path}/${left_read_file} > ${working_directory_path}/temp_not_trimmedr1.fq
-zcat ${working_directory_path}/${right_read_file} > ${working_directory_path}/temp_not_trimmedr2.fq
+zcat ${left_read_file} > ${working_directory_path}/temp_not_trimmedr1.fq
+zcat ${right_read_file} > ${working_directory_path}/temp_not_trimmedr2.fq
 
 #run swarm with the different D values
-values="1 2 3"
+#values passed by config file
+#values="1 2 3 4"
 for v in ${values}
 do
 	# run the clustering on the REAL dataset
 	echo "running swarm at ${v} thresholds"
-	swarm_command="swarm -t ${num_threads} --append-abundance 1 -d ${v} -o ${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd${v}.out ${repository_path}/data/temp_reads_plus_database.fasta" 
+	swarm_command="swarm -t ${num_threads} --append-abundance 1 -d ${v} -o ${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd${v}.out ${working_directory_path}/temp_reads_plus_database.fasta" 
 	echo ${swarm_command}
 	eval ${swarm_command}
 	wait
