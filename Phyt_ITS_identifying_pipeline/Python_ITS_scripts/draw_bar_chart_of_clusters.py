@@ -243,11 +243,11 @@ def parse_tab_file_get_clusters(filename1, out_file):
 
 
     #call the function to convert dic to list
-    print "species_in_cluster_count_dict: ", species_in_cluster_count_dict
+    #print "species_in_cluster_count_dict: ", species_in_cluster_count_dict
     species_in_cluster_list, species_number_of_keys, species_max_val, \
                              species_vals_for_bar_chart = covert_dict_to_list_of_value(species_in_cluster_count_dict)
 
-    print "member_in_cluster_to_count_dict: ", member_in_cluster_to_count_dict
+    #print "member_in_cluster_to_count_dict: ", member_in_cluster_to_count_dict
     member_in_cluster_list, member_number_of_keys, member_max_val, \
                             member_vals_for_bar_chart = covert_dict_to_list_of_value(member_in_cluster_to_count_dict)
 

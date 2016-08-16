@@ -74,12 +74,14 @@ def parse_line(line):
     return cluster_line, number_of_reads_hitting_species, species, barcode_left, barcode_right, phy_count
 
 
-def parse_tab_file_get_clusters(filename1, left, right, barcode_length, show_me_the_reads, out_file):
+def parse_tab_file_get_clusters(filename1, left, right, barcode_length, show_me_the_reads,\
+                                read_prefix, out_file):
     """#script to open up a tab separeted clustering output and identify the
     species in the clustering"""
     #print coded_name_to_species_dict
     left_read_to_barcode_dic = turn_fq_to_dic(left, barcode_length)
     right_read_to_barcode_dic = turn_fq_to_dic(right, barcode_length)
+    read_prefix = str(read_prefix)
 
     cluster_file = open (filename1, "r")
     summary_out_file = open(out_file, "w")
@@ -102,7 +104,7 @@ def parse_tab_file_get_clusters(filename1, left, right, barcode_length, show_me_
         for member in cluster_line:
             member = member.rstrip()
             #is a memeber of the database in this cluster?
-            if member.startswith("Phytophthora") or member.startswith("P."):
+            if "Phytophthora" in member or "P." in member or "VHS" in member:
                 # yes we are interested in this cluster
                 phy_count = phy_count+1
                 #print member
@@ -111,8 +113,10 @@ def parse_tab_file_get_clusters(filename1, left, right, barcode_length, show_me_
                 number_of_reads_hitting_species = number_of_reads_hitting_species-1
         if number_of_reads_hitting_species >=1 and phy_count >0: #after the line, are there more memeber that are not database members?
             for member in cluster_line:
-                if "Phytophthora" in member or "P." in member:
+                if "Phytophthora" in member or "P." in member or "VHS" in member:
                     #no barcode for these - obviously!
+                    continue
+                if not member.startswith(read_prefix):
                     continue
                 print ("YYYEEEESSSSSS")
                 print cluster_line
@@ -121,17 +125,17 @@ def parse_tab_file_get_clusters(filename1, left, right, barcode_length, show_me_
                 #call func to get the bar codes
                 print "I am getting the left bar code", left_read_to_barcode_dic[member]
                 try:
+                    left_read_to_barcode_dic[member]
                     left_barcode = left_read_to_barcode_dic[member]
                 except:
-                    ValueError
                     left_barcode = "Not_found"
                 # add to str
                 barcode_left = barcode_left+left_barcode+" "
                 print "I am getting the right bar code", right_read_to_barcode_dic[member]
                 try:
+                    right_read_to_barcode_dic[member]
                     right_barcode = right_read_to_barcode_dic[member]
                 except:
-                    ValueError
                     right_barcode = "Not_found"
                 #add to str
                 barcode_right = barcode_right+right_barcode+" "
@@ -174,15 +178,20 @@ parser = OptionParser(usage=usage)
 parser.add_option("-i","--in", dest="in_file", default=None,
                   help="clustering out file")
 
-parser.add_option("-l", "--left", dest="left", default="R1.fq",
+parser.add_option("-l", "--left", dest="left", default="temp_not_trimmedr1.fq",
                   help="left reads unzipped fq file. Need this to get the barcode",
                   metavar="FILE")
-parser.add_option("-r", "--right", dest="right", default="R2.fq",
+parser.add_option("-r", "--right", dest="right", default="temp_not_trimmedr2.fq",
                   help="right reads unzipped fq file. Need this to get the barcode",
                   metavar="FILE")
 
-parser.add_option("-b", "--barcode_length", dest="barcode_length", default=8,
-                  help="length of the barcode used. Default 8 ",
+parser.add_option("-b", "--barcode_length", dest="barcode_length", default=6,
+                  help="length of the barcode used. Default 6 ",
+                  metavar="FILE")
+
+parser.add_option("--read_prefix", dest="read_prefix", default=None,
+                  help="read_prefix from the fq file. Only needs "
+                  " the first few letter e.g. read_prefix  M01157 ",
                   metavar="FILE")
 
 parser.add_option("-s", "--show_me_the_reads", dest="show_me_the_reads", default=False,
@@ -207,10 +216,13 @@ barcode_length = options.barcode_length
 out_file = options.out_file
 # -s
 show_me_the_reads = options.show_me_the_reads
+#read_prefix
+read_prefix = options.read_prefix
 
 #run the program
 barcode_length = int(barcode_length)
 
-parse_tab_file_get_clusters(in_file, left, right, barcode_length, show_me_the_reads, out_file)
+parse_tab_file_get_clusters(in_file, left, right, barcode_length, show_me_the_reads, \
+                            read_prefix, out_file)
 
 print "done"

@@ -36,7 +36,7 @@ trimmomatic_path=~/Downloads/Trimmomatic-0.32
 
 SRA_prefix=SRR870485
 
-path_to_ITS_clipping_file=~/misc_python/THAPBI/ITS_region_genomic_coverage
+repository_path=~/misc_python/THAPBI/ITS_region_genomic_coverage
 
 num_threads=12
 
@@ -52,7 +52,7 @@ export read_1_link
 export read_2_link
 export trimmomatic_path
 export SRA_prefix
-export path_to_ITS_clipping_file
+export repository_path
 export num_threads
 
 

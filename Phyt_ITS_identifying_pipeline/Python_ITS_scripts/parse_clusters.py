@@ -28,7 +28,7 @@ def coded_name_to_species(database_file):
         #print line
         coded_name, species = line.split("\t")
         #print coded_name, species
-        coded_name_to_species_dict[coded_name.rstrip()] = species
+        coded_name_to_species_dict[coded_name.rstrip()] = species.rstrip()
     return coded_name_to_species_dict
 
 def rev_coded_name_to_species(database_file):
@@ -46,7 +46,7 @@ def rev_coded_name_to_species(database_file):
         #print line
         coded_name, species = line.split("\t")
         #print coded_name, species
-        rev_coded_name_to_species_dict[species] = coded_name.rstrip()
+        rev_coded_name_to_species_dict[species.rstrip()] = coded_name.rstrip()
     return rev_coded_name_to_species_dict
 
 def parse_tab_file_get_clusters(filename1, database, out_file):
@@ -54,6 +54,7 @@ def parse_tab_file_get_clusters(filename1, database, out_file):
     species in the clustering"""
     #call the function to get the dictionary populated with the database
     coded_name_to_species_dict = coded_name_to_species(database)
+    rev_coded_name_to_species_dic = rev_coded_name_to_species(database)
     #print coded_name_to_species_dict
     cluster_file = open (filename1, "r")
     summary_out_file = open(out_file, "w")
@@ -74,6 +75,12 @@ def parse_tab_file_get_clusters(filename1, database, out_file):
             #print member
             try:
                 species = coded_name_to_species_dict[member]
+                #print species
+            except:
+                KeyError
+                species = member
+            try:
+                species = rev_coded_name_to_species_dic[member]
                 #print species
             except:
                 KeyError

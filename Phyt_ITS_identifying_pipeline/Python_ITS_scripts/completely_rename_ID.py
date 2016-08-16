@@ -19,10 +19,11 @@ def reformat_fasta_name(filename, databse, out):
     count = 0
     for seq_record in SeqIO.parse(filename, "fasta"):
         count = count+1
-        old_to_new_name = "%s\ttemp_seq_%d\n" % (seq_record.id, count)
+        old_to_new_name = "%s\tseqID%d_1\n" % (seq_record.id, count)
         name.append(old_to_new_name)
         #remove the read prefix to get to uniq names
-        seq_record.id = "temp_seq_%d" % (count)
+        # underscroe _1 implies an ubundance of 1 for swarm
+        seq_record.id = "seqID%d_1" % (count)
         seq_record.description = ""
         SeqIO.write(seq_record, f, "fasta")
     name_out = open(databse, "w")
@@ -44,9 +45,13 @@ if "-v" in sys.argv or "--version" in sys.argv:
 
 usage = """Use as follows:
 
-$ python complete....py -f seq.fasta --prefix @M01157:20:000000000-D07KA:
+$ python complete....py -f seq.fasta -d database.out -o out.fasta
 
-script to reformt fasta names. The read name can bre
+script to reformt fasta names.
+
+# names wend with an
+
+underscroe _1, implies an ubundance of 1 for swarm
 
 requires Biopython
 """
