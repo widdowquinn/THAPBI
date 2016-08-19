@@ -11,6 +11,8 @@ import os
 from sys import stdin,argv
 
 import gzip
+from Bio import SeqIO
+from Bio.SeqIO.QualityIO import FastqGeneralIterator
 
 
 
@@ -24,25 +26,36 @@ def turn_fq_to_dic(in_fastq, barcode_length):
     #open the fastq file
     in_file = open(in_fastq)
     # iterate through the fatsq file
-    try:
-        for i, (title, seq, qual) in enumerate(FastqGeneralIterator(in_file)):
-            read_to_barcode_dict[title.split(" ")[0]] = seq[:barcode_length]
-    except:
-        ValueError
-        line_count = 0
-        read_name = ""
-        sequcene = ""
-        for line in in_file:
-            line_count = line_count+1
-            if line.startswith("@"):
-                #read line
-                read_name = line
-            if line_count % 4:
-                #seq line
-                sequcene = line[:barcode_length]
-            read_to_barcode_dict[read_name.split(" ")[0]] = sequcene
+    total_reads = 0
+    for (title, sequence, quality) in FastqGeneralIterator(in_file):
+        total_reads = total_reads+1
+        title = title.split(" ")[0]
+        read_to_barcode_dict[title.split(" ")[0]] = sequence[:barcode_length]
     in_file.close()
-    return read_to_barcode_dict
+    return read_to_barcode_dict, total_reads
+
+try:
+    # New in Python 3.4
+    from statistics import mean
+except ImportError:
+    def mean(list_of_values):
+        """Calculate the mean average of a list of numbers."""
+        # Quick and dirty, assumes already a list not an interator
+        # so don't have to worry about getting the divisor.
+        # Explicit float(...) to allow for Python 2 division.
+        return sum(list_of_values) / float(len(list_of_values))
+
+assert mean([1,2,3,4,5]) == 3
+
+def get_fasta_stats(fasta):
+    """function to get stats on a given fasta file"""
+    with open(fasta, 'r') as seq:
+        sizes = [len(record) for record in SeqIO.parse(seq, 'fasta')]
+    min_contig = min(sizes)
+    max_contig = max(sizes)
+    avg_contig = mean(sizes)
+    num_contig = len(sizes)
+    return min_contig, max_contig, avg_contig, num_contig
 
 
 def get_barcode_seq (read, in_fastq):
@@ -71,23 +84,34 @@ def parse_line(line):
     barcode_right = ""
     #database phy counter
     phy_count = 0
-    return cluster_line, number_of_reads_hitting_species, species, barcode_left, barcode_right, phy_count
+    return cluster_line, number_of_reads_hitting_species, species, barcode_left, \
+           barcode_right, phy_count
 
 
-def parse_tab_file_get_clusters(filename1, left, right, barcode_length, show_me_the_reads,\
+def parse_tab_file_get_clusters(fasta, filename1, left, right, barcode_length, \
+                                show_me_the_reads,\
                                 read_prefix, out_file):
     """#script to open up a tab separeted clustering output and identify the
     species in the clustering"""
     #print coded_name_to_species_dict
-    left_read_to_barcode_dic = turn_fq_to_dic(left, barcode_length)
-    right_read_to_barcode_dic = turn_fq_to_dic(right, barcode_length)
+    #call the functions
+    left_read_to_barcode_dic, left_total_reads = turn_fq_to_dic(left, barcode_length)
+    right_read_to_barcode_dic, right_total_reads = turn_fq_to_dic(right, barcode_length)
+    
+    #call the function to get fasta stats
+    min_contig, max_contig, avg_contig, num_contig = get_fasta_stats(fasta)
     read_prefix = str(read_prefix)
 
     cluster_file = open (filename1, "r")
     summary_out_file = open(out_file, "w")
+    #set so we dont replica the barcode output
+    left_barcode_seen_set = set([])
+    right_barcode_seen_set = set([])
+
+    ITS_hitting_phy_count = 0
     #title for the results file
     if show_me_the_reads:
-        title = "#species\tnumber_of_reads_hitting_species\tbarcodeR1\tbarcodeR2\treads_that_hit_species\n"
+        title = "#species\tnumber_of_reads_hitting_species\tunique_barcodeR1\tunique_barcodeR2\treads_that_hit_species\n"
     else:
         title = "#species\tnumber_of_reads_hitting_species\tbarcodeR1\tbarcodeR2\n"
     summary_out_file.write(title)
@@ -118,27 +142,33 @@ def parse_tab_file_get_clusters(filename1, left, right, barcode_length, show_me_
                     continue
                 if not member.startswith(read_prefix):
                     continue
-                print ("YYYEEEESSSSSS")
-                print cluster_line
+                #print ("YYYEEEESSSSSS")
+                #print cluster_line
                 # we do not add the reads that hit the 
                 reads_of_interest = reads_of_interest+member+" "
                 #call func to get the bar codes
-                print "I am getting the left bar code", left_read_to_barcode_dic[member]
+                #print "I am getting the left bar code for memebr ", member, " = ", left_read_to_barcode_dic[member]
                 try:
-                    left_read_to_barcode_dic[member]
+                    #print "left_read_to_barcode_dic =",left_read_to_barcode_dic
                     left_barcode = left_read_to_barcode_dic[member]
                 except:
                     left_barcode = "Not_found"
                 # add to str
-                barcode_left = barcode_left+left_barcode+" "
-                print "I am getting the right bar code", right_read_to_barcode_dic[member]
+                if left_barcode not in left_barcode_seen_set:
+                    left_barcode_seen_set.add(left_barcode)
+                    barcode_left = barcode_left+left_barcode+" "
+                #print "I am getting the right bar code for memebr", member, " = ", right_read_to_barcode_dic[member]
                 try:
                     right_read_to_barcode_dic[member]
                     right_barcode = right_read_to_barcode_dic[member]
                 except:
                     right_barcode = "Not_found"
-                #add to str
-                barcode_right = barcode_right+right_barcode+" "
+                #add to str if we have not seen it yet. 
+                if right_barcode not in right_barcode_seen_set:
+                    right_barcode_seen_set.add(right_barcode)
+                    barcode_right = barcode_right+right_barcode+" "
+
+            ITS_hitting_phy_count = ITS_hitting_phy_count+number_of_reads_hitting_species
             #format the data
             if show_me_the_reads:
                 data_output = "%s\t%d\t%s\t%s\t%s\n" %(species.rstrip(), number_of_reads_hitting_species,\
@@ -150,9 +180,16 @@ def parse_tab_file_get_clusters(filename1, left, right, barcode_length, show_me_
                                                        barcode_right)
             #write out the data
             summary_out_file.write(data_output)
+            phyto_read = (float(ITS_hitting_phy_count)/ num_contig)*100
 
-
-
+    fasta_file_summary = """#Fasta file assembly summary: #min_contig = %d max_contig = %d avg_contig = %d
+#Total number of assemblerd sequences = %d
+#number of reads clustering with Phy = %d
+#number of starting reads = %d
+#percent of reads clustering with Phyto = %.2f""" %(min_contig, \
+                                            max_contig, avg_contig, num_contig, ITS_hitting_phy_count,\
+                                            right_total_reads, phyto_read)
+    summary_out_file.write(fasta_file_summary)
     cluster_file.close()
     summary_out_file.close()
     return True
@@ -174,6 +211,9 @@ command line option
 """
 
 parser = OptionParser(usage=usage)
+
+parser.add_option("-f","--fasta", dest="fasta", default=None,
+                  help="assembled fasta file to get stats on")
 
 parser.add_option("-i","--in", dest="in_file", default=None,
                   help="clustering out file")
@@ -204,6 +244,8 @@ parser.add_option("-o", "--out_prefix", dest="out_file", default="summarise_clus
 
 
 (options, args) = parser.parse_args()
+#-f
+fasta = options.fasta
 #-i
 in_file = options.in_file
 # -l
@@ -222,7 +264,7 @@ read_prefix = options.read_prefix
 #run the program
 barcode_length = int(barcode_length)
 
-parse_tab_file_get_clusters(in_file, left, right, barcode_length, show_me_the_reads, \
+parse_tab_file_get_clusters(fasta, in_file, left, right, barcode_length, show_me_the_reads, \
                             read_prefix, out_file)
 
 print "done"

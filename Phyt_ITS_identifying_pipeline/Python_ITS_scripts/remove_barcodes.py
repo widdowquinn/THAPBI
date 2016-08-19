@@ -14,16 +14,18 @@ def trim_seq(seq, barcode, left_primer, right_primer):
     """function to trim the seq at given features"""
     seq = seq.upper()
     seq = seq.replace("\n" , "")
+    left_primer = int(left_primer)
+    right_primer = int(right_primer)
     #remove the left and right barcode
     seq = seq[barcode:len(seq)-barcode]
-    if left_primer and right_primer:
+    if left_primer or right_primer:
         #if given left and right primer. Slice these off
-        seq = seq[left_primer:len(seq)-right_primer]+"\n"
+        seq = seq[left_primer:len(seq)-right_primer]
     #index the start of the ITS seq, slice there.
     #if use_ITS:
         #seq = seq[seq.index(ITS):]
         #assert seq[:6] =="CCACAC"
-    return seq
+    return seq+"\n"
 
 def reformat_fasta_name(fasta, barcode, left_primer, right_primer, use_ITS,\
                         ITS, out):

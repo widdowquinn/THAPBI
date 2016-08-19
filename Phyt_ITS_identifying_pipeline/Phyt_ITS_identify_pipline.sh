@@ -12,6 +12,20 @@ set -e
 
 cd ${working_directory_path}
 
+echo Name_of_project = ${Name_of_project}
+echo Name_of_ITS_database = ${Name_of_ITS_database}
+echo left_read_file = ${left_read_file}
+echo right_read_file = ${right_read_file}
+echo trimmomatic_path = ${trimmomatic_path}
+echo repository_path = ${repository_path}
+echo num_threads = ${num_threads}
+echo working_directory_path = ${working_directory_path}
+echo values = ${values}
+echo left_primer_length = ${left_primer_length}
+echo right_primer_length  = ${right_primer_length}
+echo barcode_length = ${barcode_length}
+echo read_prefix = ${read_prefix}
+
 
 # Create directory for output
 #mkdir fastq-join_joined
@@ -161,7 +175,7 @@ do
 	
 	# python find Phy species identified
 	echo "13) python to find Phy species identified - I am using the original reads, not the trimmed ones to get the barcodes."
-	cmd_what_phy_species="python ${repository_path}/Python_ITS_scripts/get_results_from_cluster.py --read_prefix ${read_prefix} --left ${working_directory_path}/temp_not_trimmedr1.fq --right ${working_directory_path}/temp_not_trimmedr2.fq -i ${working_directory_path}/${Name_of_project}_results/${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd${v}.RESULTS -o ${working_directory_path}/${Name_of_project}_results/${Name_of_project}_Phytophthora_species_identified_swarm_${v}.txt" 
+	cmd_what_phy_species="python ${repository_path}/Python_ITS_scripts/get_results_from_cluster.py -f ./${Name_of_project}_outfiles/fastqjoin.join.fasta --read_prefix ${read_prefix} --left ${working_directory_path}/temp_not_trimmedr1.fq --right ${working_directory_path}/temp_not_trimmedr2.fq -i ${working_directory_path}/${Name_of_project}_results/${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd${v}.RESULTS -o ${working_directory_path}/${Name_of_project}_results/${Name_of_project}_Phytophthora_species_identified_swarm_${v}.txt" 
 	echo ${cmd_what_phy_species}
 	eval ${cmd_what_phy_species}
 	wait
