@@ -186,7 +186,7 @@ def parse_tab_file_get_clusters(fasta, filename1, left, right, barcode_length, \
 #Total number of assemblerd sequences = %d
 #number of reads clustering with Phy = %d
 #number of starting reads = %d
-#percent of reads clustering with Phyto = %.2f%""" %(min_contig, \
+#percent of reads clustering with Phyto = %.2f""" %(min_contig, \
                                             max_contig, avg_contig, num_contig, ITS_hitting_phy_count,\
                                             right_total_reads, phyto_read)
     summary_out_file.write(fasta_file_summary)
