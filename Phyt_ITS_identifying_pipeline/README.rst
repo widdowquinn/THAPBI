@@ -47,5 +47,18 @@ Results?: NOT FINISHED. Basically, the clustering is one cluster per line, tab s
 	8) SPAdes alternative error correction. Much easier to install . http://bioinf.spbau.ru/en/content/spades-download-0 
 		
 
+generate config file
+=====================
+Either use the example config file as a template and fill in your experiment details.
+Dont forget to make the file executable:
+$chmod a+x names_of_config_file.sh``
+
+
+or
+
+use the python script:
+
+``python generating_config_files.py``
+
 
 
