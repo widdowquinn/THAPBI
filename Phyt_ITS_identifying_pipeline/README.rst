@@ -6,10 +6,15 @@ basic usage:
 
 run an individual shell script, which acts as a config file, that then call the main 
 script below 
-
+# config file - see bottom of here for how to generate this file. 
 ``./Phy_CONFIG_file.sh``
 
+#which calls
 ``./Phyt_ITS_identify_pipline.sh``
+
+or
+
+``./Phyt_ITS_identify_pipline_with_error_correction.sh``
 
 Important parameters to be set:
 some variables in here need to be set by the user.
@@ -32,15 +37,14 @@ Results?: NOT FINISHED. Basically, the clustering is one cluster per line, tab s
 
 
 ``Requires:``
-	1) Internet access for $ wget
-	2) Trimmomatic (read quality trimming) http://www.usadellab.org/cms/?page=trimmomatic
-	3) Fastqc http://www.bioinformatics.babraham.ac.uk/projects/download.html
-	4) python2.7 or greater. Python 3.5 is recommended. https://www.python.org/downloads/
-	5) PEAR (assemble overlapping reads) https://github.com/xflouris/PEAR  http://sco.h-its.org/exelixis/web/software/pear/files/pear-0.9.10-bin-64.tar.gz 
-	6) Swarm (clustering) https://github.com/torognes/swarm/blob/master/man/swarm_manual.pdf
-	7) To draw graphs: No essential but Numpy, Matplotlib, Scipy
-	8) BLESS error correction (difficult to install) - Not essential
-	9) SPAdes alternative error correction. Much easier to install .
+	1) Trimmomatic (read quality trimming) http://www.usadellab.org/cms/?page=trimmomatic
+	2) Fastqc http://www.bioinformatics.babraham.ac.uk/projects/download.html
+	3) python2.7 or greater. Python 3.5 is recommended. https://www.python.org/downloads/
+	4) PEAR (assemble overlapping reads) https://github.com/xflouris/PEAR  http://sco.h-its.org/exelixis/web/software/pear/files/pear-0.9.10-bin-64.tar.gz 
+	5) Swarm (clustering) https://github.com/torognes/swarm/blob/master/man/swarm_manual.pdf
+	6) To draw graphs: No essential but Numpy, Matplotlib, Scipy... pip install module_name
+	7) BLESS error correction (difficult to install) - Not essential. NOT CURRENTLY USED
+	8) SPAdes alternative error correction. Much easier to install . http://bioinf.spbau.ru/en/content/spades-download-0 
 		
 
 
