@@ -1,4 +1,26 @@
-q = """
+#!/usr/bin/env python
+#title: lazy mans way of generating a load of config files
+#in the cluster
+#author: Peter Thorpe September 2016. The James Hutton Insitute, Dundee, UK.
+
+usage  = """ THIS is a python 2.7 script which will make a load of .sh scripts given
+a
+ list of read file. 
+
+USER must copy and paste a list of read_file_names into this file
+after the 'list_of_read_files = quotequotequote variable.
+
+If your reads do not end in 001, please change lines:
+
+ >prefix = i.split("001.f")[0]
+and
+> temp_name = i.split("_L001_R1_")[0]+".sh"
+
+"""
+print usage
+
+# user paste read_files here ... keep three quote before and after please.
+list_of_read_files = """
 DNAMIX_S95_L001_R1_001.fastq.gz      GSB-301111_S65_L001_R1_001.fastq.gz  IGB-180712_S17_L001_R1_001.fastq.gz
 DNAMIX_S95_L001_R2_001.fastq.gz      GSB-301111_S65_L001_R2_001.fastq.gz  IGB-180712_S17_L001_R2_001.fastq.gz
 ECN_S1_L001_R1_001.fastq.gz          IGB-010212_S5_L001_R1_001.fastq.gz   IGB-180713_S37_L001_R1_001.fastq.gz
@@ -68,7 +90,7 @@ GSB-301013_S89_L001_R2_001.fastq.gz  IGB-180313_S28_L001_R2_001.fastq.gz  SRB-31
 seen_set = set([])
 
 
-for i in sorted(q):
+for i in sorted(list_of_read_files):
 	prefix = i.split("001.f")[0]
 	if prefix not in seen_set:
 		#print prefix
