@@ -4,6 +4,11 @@ author: Peter Thorpe September 2016. The James Hutton Insitute, Dundee, UK.
 
 basic usage:
 
+run an individual shell script, which acts as a config file, that then call the main 
+script below 
+
+``./Phy_CONFIG_file.sh``
+
 ``./Phyt_ITS_identify_pipline.sh``
 
 Important parameters to be set:

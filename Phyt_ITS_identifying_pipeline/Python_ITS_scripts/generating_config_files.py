@@ -111,6 +111,8 @@ read_prefix=M01157
 
 working_directory_path=$HOME/scratch/tree_health/testing_pipline/%s
 
+path_to_spades=$HOME/scratch/Downloads/SPAdes-3.9.0-Linux/bin/
+
 # NOTHING TO BE FILLED IN BY USER FROM HERE!!!!
 ######################################################################################
 #not needed but, may use it as a configuration style script later
@@ -127,11 +129,15 @@ export left_primer_length
 export right_primer_length 
 export barcode_length
 export read_prefix
+export path_to_spades
 #export read_name_prefix
 
 mkdir ${working_directory_path}
 
 cd ${working_directory_path}
+
+# If you want error correction uncomment this one and comment out the following one
+#${repository_path}/Phyt_ITS_identify_pipline_with_error_correction.sh
 
 ${repository_path}/Phyt_ITS_identify_pipline.sh
 
