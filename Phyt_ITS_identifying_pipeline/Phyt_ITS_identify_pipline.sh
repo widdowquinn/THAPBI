@@ -9,6 +9,11 @@ set -e
 # THESE VARIABLE NEED TO BE FILLED IN BY USER  in the config file
 
 
+#info for user:
+# this is the main script. Nothing should be changed in here. 
+# These variables are called by an individaul script see for and
+#example Phy_CONFIG_file.sh
+
 
 cd ${working_directory_path}
 
@@ -25,6 +30,7 @@ echo left_primer_length = ${left_primer_length}
 echo right_primer_length  = ${right_primer_length}
 echo barcode_length = ${barcode_length}
 echo read_prefix = ${read_prefix}
+echo path_to_spades= ${path_to_spades}
 
 
 # Create directory for output
@@ -66,6 +72,16 @@ cmd_fastqc2="fastqc ${Name_of_project}_R2.fq.gz"
 echo ${cmd_fastqc2}
 eval ${cmd_fastqc2}
 echo "cmd_fastqc done"
+
+#error correction on reads using SPAdes
+#echo "2b) Bayes hammer error correction. Module in spades. "
+#error_correct="${path_to_spades}/spades.py --only-error-correction -1 ${Name_of_project}_R1.fq.gz -2 ${Name_of_project}_R2.fq.gz -o ${working_directory_path}/${Name_of_project}_error_correction"
+#echo ${error_correct}
+#eval ${error_correct}
+
+#mv ${working_directory_path}/${Name_of_project}_error_correction/corrected/${Name_of_project}* ${working_directory_path}
+#rm -rf ${working_directory_path}/${Name_of_project}_error_correction
+#rm *unpaired*
 
 # Join trimmed paired-end read files together
 # use a program called PEAR
