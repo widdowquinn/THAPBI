@@ -24,6 +24,7 @@ def parse_tab_outfile(blast):
 
 def split_gff_line(line):
     """function to split the gff line into its components"""
+    assert len(line.split("\t")) ==9 ,"GFF fields wrong length should be 9"
     scaf, genome, hit_number, start, stop, dot, direction, \
           dot2, description = line.split("\t")
     return scaf, genome, hit_number, start, stop, dot, direction, \

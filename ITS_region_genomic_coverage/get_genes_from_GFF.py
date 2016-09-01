@@ -16,7 +16,7 @@ from optparse import OptionParser
 ###########################################################################
 
 
-def write_out_ITS_GFF(gff, out): # this is a long function
+def write_out_ITS_GFF(gff, out):
     """function parse and print GFF lines that
     correspond to gene only """
     gff_file = open(gff, "r")
