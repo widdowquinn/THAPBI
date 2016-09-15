@@ -102,16 +102,16 @@ def align_cluster(infile):
     print("Running %s" % cmd)
     return_code = os.system(cmd)
     assert return_code == 0, "muscle says NO!! - is muscle in your PATH?"
-    
+    #wait command forces Linux to wait until all command are complete
     cmd_wait = 'wait'
     print("Running %s" % cmd_wait)
     return_code = os.system(cmd_wait)
-    
+    #refine take longer but is the most accurate
     cmd2 = 'muscle -in %s_TEMP -out %s_aligned.fasta -refine' % (infile, infile.split(".fasta")[0])
     print("Running %s" % cmd2)
     return_code = os.system(cmd2)
     assert return_code == 0, "muscle -refine says NO!! - is muscle in your PATH, does this version allow this parameter?"
-
+    #wait command forces Linux to wait until all command are complete
     cmd_wait = 'wait'
     print("Running %s" % cmd_wait)
     return_code = os.system(cmd_wait)
