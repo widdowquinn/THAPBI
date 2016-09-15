@@ -43,8 +43,10 @@ Results?: NOT FINISHED. Basically, the clustering is one cluster per line, tab s
 	4) PEAR (assemble overlapping reads) https://github.com/xflouris/PEAR  http://sco.h-its.org/exelixis/web/software/pear/files/pear-0.9.10-bin-64.tar.gz 
 	5) Swarm (clustering) https://github.com/torognes/swarm/blob/master/man/swarm_manual.pdf
 	6) To draw graphs: No essential but Numpy, Matplotlib, Scipy... pip install module_name
-	7) BLESS error correction (difficult to install) - Not essential. NOT CURRENTLY USED
-	8) SPAdes alternative error correction. Much easier to install . http://bioinf.spbau.ru/en/content/spades-download-0 
+	7) BLAST. This is used to get the % identity of each cluster Please add to your PATH https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download
+	8) muscle. Alignmnet tool to align the clusters. Please rename and add to your PATH as muscle.  http://www.drive5.com/muscle/
+	9) 	BLESS error correction (difficult to install) - Not essential. NOT CURRENTLY USED
+	10) SPAdes alternative error correction. Much easier to install . http://bioinf.spbau.ru/en/content/spades-download-0 
 		
 
 generate config file
@@ -59,6 +61,25 @@ or
 use the python script:
 
 ``python generating_config_files.py``
+
+SWARM INFO:
+
+-d, --differences "zero or positive integer"
+maximum number of differences allowed between two amplicons, meaning
+that two amplicons will be grouped if they have "Iinteger" (or
+less) differences. This is swarm's most important parameter. The
+number of differences is calculated as the number of mismatches
+(substitutions, insertions or deletions) between the two amplicons
+once the optimal pairwise global alignment has been found (see
+"pairwise alignment advanced options" to influence that step). Any
+Iinteger between 0 and 256 can be used, but high values
+will decrease the taxonomical resolution of swarm
+results. Commonly used values are 1, 2 or 3, rarely
+higher. When using  0, swarm will output results
+corresponding to a strict dereplication of the dataset, i.e. merging
+identical amplicons. Warning, whatever the value, swarm
+requires fasta entries to present abundance values. Default number of
+differences is 1.
 
 
 
