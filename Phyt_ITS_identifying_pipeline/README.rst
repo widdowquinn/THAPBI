@@ -40,6 +40,7 @@ Results?: NOT FINISHED. Basically, the clustering is one cluster per line, tab s
 	1) Trimmomatic (read quality trimming) http://www.usadellab.org/cms/?page=trimmomatic
 	2) Fastqc http://www.bioinformatics.babraham.ac.uk/projects/download.html
 	3) python2.7 or greater. Python 3.5 is recommended. https://www.python.org/downloads/
+	Biopython is also required:  http://biopython.org/wiki/Download
 	4) PEAR (assemble overlapping reads) https://github.com/xflouris/PEAR  http://sco.h-its.org/exelixis/web/software/pear/files/pear-0.9.10-bin-64.tar.gz 
 	5) Swarm (clustering) https://github.com/torognes/swarm/blob/master/man/swarm_manual.pdf
 	6) To draw graphs: No essential but Numpy, Matplotlib, Scipy... pip install module_name
