@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #title: Parse clusters and find the phy spcies
 #in the cluster
 #author: Peter Thorpe September 2016. The James Hutton Insitute, Dundee, UK.
@@ -98,15 +99,15 @@ def run_blastn(infile, cluster_count):
 def align_cluster(infile):
     """function to make a nucl blastdb"""
     cmd = 'muscle -in %s -out %s_TEMP' % (infile)
-    #print("Running %s" % cmd)
+    print("Running %s" % cmd)
     return_code = os.system(cmd)
     assert return_code == 0, "muscle says NO!! - is muscle in your PATH?"
     cmd2 = 'muscle -in %s_TEMP -out %s_aligned.fasta -refine' % (infile.split(".fasta")[0])
-    #print("Running %s" % cmd)
+    print("Running %s" % cmd)
     return_code = os.system(cmd2)
     assert return_code == 0, "muscle -refine says NO!! - is muscle in your PATH, does this version allow this parameter?"
     cmd3 = 'rm *_TEMP'
-    #print("Running %s" % cmd)
+    print("Running %s" % cmd)
     return_code = os.system(cmd3)
     assert return_code == 0, "something went wrond deleting the temp alignment file!" 
 
