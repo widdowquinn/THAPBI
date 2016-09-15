@@ -63,6 +63,20 @@ use the python script:
 
 ``python generating_config_files.py``
 
+
+Why these tools?
+================
+Pipeline: A species identification pipeline given Illumina data
+A number of pipelines exist that have been developed to identify species based of OTUs, however mostly for fungi: FHiTINGS (Dannemiller, et al. 2014), Mycofier (Delgado-Serrano, et al. 2016), PIPITS (Gweon, et al. 2015). However, to my knowledge only one pipeline exists for use with Phytophthora (Scibetta, et al. 2012).
+Therefore a pipeline needs to be developed for Phytophthora species, which utilises a Phytophthora specific ITS1 database. 
+How
+A number of tools exist for each step. The following listed are the current “best” tools for the job, in my opinion. Figure 1 represents the major steps required for the identification of species when given Illumina data. A known ITS1 database is required (OTUs). 
+
+
+There are a number of different tools which can be used at each step. Arguably assembly and clustering tools can have the biggest impact. For assembly PEAR (Zhang, et al. 2014) was chosen. PEAR is very fast and applies statistical tests to minimise false positive results. For small overlaps it was reported that FLASH (Magoč and Salzberg 2011) often fails to merge such reads (Zhang, et al. 2014), therefore PEAR was chosen. 
+For clustering, a number of tools exist. The data analysed in (Scibetta, et al. 2012) was clustered with BlastClust and OTUs picked with Qimme. Other clustering tools exist such as CD-HIT-454, DNAclust, Swarm and Usearch. Tools such as CD-HIT-454 and Usearch have inherent problem: They are biased to the order the dataset is presented in. Thus results can alter depending on the order of the dataset. Swarm (Mahé, et al. 2015) is an amplicon clustering tool that has been developed which aims to overcome the limitations of other clustering tools. To summarise the clusters, custom Python scripts are made. 
+
+
 SWARM INFO:
 
 -d, --differences "zero or positive integer"
