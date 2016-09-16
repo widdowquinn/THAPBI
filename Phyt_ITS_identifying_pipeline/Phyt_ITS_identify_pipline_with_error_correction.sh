@@ -238,6 +238,7 @@ do
 	-i ${working_directory_path}/${Name_of_project}_results/${Name_of_project}_reads_cluseterd_with_phy_ITS_Swarmd${v}.RESULTS 
 	-o ${working_directory_path}/${Name_of_project}_results/${Name_of_project}_Phytophthora_species_identified_swarm_${v}.txt 
 	-v ${v}
+	--threads ${num_threads}
 	--left ${working_directory_path}/${Name_of_project}_R1.fq --right ${working_directory_path}/${Name_of_project}_R2.fq" 
 	echo ${cmd_what_phy_species}
 	eval ${cmd_what_phy_species}
