@@ -325,11 +325,11 @@ parser.add_option("--read_prefix", dest="read_prefix", default=None,
                   " the first few letter e.g. read_prefix  M01157 ",
                   metavar="FILE")
 
-parser.add_option("--blast", dest="blast", default=True,
+parser.add_option("--blast", dest="blast", default=False,
                   help="this option performs BLAST on itself. Turn off for faster results."
                   " To turn of --blast False ")
 
-parser.add_option("--align", dest="align", default=True,
+parser.add_option("--align", dest="align", default=False,
                   help="this option performs alignment on a cluster. Turn off for faster results."
                   " To turn off --align False")
 
