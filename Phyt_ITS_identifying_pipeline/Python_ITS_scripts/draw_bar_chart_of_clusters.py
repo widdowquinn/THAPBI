@@ -10,6 +10,7 @@ from optparse import OptionParser
 import datetime
 import os
 from sys import stdin,argv
+from math import log
 #imports for graphs
 #import seaborn as sns
 
@@ -140,6 +141,8 @@ def plot_individual_bar_chart_graph(data_values, title, number_of_keys, max_val,
     plt.title(title+"_barchart")
     plt.legend()
     pylab.grid(True)
+    ax.set_yscale('symlog')
+    ax.set_xscale('symlog')
     plt.tight_layout()
     plt.show()
     pylab.savefig(file_in+"_"+title+'_barchart.png')
@@ -178,6 +181,8 @@ def plot_multi_bar_chart_graph(title1, vals_for_bar_chart1,\
                      alpha=opacity,color='green') # label='whatever'
     ax1.set_xlabel('number in cluster')
     ax1.set_ylabel('Count')
+    ax1.set_yscale('symlog')
+    ax1.set_xscale('symlog')
     ax1.grid(True)
     ax1.set_title(title1+"_barchart")
     
@@ -186,6 +191,8 @@ def plot_multi_bar_chart_graph(title1, vals_for_bar_chart1,\
                      alpha=opacity,color='blue') # label='whatever'
     ax2.set_xlabel('number in cluster')
     ax2.set_ylabel('Species Count')
+    ax2.set_yscale('symlog')
+    ax2.set_xscale('symlog')
     ax2.grid(True)
     ax2.set_title(title2+"_barchart")
    
