@@ -179,8 +179,8 @@ def plot_multi_bar_chart_graph(title1, vals_for_bar_chart1,\
     #graph1  
     rects1 = ax1.bar(index1, vals_for_bar_chart1, bar_width,
                      alpha=opacity,color='green') # label='whatever'
-    ax1.set_xlabel('number in cluster')
-    ax1.set_ylabel('Count')
+    ax1.set_xlabel('log number in cluster')
+    ax1.set_ylabel('log_Count')
     ax1.set_yscale('symlog')
     ax1.set_xscale('symlog')
     ax1.grid(True)
@@ -189,8 +189,8 @@ def plot_multi_bar_chart_graph(title1, vals_for_bar_chart1,\
     # graph 2
     rects2 = ax2.bar(index2, vals_for_bar_chart2, bar_width,
                      alpha=opacity,color='blue') # label='whatever'
-    ax2.set_xlabel('number in cluster')
-    ax2.set_ylabel('Species Count')
+    ax2.set_xlabel('log number in cluster')
+    ax2.set_ylabel('log Count')
     ax2.set_yscale('symlog')
     ax2.set_xscale('symlog')
     ax2.grid(True)
@@ -259,25 +259,25 @@ def parse_tab_file_get_clusters(filename1, out_file):
                             member_vals_for_bar_chart = covert_dict_to_list_of_value(member_in_cluster_to_count_dict)
 
     #plot one graph per figure
-    plot_individual_bar_chart_graph(species_in_cluster_list, "species_in_cluster",\
-                         species_number_of_keys, species_max_val, \
-                         species_vals_for_bar_chart, filename1)
+    #plot_individual_bar_chart_graph(species_in_cluster_list, "species_in_cluster",\
+                         #species_number_of_keys, species_max_val, \
+                         #species_vals_for_bar_chart, filename1)
     
-    plot_individual_bar_chart_graph(member_in_cluster_list, "member_in_cluster", \
-                         member_number_of_keys, member_max_val, \
-                         member_vals_for_bar_chart, filename1)
+    #plot_individual_bar_chart_graph(member_in_cluster_list, "total_member_in_cluster", \
+                         #member_number_of_keys, member_max_val, \
+                         #member_vals_for_bar_chart, filename1)
 
 
 
     #plot histogram - inappropriate for the data
-    plot_hitstogram_graph(species_in_cluster_list, "species_in_cluster",\
-                         species_number_of_keys, species_max_val, filename1)
+    #plot_hitstogram_graph(species_in_cluster_list, "species_in_cluster",\
+                         #species_number_of_keys, species_max_val, filename1)
     
-    plot_hitstogram_graph(member_in_cluster_list, "member_in_cluster", \
-                         member_number_of_keys, member_max_val, filename1)
+    #plot_hitstogram_graph(member_in_cluster_list, "total_members_in_cluster", \
+                         #member_number_of_keys, member_max_val, filename1)
     #plot_multi_bar_chart_graph
     plot_multi_bar_chart_graph("species_in_cluster",species_vals_for_bar_chart,\
-                               "member_in_cluster", member_vals_for_bar_chart,\
+                               "total_member_in_cluster", member_vals_for_bar_chart,\
                                "test", member_vals_for_bar_chart,\
                                filename1)
 
