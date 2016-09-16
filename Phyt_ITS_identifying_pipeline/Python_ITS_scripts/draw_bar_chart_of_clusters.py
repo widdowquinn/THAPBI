@@ -56,9 +56,19 @@ def count_element_in_cluster(cluster_line_split):
     species_count = 0
     for member in cluster_line_split:
         members_count = members_count+1
+        try:
+            if member.split("_")[1] =="sp":
+                #split the name up to get the species name
+                #this will be messed up by database enteries
+               species_member = member.split("_")[2]
+            else:    
+                species_member = member.split("_")[1]
+        except:
+            ValueError
+            species_member = member
         if member not in species_set:
             species_count = species_count+1
-            species_set.add(member)
+            species_set.add(species_member)
     return members_count, species_count
 
 try:
@@ -180,7 +190,7 @@ def plot_multi_bar_chart_graph(title1, vals_for_bar_chart1,\
     rects1 = ax1.bar(index1, vals_for_bar_chart1, bar_width,
                      alpha=opacity,color='green') # label='whatever'
     ax1.set_xlabel('log number in cluster')
-    ax1.set_ylabel('log_Count')
+    ax1.set_ylabel('log Count')
     ax1.set_yscale('symlog')
     ax1.set_xscale('symlog')
     ax1.grid(True)
@@ -276,8 +286,8 @@ def parse_tab_file_get_clusters(filename1, out_file):
     #plot_hitstogram_graph(member_in_cluster_list, "total_members_in_cluster", \
                          #member_number_of_keys, member_max_val, filename1)
     #plot_multi_bar_chart_graph
-    plot_multi_bar_chart_graph("species_in_cluster",species_vals_for_bar_chart,\
-                               "total_member_in_cluster", member_vals_for_bar_chart,\
+    plot_multi_bar_chart_graph("species in cluster",species_vals_for_bar_chart,\
+                               "total member in cluster", member_vals_for_bar_chart,\
                                "test", member_vals_for_bar_chart,\
                                filename1)
 
