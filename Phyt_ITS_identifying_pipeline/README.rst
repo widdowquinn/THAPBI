@@ -1,5 +1,9 @@
 READme info Phyt_ITS_identifying_pipeline
 ======================================================
+IMPORTANT:
+THIS IS STILL IN TESTING PHASE. THIS IS A DRAFT PIPELINE AND WILL BE CONVERTED
+TO PYTHON ONCE TESTING IS COMPLETE.
+
 author: Peter Thorpe September 2016. The James Hutton Insitute, Dundee, UK.
 
 basic usage:
@@ -41,14 +45,18 @@ Results?: NOT FINISHED. Basically, the clustering is one cluster per line, tab s
 	2) Fastqc http://www.bioinformatics.babraham.ac.uk/projects/download.html
 	3) python2.7 or greater. Python 3.5 is recommended. https://www.python.org/downloads/
 	Biopython is also required:  http://biopython.org/wiki/Download
-	4) PEAR (assemble overlapping reads) https://github.com/xflouris/PEAR  http://sco.h-its.org/exelixis/web/software/pear/files/pear-0.9.10-bin-64.tar.gz 
+	4) PEAR * (assemble overlapping reads) https://github.com/xflouris/PEAR  http://sco.h-its.org/exelixis/web/software/pear/files/pear-0.9.10-bin-64.tar.gz 
 	5) Swarm (clustering) https://github.com/torognes/swarm/blob/master/man/swarm_manual.pdf
 	6) To draw graphs: No essential but Numpy, Matplotlib, Scipy... pip install module_name
 	7) BLAST. This is used to get the % identity of each cluster Please add to your PATH https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download
 	8) muscle. Alignmnet tool to align the clusters. Please rename and add to your PATH as muscle.  http://www.drive5.com/muscle/
 	9) 	BLESS error correction (difficult to install) - Not essential. NOT CURRENTLY USED
 	10) SPAdes alternative error correction. Much easier to install . http://bioinf.spbau.ru/en/content/spades-download-0 
-		
+
+* for PEAR:	
+https://github.com/xflouris/PEAR/blob/master/bin/pear-0.9.5-bin-64  - precompiled and includes [+bzlib +zlib] included which are a pain to install.
+
+https://github.com/xflouris/PEAR/tree/master/bin
 
 generate config file
 =====================
