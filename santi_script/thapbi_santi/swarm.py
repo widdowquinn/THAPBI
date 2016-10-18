@@ -7,6 +7,8 @@
 # (c) The James Hutton Institute 2016
 # Author: Leighton Pritchard and Peter Thorpe
 
+# WARNING: this module is not yet tested AT ALL.
+
 import os
 import sys
 
