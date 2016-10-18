@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #
-# Tools for working with QIIME scripts
 #
-# QIIME: http://qiime.org/
+# Swarm (clustering)
+# https://github.com/torognes/swarm/blob/master/man/swarm_manual.pdf
 #
 # (c) The James Hutton Institute 2016
 # Author: Leighton Pritchard and Peter Thorpe
@@ -35,15 +35,17 @@ class Swarm(object):
             self._logger.info(m)
         retcode = call(self._cmd, shell=True)
         if retcode < 0:
-            self._logger.error("pick_otus.py terminated by " +
+            self._logger.error("Swarm terminated by " +
                                "signal %s" % -retcode)
             sys.exit(1)
         else:
             self._logger.info("pick_otus.py returned %s" % retcode)
         return self._outdirname
 
+#cmd_swarm="swarm -t ${num_threads} --append-abundance 1 -d 1 -o swarm_clustering_on_data_with_no_database 
+
     def __build_cmd(self, infname, refname, outdir):
-        """Build a command-line for pick_otus.py"""
+        """Build a command-line for swarm"""
         self._outdirname = os.path.join(outdir, "qiime_uclust_OTUs")
         cmd = ["pick_otus.py",
                "-m", "uclust_ref",
