@@ -22,6 +22,7 @@ def turn_fq_to_dic(in_fastq, barcode_length):
     """function to turn fq file into a dict
     read = seq[:length of bar code]
     return dict """
+    #THIS FUNCTION IS NOW NOT USED.
     read_to_barcode_dict = dict()
     #open the fastq file
     in_file = open(in_fastq)
@@ -63,6 +64,7 @@ def get_barcode_seq (read, in_fastq):
     fq file needs to be unzipped.
     currently assuming barcode if 8bp and at the start of each seq??
     """
+    #THIS FUNCTION IS NOT USED.
     return True
 
 def parse_line(line):
