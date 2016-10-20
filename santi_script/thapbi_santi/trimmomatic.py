@@ -40,6 +40,9 @@ class trimmomatic(object):
 
     def run(self, L_reads, R_reads, outdir):
         """Run trimmomatic on the passed files"""
+        assert L_reads != R_reads, """Oh no,
+        I am trying to perform trimming on two of the same files!
+        Something has gone wrong in determinin the left and right read files."""
         self.__build_cmd(L_reads, R_reads, outdir)
         if not os.path.exists(self._outdirname):
             self._logger.info("Creating output directory: %s" %
