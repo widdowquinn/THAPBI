@@ -13,6 +13,7 @@ To install the pre-commit hook:
 1. clone the repository with `git clone https://github.com/widdowquinn/THAPBI` (you may already have done this)
 2. change directory to the root of the repository with `cd THAPBI`
 3. copy the pre-commit script to the `.git/hooks` directory with `cp git_hooks/pre-commit .git/hooks/`
+4. if not already present, install pep8 using `pip install pep8`
 
 ### More information
 
