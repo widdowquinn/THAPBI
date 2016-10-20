@@ -24,7 +24,15 @@ class trimmomatic(object):
         self._no_run = False
         if not is_exe(exe_path):
             msg = ["trimmomatic executable not valid",
-                   "trimming of reads will not be run"]
+                   "trimming of reads will not be run",
+                   " If you have put trimmomatic in your PATH",
+                   " and this is still failing "
+                   "you may need to rename/ copy your trimmomatic ",
+                   "binary to a file called timmomatic. ",
+                   " please make sure this file is executable and",
+                   "in your PATH",
+                   " you can download the binaries from",
+                   "http://www.usadellab.org/cms/?page=trimmomatic"]
             for m in msg:
                 self._logger.warning(m)
             self._no_run = True
