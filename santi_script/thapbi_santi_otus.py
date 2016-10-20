@@ -24,7 +24,7 @@ from argparse import ArgumentParser
 from biom import load_table
 
 from thapbi_santi import fastqc, seq_crumbs, ea_utils, blast, qiime, \
-    muscle, tools
+    muscle, tools, trimmomatic, swarm, pear
 
 
 # Process command-line arguments
