@@ -13,7 +13,6 @@ import os
 import sys
 
 from subprocess import Popen, PIPE
-# WHERE DOES TOOLS COME FROM???
 from tools import is_exe
 
 
@@ -48,14 +47,15 @@ class Trimmomatic(object):
         """Build a command-line for trimmomatic"""
         self._outdirname = os.path.join(outdir, outdir)
         prefix = self._outdirname + "/" + L_reads.split("_R")[0]
+        prefix = prefix.replace("./data", "")
         cmd = ["trimmomatic",
                "PE",
                "-threads", str(threads),
                "-phred33",
                L_reads, R_reads,
-               prefix + "_R1.fq.gz",
+               prefix + "_paired_R1.fq.gz",
                "unpaired_R1.fq.gz",
-               prefix + "_R2.fq.gz",
+               prefix + "_paired_R2.fq.gz",
                "unpaired_R2.fq.gz",
                "ILLUMINACLIP:TruSeq3-PE.fa:2:30:10", "LEADING:3",
                "TRAILING:3", "SLIDINGWINDOW:4:25", "MINLEN:75"]
@@ -65,7 +65,7 @@ class Trimmomatic(object):
         """Run trimmomatic on the passed read files"""
         assert L_reads != R_reads, """Oh no,
         I am trying to perform trimming on two of the same files!
-        Something has gone wrong in determinin the left and right
+        Something has gone wrong in determining the left and right
         read files."""
         self.__build_cmd(L_reads, R_reads, threads, outdir)
         if not os.path.exists(self._outdirname):

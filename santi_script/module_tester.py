@@ -13,7 +13,6 @@ from thapbi_santi import trimmomatic
 
 threads = 4
 
-
 # Report last exception as string
 def last_exception():
     """Returns last exception as a string, or use in logging."""
@@ -24,6 +23,7 @@ def last_exception():
 
 # Run as script
 if __name__ == '__main__':
+
 
     # Set up logging
     logger = logging.getLogger('thapbi_santi_otus.py: %s' % time.asctime())
@@ -51,9 +51,10 @@ if __name__ == '__main__':
     logger.info("starting trimmomatic testing")
     trim = trimmomatic.Trimmomatic("trimmomatic", logger)
     # this should break due to name
-    # trimmomatic.trimmomatic("trimmomatic2", logger)
+    #trimmomatic.trimmomatic("trimmomatic2", logger)
+
 
     logger.info("Trim reads by quality")
     trim.run("./data/DNAMIX_S95_L001_R1_001.fastq",
-             "./data/DNAMIX_S95_L001_R1_002.fastq",
+             "./data/DNAMIX_S95_L001_R2_001.fastq",
              threads, "trimmer_reads")
