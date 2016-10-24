@@ -9,8 +9,9 @@
 # Phytophthora.
 #
 # (c) The James Hutton Institute 2016
-# Author: Leighton Pritchard
+# Author: Leighton Pritchard, Peter Thorpe
 
+import errno
 import logging
 import logging.handlers
 import multiprocessing
@@ -102,6 +103,7 @@ if __name__ == '__main__':
     err_handler = logging.StreamHandler(sys.stderr)
     err_formatter = logging.Formatter('%(levelname)s: %(message)s')
     err_handler.setFormatter(err_formatter)
+    logger.addHandler(err_handler)
 
     # Was a logfile specified? If so, use it
     if args.logfile is not None:
@@ -109,6 +111,7 @@ if __name__ == '__main__':
             logstream = open(args.logfile, 'w')
             err_handler_file = logging.StreamHandler(logstream)
             err_handler_file.setFormatter(err_formatter)
+            # logfile is always verbose
             err_handler_file.setLevel(logging.INFO)
             logger.addHandler(err_handler_file)
         except:
@@ -116,14 +119,13 @@ if __name__ == '__main__':
                          args.logfile)
             sys.exit(1)
 
-    # Do we need verbosity?
+    # Do we need verbosity at the terminal?
     if args.verbose:
         err_handler.setLevel(logging.INFO)
     else:
         err_handler.setLevel(logging.WARNING)
-    logger.addHandler(err_handler)
 
-    # Report arguments, if verbose
+    # Report input arguments
     logger.info("Command-line: %s" % ' '.join(sys.argv))
     logger.info(args)
     logger.info("Starting pipeline: %s" % time.asctime())
@@ -143,10 +145,15 @@ if __name__ == '__main__':
     logger.info("Reference FASTA file: %s" % args.reference_fasta)
 
     # Have we got an output directory and prefix? If not, create it.
-    if not os.path.exists(args.outdirname):
-        logger.warning("Output directory %s does not exist - creating it" %
-                       args.outdirname)
+    try:
+        logger.info("Creating directory %s" % args.outdirname)
         os.makedirs(args.outdirname)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            logger.error("Error creating directory %s (exiting)" %
+                         args.outdirname)
+            logger.info(last_exception())
+            sys.exit(1)
 
     # Check for the presence of space characters in any of the input filenames
     # If we have any, abort here and now.
@@ -155,8 +162,9 @@ if __name__ == '__main__':
                           fname.startswith(args.prefix)])
     logger.info("Input files: %s" % infilenames)
     for fname in infilenames:
-        if ' ' in os.path.abspath(fname):
-            logger.error("File or directory '%s' contains whitespace" % fname)
+        if ' ' in os.path.relpath(fname):
+            logger.error("Relative path to file or directory " +
+                         "'%s' contains whitespace" % fname)
             logger.error("(exiting)")
             sys.exit(1)
 
@@ -181,6 +189,7 @@ if __name__ == '__main__':
     pcro = qiime.Pick_Closed_Ref_Otus(args.pick_closed_reference_otus, logger)
 
     # How many threads are we using?
+    args.threads = min(args.threads, multiprocessing.cpu_count())
     logger.info("Using %d threads/CPUs where available" % args.threads)
 
     # Trim reads on quality - forward and reverse reads
