@@ -31,6 +31,27 @@ except ImportError:
 
 assert mean([1,2,3,4,5]) == 3
 
+
+def get_average_length(GFF):
+    """function to take in a GFF and return the average lenght
+    og the genes in the whole GFF file."""
+    gff_file = open(GFF, "r")
+    gene_count = 0
+    length_count = 0
+    for line in gff_file:
+        if line.startswith("#"):
+            continue
+        assert len(line.split("\t")) ==9 ,"GFF fields wrong length should be 9"
+        scaffold,aug,cds_type,start,stop,e,f,g,gene_info = line.split("\t")
+        gene_size = int(stop) - int(start)
+        length_count = length_count + gene_size
+        gene_count = gene_count + 1
+    average_len = length_count/ float(gene_count)
+    gff_file.close()
+    return average_len
+        
+    
+
 def parse_result_file(blast):
     """read in the blast tab file. Reads whole file into memeroy.
     returns a list, one list item per blast hit.
@@ -60,10 +81,11 @@ def stat_tests(in_list):
     return min_cov, max_cov, mean_cov, median, standard_dev
 
 
-def write_out_stats(ITS_cov, GFF, all_genes_cov, out_file):
+def write_out_stats(ITS_cov, ITSGFF, ITSaverage_length, geneGFFavergae_length,
+                    all_genes_cov, out_file):
     """function to write out summary stats. """
     # call function to get list of coverage per file.
-    number_of_ITS_blast_hits = len(parse_result_file(GFF))
+    number_of_ITS_blast_hits = len(parse_result_file(ITSGFF))
     number_of_all_genes_hits = len(parse_result_file(all_genes_cov))
     try:
         ITS_cov_str = parse_result_file(ITS_cov)
@@ -96,16 +118,31 @@ def write_out_stats(ITS_cov, GFF, all_genes_cov, out_file):
 
     blast_hits_info = "\nnumber of ITS_blast_hit = %s \n" %(number_of_ITS_blast_hits)
     number_of_all_genes_hits_out = "\nnumber of 'all genes' = %s \n" %(number_of_all_genes_hits)
-    ratio_info = "\nITS to gene ratio = %.1f \n" %(float(ITSmean_cov) / GENEmean_cov)
+    
+    ITSaverage_length_info = "\nITSaverage_length : %.1f \n" % (ITSaverage_length)
+    geneGFFavergae_length_info = "\ngeneGFFavergae_length_info:  %.1f \n" %(geneGFFavergae_length)
+
+    ITS_reads_per_base = float(ITSmean_cov)/ITSaverage_length
+    gene_reads_per_base = float(GENEmean_cov)/geneGFFavergae_length
+    
+    info_ITS = "\nITS_reads_per_base: %.1f\n" % ITS_reads_per_base
+    summary_stats_out.write(info_ITS)
+    info_gene = "\ngene_reads_per_base: %.1f\n" %gene_reads_per_base
+    summary_stats_out.write(info_gene)
+    summary_stats_out.write("coverage ratio = ITS_reads_per_base / gene_reads_per_base \n")
+    
+    ratio_info = "\nITS to gene ratio = %.1f \n" %(ITS_reads_per_base / gene_reads_per_base)
     summary_stats_out.write(blast_hits_info)
     summary_stats_out.write(number_of_all_genes_hits_out)
+    summary_stats_out.write(ITSaverage_length_info)
+    summary_stats_out.write(geneGFFavergae_length_info)
     
     #results based on mean coverage values
     summary_stats_out.write("\n#BASED on MEAN coverage values")
     
     summary_stats_out.write(ratio_info)
     final_count_info = "There may be %.1f ITS regions\n" %((int(number_of_ITS_blast_hits)\
-                                                    *(float(ITSmean_cov) / GENEmean_cov)))
+                                                    *(ITS_reads_per_base / gene_reads_per_base)))
     #print final_count_info
     summary_stats_out.write(final_count_info)
 
@@ -114,7 +151,7 @@ def write_out_stats(ITS_cov, GFF, all_genes_cov, out_file):
     ratio_info = "\nITS to gene ratio = %.1f \n" %(float(ITSmedian) / GENEmedian)
     summary_stats_out.write(ratio_info)
     final_count_info = "There may be %.1f ITS regions\n" %((int(number_of_ITS_blast_hits)\
-                                                    *(float(ITSmedian) / GENEmedian)))
+                                                    *(ITS_reads_per_base / gene_reads_per_base)))
     summary_stats_out.write(final_count_info)
 
     #close the write file
@@ -132,7 +169,7 @@ Title:
 script to generate aummary stats for ITS coverage and all genes coverage
 
 
-$ summary_stats.py --ITS ITS.cov --all all_gene.cov -o summary.out
+$ summary_stats.py --ITS ITS.cov --all all_gene.cov --ITSGFF itsgff --geneGFF genes.gff -o summary.out
 
 ITS GFF file needed to count the number of ITS blast hits 
 """
@@ -142,7 +179,10 @@ parser = OptionParser(usage=usage)
 parser.add_option("-i", "--ITS", dest="ITS_cov", default=None,
                   help="coverage file for ITS regions",
                   metavar="FILE")
-parser.add_option("-g", "--GFF", dest="GFF", default=None,
+parser.add_option("-z", "--ITSGFF", dest="ITSGFF", default=None,
+                  help="ITS GFF file",
+                  metavar="FILE")
+parser.add_option("-g", "--geneGFF", dest="geneGFF", default=None,
                   help="ITS GFF file",
                   metavar="FILE")
 parser.add_option("-a", "--all_genes_cov", dest="all_genes_cov",
@@ -159,13 +199,16 @@ parser.add_option("-o", "--out_file", dest="out_file",
 
 
 ITS_cov = options.ITS_cov
-GFF = options.GFF
+ITSGFF = options.ITSGFF
+geneGFF = options.geneGFF
 all_genes_cov = options.all_genes_cov
 out_file = options.out_file
 
 
 #run the program
-file_list = [ITS_cov, GFF, all_genes_cov]
+ITSaverage_length = get_average_length(ITSGFF)
+geneGFFavergae_length = get_average_length(geneGFF)
+file_list = [ITS_cov, geneGFF, ITSGFF, all_genes_cov]
 for i in file_list:
     if not os.path.isfile(i):
         print("sorry, couldn't open the file: ", "\n")
@@ -174,6 +217,7 @@ for i in file_list:
         sys.exit("\n\nInput ITS file not found: %s" % i)
 
 # call the top function    
-write_out_stats(ITS_cov, GFF, all_genes_cov, out_file)
+write_out_stats(ITS_cov, ITSGFF, ITSaverage_length, geneGFFavergae_length,
+                all_genes_cov, out_file)
 
 
