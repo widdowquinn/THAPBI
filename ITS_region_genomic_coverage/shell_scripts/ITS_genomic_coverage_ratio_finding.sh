@@ -275,10 +275,9 @@ cut -f10 ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov>  ${genome_prefix}_BUSC
 echo cut -f10 ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov to  ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values
 
 # get stats summary of coverages
-python ${repository_path}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats_all_genes_versus_ITS.out
-echo python ${repository_path}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats_all_genes_versus_ITS.out
+python ${repository_path}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --geneGFF ${genome_prefix}.gene.gff --ITSGFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats_all_genes_versus_ITS.out
+echo python ${repository_path}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --geneGFF ${genome_prefix}.gene.gff --ITSGFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_genomic.genes.cov.values -o ${genome_prefix}_stats_all_genes_versus_ITS.out
 
 # get stats summary of coverages with BUSCO genes
-python ${repository_path}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values -o ${genome_prefix}_stats_BUSCO_versus_ITS.out
-echo python ${repository_path}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --GFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values -o ${genome_prefix}_stats_BUSCO_versus_ITS.out
-
+python ${repository_path}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --geneGFF ${genome_prefix}_BUSCO_GENES.gene.gff --ITSGFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values -o ${genome_prefix}_stats_BUSCO_versus_ITS.out
+echo python ${repository_path}/summary_stats.py --ITS ${genome_prefix}_genomic.ITS.cov.values --geneGFF ${genome_prefix}_BUSCO_GENES.gene.gff --ITSGFF ${genome_prefix}.ITS.consensus.GFF --all_genes_cov ${genome_prefix}_BUSCO_GENES.gene.gff.genes.cov.values -o ${genome_prefix}_stats_BUSCO_versus_ITS.out
